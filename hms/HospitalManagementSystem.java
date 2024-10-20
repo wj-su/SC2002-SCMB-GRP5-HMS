@@ -2,6 +2,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import patient.Patient;
 
@@ -33,10 +35,46 @@ public class HospitalManagementSystem {
 					p.viewMedicalRecord();
 					break;
 				case 2:
-					System.out.println("Enter your updated phone number (type 'no' if no update): ");
-					String hp = sc.nextLine();
-					System.out.println("Enter your updated email address (type 'no' if no update): ");
-					String email = sc.nextLine();
+					String email, hp = "";
+					String phoneRegex = "^\\d{8}$";
+					Pattern phonePattern = Pattern.compile(phoneRegex);
+					String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+					Pattern emailPattern = Pattern.compile(emailRegex);
+
+					while (true) {
+						System.out.println("Enter your updated phone number (type 'no' if no update): ");
+						hp = sc.nextLine();
+						if (hp.equals("no")) {
+							break;
+						}
+						else {
+							Matcher checkHp = phonePattern.matcher(hp);
+							if (checkHp.matches()) {
+								break;
+							}
+							else {
+								System.out.println("\nInvalid phone number! Please enter a valid phone number!!\n");
+							}
+						}
+					}
+					
+					while (true) {
+						System.out.println("Enter your updated email address (type 'no' if no update): ");
+						email = sc.nextLine();
+						if (email.equals("no")) {
+							break;
+						}
+						else {
+							Matcher checkEmail = emailPattern.matcher(email);
+							if (checkEmail.matches()) {
+								break;
+							}
+							else {
+								System.out.println("\nInvalid email! Please enter a valid email address!!\n");
+							}
+						}
+					}
+					
 					p.updatePersonalInformation(hp, email);
 					break;
 				case 9:
