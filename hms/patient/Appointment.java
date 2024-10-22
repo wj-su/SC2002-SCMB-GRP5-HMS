@@ -168,7 +168,7 @@ public class Appointment {
     }
 
 
-    public void rescheduleAppointment(String doc, String date, String time) {
+    public void rescheduleAppointment(String doc, String newDoc, String date, String time, String dec) {
 
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
@@ -177,31 +177,51 @@ public class Appointment {
             for (Appointment appt : appointments) {
                 String freeDate = appt.getDate();
                 String freeTimeSlot = appt.getTimeslot();
-
-                if (appt.getDoctor().equals(doc) && appt.getDate().equals(freeDate) && appt.getTimeslot().equals(freeTimeSlot)) {                    
-
+                if (dec.toLowerCase().equals("yes")) {
+                    // changing doctor
                     if (apptSlots.containsKey(doc)) {
                         if (apptSlots.get(doc).containsKey(freeDate)) {
                             apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
                         }
                     }
-
-                    if (apptSlots.containsKey(doc) && apptSlots.get(doc).containsKey(date)) {
-                        if (apptSlots.get(doc).get(date).contains(time)) {
-                            apptSlots.get(doc).get(date).remove(time);
+                    
+                    if (apptSlots.containsKey(newDoc) && apptSlots.get(newDoc).containsKey(date)) {
+                        if (apptSlots.get(newDoc).get(date).contains(time)) {
+                            apptSlots.get(newDoc).get(date).remove(time);
+                            appt.setDoctor(newDoc);
                             appt.setDate(date);
                             appt.setTimeslot(time);
                             appt.setStatus("Rescheduled");
                             System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
-
                         }
                     }     
                     else {
                         System.out.println("The selected new timeslot is not available!");
-                    }               
+                    }    
                 }
                 else {
-                    System.out.println("No such appointment has been scheduled!");
+                    // just changing date and time slot for same doctor
+                    if (appt.getDoctor().equals(doc) && appt.getDate().equals(freeDate) && appt.getTimeslot().equals(freeTimeSlot)) {                    
+
+                        if (apptSlots.containsKey(doc)) {
+                            if (apptSlots.get(doc).containsKey(freeDate)) {
+                                apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
+                            }
+                        }
+    
+                        if (apptSlots.containsKey(doc) && apptSlots.get(doc).containsKey(date)) {
+                            if (apptSlots.get(doc).get(date).contains(time)) {
+                                apptSlots.get(doc).get(date).remove(time);
+                                appt.setDate(date);
+                                appt.setTimeslot(time);
+                                appt.setStatus("Rescheduled");
+                                System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
+                            }
+                        }     
+                        else {
+                            System.out.println("The selected new timeslot is not available!");
+                        }               
+                    }
                 }
             }    
         }

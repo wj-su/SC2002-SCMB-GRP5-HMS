@@ -143,27 +143,21 @@ public class HospitalManagementSystem {
 					String dateO = sc.nextLine();
 					System.out.println("Enter the old timeslot : ");
 					String timeO = sc.nextLine();
-					defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
+					// defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
 					if (defaultApts.appointmentExists(docO, dateO, timeO, "reschedule")) {
 						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
 						System.out.println("Yes or No?");
 						String decision = sc.nextLine();
-						String chosenDoc = "";
+						String newDoc = "";
 						if (decision.toLowerCase().equals("yes")) {
 							System.out.println("Enter the new doctor's name: ");
-							chosenDoc = sc.nextLine();
-						}
-						else if (decision.toLowerCase().equals("no")) {
-							chosenDoc = docO;
+							newDoc = sc.nextLine();
 						}
 						System.out.println("Enter the new date : ");
 						String dateR = sc.nextLine();
 						System.out.println("Enter the new timeslot : ");
 						String timeR = sc.nextLine();
-						defaultApts.rescheduleAppointment(chosenDoc, dateR, timeR);
-					}
-					else {
-						System.out.println("No such appointment exists!!");
+						defaultApts.rescheduleAppointment(docO, newDoc, dateR, timeR, decision);
 					}
 					
 					break;
