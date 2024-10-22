@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Random;
+
 
 import patient.Appointment;
 import patient.Patient;
@@ -81,7 +83,22 @@ public class HospitalManagementSystem {
 					break;
 				case 3:
 					System.out.println("View Available Appointment Slots");
-					defaultApts.viewAvailableAppt();
+					System.out.println("Do you want see all of your appointments, or based on the doctor? ");
+					System.out.println("Type `all` to view all of your appointments");
+					System.out.println("Type `doc` to view appointments with a specific doctor");
+					String type = sc.nextLine();
+					if (type.toLowerCase().equals("all")) {
+						defaultApts.viewAvailableAppt();
+					}
+					else if (type.toLowerCase().equals("doc")) {
+						System.out.println("Enter the doctor's name: ");
+						String dn = sc.nextLine();
+						defaultApts.viewAvailableApptByDoc(dn);
+					}
+					else {
+						System.out.println("Please choose either `all` or `doc`!");
+					}
+
 					break;
 				case 4:
 					System.out.println("Scheduling an appointment...");
@@ -113,30 +130,53 @@ public class HospitalManagementSystem {
 						break;
 					}
 					if (doc != "" && date != "" && ts != "") {
-						Appointment apt = new Appointment(1, doc, date, ts, "Pending");
+						Random rid = new Random();
+						Appointment apt = new Appointment(rid.nextInt(1000), doc, date, ts, "Pending");
 						defaultApts.scheduleAppointment(apt, doc, date, ts);
 					}
 					break;
 				case 5:
 					System.out.println("Rescheduling appointment...");
 					System.out.println("Enter the doctor's name you have an appointment with: ");
-					String docR = sc.nextLine();
-					defaultApts.appointmentExists(docR);
-                    System.out.println("Enter the new date : ");
-                    String dateR = sc.nextLine();
-                    System.out.println("Enter the new timeslot : ");
-                    String timeR = sc.nextLine();
-					defaultApts.rescheduleAppointment(docR, dateR, timeR);
+					String docO = sc.nextLine();
+					System.out.println("Enter the old date: ");
+					String dateO = sc.nextLine();
+					System.out.println("Enter the old timeslot : ");
+					String timeO = sc.nextLine();
+					defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
+					if (defaultApts.appointmentExists(docO, dateO, timeO, "reschedule")) {
+						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
+						System.out.println("Yes or No?");
+						String decision = sc.nextLine();
+						String chosenDoc = "";
+						if (decision.toLowerCase().equals("yes")) {
+							System.out.println("Enter the new doctor's name: ");
+							chosenDoc = sc.nextLine();
+						}
+						else if (decision.toLowerCase().equals("no")) {
+							chosenDoc = docO;
+						}
+						System.out.println("Enter the new date : ");
+						String dateR = sc.nextLine();
+						System.out.println("Enter the new timeslot : ");
+						String timeR = sc.nextLine();
+						defaultApts.rescheduleAppointment(chosenDoc, dateR, timeR);
+					}
+					else {
+						System.out.println("No such appointment exists!!");
+					}
+					
 					break;
 				case 6:
 					System.out.println("Cancelling appointment...");
 					System.out.println("Enter the doctor's name you cancelling an appointment with: ");
 					String docC = sc.nextLine();
-					defaultApts.appointmentExists(docC);
                     System.out.println("Enter the cancelled date : ");
                     String dateC = sc.nextLine();
                     System.out.println("Enter the cancelled timeslot : ");
                     String timeC = sc.nextLine();
+					defaultApts.appointmentExists(docC, dateC, timeC, "cancel");
+
 					defaultApts.cancelAppointment(docC, dateC, timeC);
 					break;
 				case 7:
@@ -160,7 +200,7 @@ public class HospitalManagementSystem {
 		System.out.println("\nPatient Menu:");
 		System.out.println("- View Medical Record (1)");
 		System.out.println("- Update Personal Information (2)");
-		System.out.println("- View Avaible Appointment Slots (3)");
+		System.out.println("- View Available Appointment Slots (3)");
 		System.out.println("- Schedule an Appointment (4)");
 		System.out.println("- Reschedule an Appointment (5)");
 		System.out.println("- Cancel an Appointment (6)");

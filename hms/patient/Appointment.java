@@ -95,13 +95,36 @@ public class Appointment {
 
             List<String> dates = new ArrayList<>(dateSlots.keySet());
             for (int j = 0; j < dates.size(); j++) {
-                String date = dates.get(j); // The date
-                List<String> timeslots = dateSlots.get(date); // The corresponding timeslots
+                String date = dates.get(j);
+                List<String> timeslots = dateSlots.get(date); 
 
                 System.out.println("Date: " + date);
                 System.out.println("Available Timeslots: " + timeslots);
             }
             System.out.println("");
+        }
+    }
+
+    public void viewAvailableApptByDoc(String doc) {
+        if (!apptSlots.containsKey(doc)) {
+            System.out.println("No such doctor available!!");
+        }
+        else {
+
+            Map<String, List<String>> dateSlots = apptSlots.get(doc);
+
+            System.out.println("Doctor: " + doc);
+
+            List<String> dates = new ArrayList<>(dateSlots.keySet());
+            for (int j = 0; j < dates.size(); j++) {
+                String date = dates.get(j);
+                List<String> timeslots = dateSlots.get(date); 
+
+                System.out.println("Date: " + date);
+                System.out.println("Available Timeslots: " + timeslots);
+            }
+            System.out.println("");
+            
         }
     }
 
@@ -120,36 +143,42 @@ public class Appointment {
     }
 
 
-    public void appointmentExists(String doc) {
+    public boolean appointmentExists(String doc, String date, String time, String type) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                System.out.printf("Appointment: %s\n", appt);  // This calls appt.toString()
-                if (appt.getDoctor().equals(doc)) {
+                if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
                     System.out.println("You currently have an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
-                    System.out.println("These are our currently available appointments: ");
-                    viewAvailableAppt();
+                    if (type.toLowerCase().equals("reschedule")) {
+                        System.out.println("\nThese are our currently available appointments: ");
+                        viewAvailableApptByDoc(doc);
+                    }
+                    return true;
+                }
+                else {
+                    return false;
                 }
             }
         }
+        return false;
 
 
     }
 
 
     public void rescheduleAppointment(String doc, String date, String time) {
+
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                if (appt.getDoctor().equals(doc)) {
+                String freeDate = appt.getDate();
+                String freeTimeSlot = appt.getTimeslot();
 
-                    System.out.printf("Appointment: %s\n", appt); 
-                    String freeDate = appt.getDate();
-                    String freeTimeSlot = appt.getTimeslot();
+                if (appt.getDoctor().equals(doc) && appt.getDate().equals(freeDate) && appt.getTimeslot().equals(freeTimeSlot)) {                    
 
                     if (apptSlots.containsKey(doc)) {
                         if (apptSlots.get(doc).containsKey(freeDate)) {
@@ -157,39 +186,44 @@ public class Appointment {
                         }
                     }
 
-                    appt.setDate(date);
-                    appt.setTimeslot(time);
-                    appt.setStatus("Rescheduled");
-                    if (apptSlots.containsKey(doc)) {
-                        if (apptSlots.get(doc).containsKey(date)) {
-                            apptSlots.get(doc).get(date).remove(time); // remove selected time
+                    if (apptSlots.containsKey(doc) && apptSlots.get(doc).containsKey(date)) {
+                        if (apptSlots.get(doc).get(date).contains(time)) {
+                            apptSlots.get(doc).get(date).remove(time);
+                            appt.setDate(date);
+                            appt.setTimeslot(time);
+                            appt.setStatus("Rescheduled");
+                            System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
+
                         }
-                    }
-                    System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
-                    
+                    }     
+                    else {
+                        System.out.println("The selected new timeslot is not available!");
+                    }               
+                }
+                else {
+                    System.out.println("No such appointment has been scheduled!");
                 }
             }    
         }
     }
-
+    
     public void cancelAppointment(String doc, String date, String time) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                System.out.printf("Appointment: %s\n", appt); 
-                String freeDate = appt.getDate();
-                String freeTimeSlot = appt.getTimeslot();
-
-                if (apptSlots.containsKey(doc)) {
-                    if (apptSlots.get(doc).containsKey(freeDate)) {
-                        apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
+                if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
+                    
+                    if (apptSlots.containsKey(doc)) {
+                        if (apptSlots.get(doc).containsKey(date)) {
+                            if (!apptSlots.get(doc).get(date).contains(time)) {
+                                apptSlots.get(doc).get(date).add(time);
+                            }
+                        }
                     }
-                }
 
-                if (appt.getDoctor().equals(doc)) {
-                    appointments.remove(appt.id);
+                    appt.setStatus("Canceled");
                     System.out.println("You have canceled an appointment your appointment");
                 }
             }
@@ -202,11 +236,11 @@ public class Appointment {
         }
         else {
             for (Appointment appt : appointments) {
-                System.out.printf("Appointment: %s\n", appt); 
                 System.out.println("Appointment Id: " + appt.getId());
                 System.out.println("Appointment Doctor: " + appt.getDoctor());
                 System.out.println("Appointment Date: " + appt.getDate());
                 System.out.println("Appointment Time: " + appt.getTimeslot());
+                System.out.println("Appointment Status: " + appt.getStatus());
                 System.out.println("\n");
             }
         }
