@@ -8,6 +8,7 @@ import java.util.Random;
 
 
 import patient.Appointment;
+import patient.AppointmentOutcomeRecord;
 import patient.Patient;
 
 public class HospitalManagementSystem {
@@ -26,6 +27,7 @@ public class HospitalManagementSystem {
 
 		Patient p = new Patient(1, "Shaqilah", "21/10/2024", "Female", "12345678", "survivor@gmail.com", "O", pd, pt);
 		Appointment defaultApts = new Appointment();
+		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
 
 		do {
 			PatientMenu();
@@ -48,7 +50,7 @@ public class HospitalManagementSystem {
 					while (true) {
 						System.out.println("Enter your updated phone number (type 'no' if no update): ");
 						hp = sc.nextLine();
-						if (hp.equals("no")) {
+						if (hp.toLowerCase().equals("no")) {
 							break;
 						}
 						else {
@@ -65,7 +67,7 @@ public class HospitalManagementSystem {
 					while (true) {
 						System.out.println("Enter your updated email address (type 'no' if no update): ");
 						email = sc.nextLine();
-						if (email.equals("no")) {
+						if (email.toLowerCase().equals("no")) {
 							break;
 						}
 						else {
@@ -93,6 +95,7 @@ public class HospitalManagementSystem {
 					else if (type.toLowerCase().equals("doc")) {
 						System.out.println("Enter the doctor's name: ");
 						String dn = sc.nextLine();
+						dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
 						defaultApts.viewAvailableApptByDoc(dn);
 					}
 					else {
@@ -108,6 +111,7 @@ public class HospitalManagementSystem {
 					while (true) {
 						System.out.println("Choose a doctor: ");
 						doc = sc.nextLine();
+						doc = Character.toUpperCase(doc.charAt(0)) + doc.substring(1).toLowerCase();
 						if (!defaultApts.getApptSlots().containsKey(doc)) {
 							System.out.println("Doctor not found!");
 							continue;
@@ -139,6 +143,7 @@ public class HospitalManagementSystem {
 					System.out.println("Rescheduling appointment...");
 					System.out.println("Enter the doctor's name you have an appointment with: ");
 					String docO = sc.nextLine();
+					docO = Character.toUpperCase(docO.charAt(0)) + docO.substring(1).toLowerCase();
 					System.out.println("Enter the old date: ");
 					String dateO = sc.nextLine();
 					System.out.println("Enter the old timeslot : ");
@@ -152,6 +157,7 @@ public class HospitalManagementSystem {
 						if (decision.toLowerCase().equals("yes")) {
 							System.out.println("Enter the new doctor's name: ");
 							newDoc = sc.nextLine();
+							newDoc = Character.toUpperCase(newDoc.charAt(0)) + newDoc.substring(1).toLowerCase();
 						}
 						System.out.println("Enter the new date : ");
 						String dateR = sc.nextLine();
@@ -165,6 +171,7 @@ public class HospitalManagementSystem {
 					System.out.println("Cancelling appointment...");
 					System.out.println("Enter the doctor's name you cancelling an appointment with: ");
 					String docC = sc.nextLine();
+					docC = Character.toUpperCase(docC.charAt(0)) + docC.substring(1).toLowerCase();
                     System.out.println("Enter the cancelled date : ");
                     String dateC = sc.nextLine();
                     System.out.println("Enter the cancelled timeslot : ");
@@ -176,6 +183,32 @@ public class HospitalManagementSystem {
 				case 7:
 					System.out.println("Below are your appointments...");
 					defaultApts.viewScheduledAppointments();
+					break;
+				case 8:
+					System.out.println("Record Appointment Outcome...");
+					System.out.println("Enter Appointment Id: ");
+					int aptid = sc.nextInt();
+					sc.nextLine();
+					System.out.println("Enter Service Type: ");
+					String st = sc.nextLine();
+					System.out.println("Do you have something to prescribe the patient?");
+					String needMed = sc.nextLine();
+					String mn = "";
+					String ms = "";
+					if (needMed.toLowerCase().equals("yes")) {
+						System.out.println("Enter Medication Name: ");
+						mn = sc.nextLine();
+						System.out.println("Enter Medication Status: ");
+						ms = sc.nextLine();
+					}
+					System.out.println("Enter Consultation Notes: ");
+					String consultNotes = sc.nextLine();
+					
+					outcome.addOutcomeRecord(aptid, st, mn, ms, consultNotes);
+
+					System.out.println("\n");
+					System.out.println("Below are your past appointment records...");
+					outcome.getOutcomeRecords();
 					break;
 				case 9:
 					System.out.println("You have logged out!");

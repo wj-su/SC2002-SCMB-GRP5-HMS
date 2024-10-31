@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 
 public class Appointment {
@@ -16,6 +15,8 @@ public class Appointment {
     private String status;
 
     private Map<String, Map<String, List<String>>> apptSlots;
+
+    // private AppointmentOutcomeRecord apptRecords;
 
     private List<Appointment> appointments = new ArrayList<>();
 
@@ -30,6 +31,11 @@ public class Appointment {
             put("21/10/2024", new ArrayList<>(List.of("08:00", "09:00")));
             put("22/10/2024", new ArrayList<>(List.of("12:00")));
         }});
+
+        // default completed appointment (just to check if code works)
+        Appointment defaultApt = new Appointment(1, "Shaqilah", "31/10/2024", "20:00", "Completed");
+        appointments.add(defaultApt);
+        
     }
 
     public Appointment(int id, String doc, String date, String time, String status) {
@@ -82,6 +88,10 @@ public class Appointment {
 
     public Map<String, Map<String, List<String>>> getApptSlots() {
         return this.apptSlots;
+    }
+
+    public List<Appointment> getAppointments() {
+        return this.appointments;
     }
 
     public void viewAvailableAppt() {
@@ -267,3 +277,4 @@ public class Appointment {
     }
 
 }
+

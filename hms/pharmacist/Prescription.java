@@ -1,3 +1,4 @@
+package pharmacist;
 public class Prescription {
     private String prescriptionId;
     private String appointmentId;

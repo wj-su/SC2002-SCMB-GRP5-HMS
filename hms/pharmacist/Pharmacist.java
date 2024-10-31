@@ -1,3 +1,8 @@
+package pharmacist;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pharmacist extends User {
     private String name;
     private String contactInfo;
