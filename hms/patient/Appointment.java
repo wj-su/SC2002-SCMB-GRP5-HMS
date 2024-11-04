@@ -18,7 +18,7 @@ public class Appointment {
 
     // private AppointmentOutcomeRecord apptRecords;
 
-    private List<Appointment> appointments = new ArrayList<>();
+    private static List<Appointment> appointments = new ArrayList<>();
 
     public Appointment() {
         apptSlots = new HashMap<>();
@@ -35,6 +35,9 @@ public class Appointment {
         // default completed appointment (just to check if code works)
         Appointment defaultApt = new Appointment(1, "Shaqilah", "31/10/2024", "20:00", "Completed");
         appointments.add(defaultApt);
+
+        Appointment defaultApt2 = new Appointment(2, "Dayana", "31/10/2024", "15:00", "Completed");
+        appointments.add(defaultApt2);
         
     }
 
@@ -90,8 +93,17 @@ public class Appointment {
         return this.apptSlots;
     }
 
-    public List<Appointment> getAppointments() {
-        return this.appointments;
+    public static List<Appointment> getAppointments() {
+        System.out.println("Getting appointments from Appointment instance: ");
+        for (Appointment appt : appointments) {
+            System.out.println("Appointment Id: " + appt.getId());
+            System.out.println("Appointment Doctor: " + appt.getDoctor());
+            System.out.println("Appointment Date: " + appt.getDate());
+            System.out.println("Appointment Time: " + appt.getTimeslot());
+            System.out.println("Appointment Status: " + appt.getStatus());
+            System.out.println("\n");
+        }
+        return appointments;
     }
 
     public void viewAvailableAppt() {
@@ -277,4 +289,3 @@ public class Appointment {
     }
 
 }
-

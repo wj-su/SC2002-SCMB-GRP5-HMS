@@ -19,8 +19,8 @@ public class AppointmentOutcomeRecord {
     private Map<Integer, Map<String, Object>> outcomeRecords;
 
     public AppointmentOutcomeRecord() {
-        Appointment appt = new Appointment();
-        this.apptRecords = appt.getAppointments();
+        // Appointment appt = new Appointment();
+        // this.apptRecords = appt.getAppointments();
         this.outcomeRecords = new HashMap<>();
 
         // test case
@@ -82,15 +82,16 @@ public class AppointmentOutcomeRecord {
     public void addOutcomeRecord(int id, String service, String medName, String medStatus, String consultNotes) {
         Map<String, Object> apptDetails = new HashMap<>();
 
+        // Appointment appt = new Appointment();
+        this.apptRecords = Appointment.getAppointments();
+
+        boolean found =  false;
+
         if (apptRecords.size() > 0) {
             for (Appointment apt : apptRecords) {
-                System.out.println("Appointment Id: " + apt.getId());
-                System.out.println("Appointment Doctor: " + apt.getDoctor());
-                System.out.println("Appointment Date: " + apt.getDate());
-                System.out.println("Appointment Time: " + apt.getTimeslot());
-                System.out.println("Appointment Status: " + apt.getStatus());
-                System.out.println("\n");
-                if (apt.getId() == id && apt.getStatus() == "Completed") {
+                if (apt.getId() == id && apt.getStatus().equals("Completed")) {
+                    found = true;
+
                     apptDetails.put("date", apt.getDate());
                     apptDetails.put("stype", service);
 
@@ -108,17 +109,22 @@ public class AppointmentOutcomeRecord {
                     this.prescribedMeds = prescribedMedications;
                     this.consultNotes = consultNotes;
 
-                }
-                else if (apt.getId() != id) {
-                    System.out.println((apt.getId() != id) + " and " + apt.getId() + " != " + id);
+                    break;
 
+                }
+                
+            }
+
+            if (!found) {
+                boolean idExists = apptRecords.stream().anyMatch(apt -> apt.getId() == id);
+                // boolean statusCompleted = apptRecords.stream().anyMatch(apt -> apt.getStatus().equals("Completed"));
+                if (!idExists) {
                     System.out.println("No such appointment exists under that id!");
                 }
 
-                else if (apt.getStatus() != "Completed") {
+                else {
                     System.out.println("You have not completed your appointment yet!");
                 }
-                
             }
         }
     }
