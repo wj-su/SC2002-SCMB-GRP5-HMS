@@ -8,7 +8,7 @@ public class Medication {
     public Medication(String medicationId, String name, int stockLevel, int lowStockAlertLevel) {
         this.medicationId = medicationId;
         this.name = name;
-        setStockLevel(stockLevel);
+        updateStockLevel(stockLevel);
         setLowStockAlertLevel(lowStockAlertLevel);
     }
 
