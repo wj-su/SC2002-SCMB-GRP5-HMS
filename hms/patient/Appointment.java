@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import doctor.AppointmentOutcomeRecord;
+
 
 public class Appointment {
     private int id;
@@ -20,6 +22,9 @@ public class Appointment {
     // private AppointmentOutcomeRecord apptRecords;
 
     private static List<Appointment> appointments = new ArrayList<>();
+
+    private Map<String, Map<Integer, Map<String, Object>>> aptOutcomeRecs = new HashMap<>();
+
 
     public Appointment() {
         apptSlots = new HashMap<>();
@@ -106,6 +111,7 @@ public class Appointment {
     public static List<Appointment> getAllAppointments() {
         System.out.println("Getting appointments from Appointment instance: ");
         for (Appointment appt : appointments) {
+            System.out.println("Patient Id: " + appt.getPatientId());
             System.out.println("Appointment Id: " + appt.getId());
             System.out.println("Appointment Doctor: " + appt.getDoctor());
             System.out.println("Appointment Date: " + appt.getDate());
@@ -166,7 +172,7 @@ public class Appointment {
         apptSlots.get(doc).get(date).remove(ts); // remove selected time
 
         System.out.println("Your appointment has been scheduled successfully! :D");
-        System.out.println("Appointment Details for " + apt);
+        System.out.println("Appointment Details for " + apt.getPatientId());
         System.out.println("Doctor's Name: " + apt.getDoctor());
         System.out.println("Appointment's Date: " + apt.getDate());
         System.out.println("Timeslot Chosen: " + apt.getTimeslot());
@@ -181,6 +187,7 @@ public class Appointment {
         }
         else {
             for (Appointment appt : appointments) {
+
                 if (appt.getPatientId().equals(pid)) {
                     if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
                         System.out.println("You currently have an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
@@ -189,9 +196,6 @@ public class Appointment {
                             viewAvailableApptByDoc(doc);
                         }
                         return true;
-                    }
-                    else {
-                        return false;
                     }
                 }
             }
@@ -202,50 +206,28 @@ public class Appointment {
     }
 
 
-    public void rescheduleAppointment(String doc, String newDoc, String date, String time, String dec) {
+    public void rescheduleAppointment(String pid, String doc, String oldDate, String oldTime, String newDoc, String date, String time, String dec) {
 
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                String freeDate = appt.getDate();
-                String freeTimeSlot = appt.getTimeslot();
-                if (dec.toLowerCase().equals("yes")) {
-                    // changing doctor
-                    if (apptSlots.containsKey(doc)) {
-                        if (apptSlots.get(doc).containsKey(freeDate)) {
-                            apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
-                        }
-                    }
-                    
-                    if (apptSlots.containsKey(newDoc) && apptSlots.get(newDoc).containsKey(date)) {
-                        if (apptSlots.get(newDoc).get(date).contains(time)) {
-                            apptSlots.get(newDoc).get(date).remove(time);
-                            appt.setDoctor(newDoc);
-                            appt.setDate(date);
-                            appt.setTimeslot(time);
-                            appt.setStatus("Rescheduled");
-                            System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
-                        }
-                    }     
-                    else {
-                        System.out.println("The selected new timeslot is not available!");
-                    }    
-                }
-                else {
-                    // just changing date and time slot for same doctor
-                    if (appt.getDoctor().equals(doc) && appt.getDate().equals(freeDate) && appt.getTimeslot().equals(freeTimeSlot)) {                    
-
+                if (appt.getPatientId().equals(pid) && appt.getDoctor().equals(doc) && appt.getDate().equals(oldDate) && appt.getTimeslot().equals(oldTime)) {
+                    String freeDate = appt.getDate();
+                    String freeTimeSlot = appt.getTimeslot();
+                    if (dec.toLowerCase().equals("yes")) {
+                        // changing doctor
                         if (apptSlots.containsKey(doc)) {
                             if (apptSlots.get(doc).containsKey(freeDate)) {
                                 apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
                             }
                         }
-    
-                        if (apptSlots.containsKey(doc) && apptSlots.get(doc).containsKey(date)) {
-                            if (apptSlots.get(doc).get(date).contains(time)) {
-                                apptSlots.get(doc).get(date).remove(time);
+                        
+                        if (apptSlots.containsKey(newDoc) && apptSlots.get(newDoc).containsKey(date)) {
+                            if (apptSlots.get(newDoc).get(date).contains(time)) {
+                                apptSlots.get(newDoc).get(date).remove(time);
+                                appt.setDoctor(newDoc);
                                 appt.setDate(date);
                                 appt.setTimeslot(time);
                                 appt.setStatus("Rescheduled");
@@ -254,20 +236,44 @@ public class Appointment {
                         }     
                         else {
                             System.out.println("The selected new timeslot is not available!");
-                        }               
+                        }    
                     }
-                }
-            }    
+                    else {
+                        // just changing date and time slot for same doctor
+                        if (appt.getDoctor().equals(doc) && appt.getDate().equals(freeDate) && appt.getTimeslot().equals(freeTimeSlot)) {                    
+
+                            if (apptSlots.containsKey(doc)) {
+                                if (apptSlots.get(doc).containsKey(freeDate)) {
+                                    apptSlots.get(doc).get(freeDate).add(freeTimeSlot);
+                                }
+                            }
+        
+                            if (apptSlots.containsKey(doc) && apptSlots.get(doc).containsKey(date)) {
+                                if (apptSlots.get(doc).get(date).contains(time)) {
+                                    apptSlots.get(doc).get(date).remove(time);
+                                    appt.setDate(date);
+                                    appt.setTimeslot(time);
+                                    appt.setStatus("Rescheduled");
+                                    System.out.println("You have rescheduled an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
+                                }
+                            }     
+                            else {
+                                System.out.println("The selected new timeslot is not available!");
+                            }               
+                        }
+                    }
+                }    
+            }
         }
     }
     
-    public void cancelAppointment(String doc, String date, String time) {
+    public void cancelAppointment(String pid, String doc, String date, String time) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
+                if (appt.getPatientId().equals(pid) && appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
                     
                     if (apptSlots.containsKey(doc)) {
                         if (apptSlots.get(doc).containsKey(date)) {
@@ -287,12 +293,11 @@ public class Appointment {
     public void viewScheduledAppointments(String pid) {
 
         boolean hasAppointments = false; 
-        // System.out.println("Total appointments: " + appointments.size());
-
 
         for (Appointment appt : appointments) {
             if (appt.getPatientId().equals(pid)) {
                 hasAppointments = true;
+                System.out.println("Patient Id: " + appt.getPatientId());
                 System.out.println("Appointment Id: " + appt.getId());
                 System.out.println("Appointment Doctor: " + appt.getDoctor());
                 System.out.println("Appointment Date: " + appt.getDate());
@@ -308,4 +313,38 @@ public class Appointment {
         
     }
 
+    public void viewPastAppointmentOutcomeRecords(String pid) {
+        this.aptOutcomeRecs = AppointmentOutcomeRecord.getAllOutcomeRecords();
+
+        if (aptOutcomeRecs.isEmpty()) {
+            System.out.println("We have 0 outcome records.");
+        }
+        else {
+            // Check if records exist for the specified patient ID
+            Map<Integer, Map<String, Object>> selectedPatientOutcomeRecords = aptOutcomeRecs.get(pid);
+            
+            if (selectedPatientOutcomeRecords == null || selectedPatientOutcomeRecords.isEmpty()) {
+                System.out.println("No outcome records found for Patient ID: " + pid);
+            } else {
+                for (Map.Entry<Integer, Map<String, Object>> entry : selectedPatientOutcomeRecords.entrySet()) {
+                    Integer appointmentId = entry.getKey();
+                    Map<String, Object> details = entry.getValue();
+                    
+                    System.out.println("Patient Id: " + pid);
+                    System.out.println("Appointment Id: " + appointmentId);
+                    System.out.println("Appointment Date: " + details.get("date"));
+                    System.out.println("Appointment Service: " + details.get("stype"));
+                    
+                    // Retrieve and print prescribed medications if they exist
+                    Map<String, String> prescribedMed = (Map<String, String>) details.get("pmeds");
+                    if (prescribedMed != null) {
+                        System.out.println("Prescribed Medication: " + prescribedMed.get("name") + " (" + prescribedMed.get("status") + ")");
+                    }
+                    
+                    System.out.println("Consultation Notes: " + details.get("cnotes"));
+                    System.out.println("\n-----------------------------------\n");
+                }
+            }
+        }
+    }
 }

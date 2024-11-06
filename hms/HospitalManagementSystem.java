@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +38,7 @@ public class HospitalManagementSystem {
 				case 1:
 					System.out.println("\nEnter Patient ID: ");
 					String pid = sc.next();
+					pid = Character.toUpperCase(pid.charAt(0)) + pid.substring(1);
 					Patient selectedPatient = getSelectedPatient(pid);
 					if (selectedPatient != null) {
 						PatientOption(pid, selectedPatient);
@@ -104,9 +104,7 @@ public class HospitalManagementSystem {
 	public static Patient getSelectedPatient(String pid) {
 
 		// just to initialise
-		Patient p = null;
-
-		
+		Patient p = null;	
 		boolean patientExists = false;
 
 		do {
@@ -190,7 +188,6 @@ public class HospitalManagementSystem {
 
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
-
 		
 
 		do {
@@ -322,7 +319,10 @@ public class HospitalManagementSystem {
 						String dateR = sc.nextLine();
 						System.out.println("Enter the new timeslot : ");
 						String timeR = sc.nextLine();
-						defaultApts.rescheduleAppointment(docO, newDoc, dateR, timeR, decision);
+						defaultApts.rescheduleAppointment(pid, docO, dateO, timeO, newDoc, dateR, timeR, decision);
+					}
+					else {
+						System.out.println("Appointment doesn't exist!");  
 					}
 
 					break;
@@ -335,16 +335,70 @@ public class HospitalManagementSystem {
 					String dateC = sc.nextLine();
 					System.out.println("Enter the cancelled timeslot : ");
 					String timeC = sc.nextLine();
-					defaultApts.appointmentExists(pid,docC, dateC, timeC, "cancel");
+					defaultApts.appointmentExists(pid, docC, dateC, timeC, "cancel");
 
-					defaultApts.cancelAppointment(docC, dateC, timeC);
+					defaultApts.cancelAppointment(pid, docC, dateC, timeC);
 					break;
 				case 7:
 					System.out.println("Below are your appointments...");
 					defaultApts.viewScheduledAppointments(pid);
 					break;
 				case 8:
+					System.out.println("Below are your past appointment records...");
+					defaultApts.viewPastAppointmentOutcomeRecords(pid);;
+					break;
+				case 9:
+					System.out.println("You have logged out!");
+					return;
+				default:
+					System.out.println("Babes choose options 1 - 9 pls :(");
+					break;
+			}
+		} while (choice != 9);	
+
+		
+		// sc.close();
+	}
+
+	public static void DoctorOption() {
+
+		Scanner sc = new Scanner(System.in);
+		int choice = 0;
+
+		
+
+		do {
+			DoctorMenu();
+
+
+			System.out.println("What do you want to do?");
+			choice = sc.nextInt();
+			sc.nextLine();
+			
+			switch (choice) {
+				case 1:
+					System.out.println("View Patient Medical Records");
+					break;
+				case 2:
+					System.out.println("Update Patient Medical Records");
+					break;
+				case 3:
+					System.out.println("View Personal Schedule");
+					break;
+				case 4:
+					System.out.println("Set Availability for Appointments");
+					break;
+				case 5:
+					System.out.println("Accept or Decline Appointment Requests");
+					break;
+				case 6:
+					System.out.println("View Upcoming Appointments");
+					break;
+				case 7:
 					System.out.println("Record Appointment Outcome...");
+					System.out.println("Enter Patient Id: ");
+					String pid = sc.nextLine();
+					pid = Character.toUpperCase(pid.charAt(0)) + pid.substring(1);
 					System.out.println("Enter Appointment Id: ");
 					int aptid = sc.nextInt();
 					sc.nextLine();
@@ -363,28 +417,19 @@ public class HospitalManagementSystem {
 					System.out.println("Enter Consultation Notes: ");
 					String consultNotes = sc.nextLine();
 
-					outcome.addOutcomeRecord(aptid, st, mn, ms, consultNotes);
+					outcome.addOutcomeRecord(pid, aptid, st, mn, ms, consultNotes);
 
 					System.out.println("\n");
-					System.out.println("Below are your past appointment records...");
-					outcome.getOutcomeRecords();
 					break;
-				case 9:
+				case 8:
 					System.out.println("You have logged out!");
 					return;
-					// break;
 				default:
-					System.out.println("Babes I still haven't work on the appointments stuff yet :(");
+					System.out.println("Babes choose options 1 - 8 :(");
 					break;
 			}
-		} while (choice != 9);	
+		} while (choice != 9);
 
-		
-		// sc.close();
-	}
-
-	public static void DoctorOption() {
-		DoctorMenu();
 	}
 
 	public static void PatientMenu() {

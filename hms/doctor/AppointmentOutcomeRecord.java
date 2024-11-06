@@ -16,15 +16,12 @@ public class AppointmentOutcomeRecord {
 
     private List<Appointment> apptRecords = new ArrayList<>();
 
-    private Map<Integer, Map<String, Object>> outcomeRecords;
+    private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
     public AppointmentOutcomeRecord() {
-        // Appointment appt = new Appointment();
-        // this.apptRecords = appt.getAppointments();
-        this.outcomeRecords = new HashMap<>();
-
+ 
         // test case
-        for (int i = 1; i <= 5; i++) { // Generating 5 fake records
+        for (int i = 1; i <= 5; i++) {
             // Create an appointment details map
             Map<String, Object> apptDetails = new HashMap<>();
             apptDetails.put("date", "31/10/2024");
@@ -39,21 +36,20 @@ public class AppointmentOutcomeRecord {
             apptDetails.put("pmeds", prescribedMedications);
             apptDetails.put("cnotes", "Consultation notes for appointment " + i);
 
-            // Add the appointment details to the outcome records
-            outcomeRecords.put(i, apptDetails);
+            // Retrieve or create the map for the patient
+            String patientId = "P1001";
+            Map<Integer, Map<String, Object>> patientRecords = outcomeRecords.get(patientId);
+            
+            if (patientRecords == null) {
+                patientRecords = new HashMap<>();
+                outcomeRecords.put(patientId, patientRecords);
+            }
+
+            // Add the appointment details to the patient's records
+            patientRecords.put(i, apptDetails);
         }
     }
 
-
-    // public AppointmentOutcomeRecord(String st, List<Medication> pm, String cn) {
-    //     this.serviceType = st; // consultation, x-ray, blood-test, surgery
-    //     this.prescribedMeds = pm;
-    //     this.consultNotes = cn;
-
-    //     Appointment appt = new Appointment();
-    //     this.apptRecords = appt.getAppointments();
-    //     this.outcomeRecords = new HashMap<>();
-    // }
 
     public void setServiceType(String st) {
         this.serviceType = st;
@@ -79,10 +75,13 @@ public class AppointmentOutcomeRecord {
         return this.consultNotes;
     }
 
-    public void addOutcomeRecord(int id, String service, String medName, String medStatus, String consultNotes) {
+    public static Map<String, Map<Integer, Map<String, Object>>> getAllOutcomeRecords() {
+        return outcomeRecords;
+    }
+
+    public void addOutcomeRecord(String pid, int id, String service, String medName, String medStatus, String consultNotes) {
         Map<String, Object> apptDetails = new HashMap<>();
 
-        // Appointment appt = new Appointment();
         this.apptRecords = Appointment.getAllAppointments();
 
         boolean found =  false;
@@ -102,7 +101,7 @@ public class AppointmentOutcomeRecord {
                     apptDetails.put("pmeds", prescribedMedications);
                     apptDetails.put("cnotes", consultNotes);
 
-                    outcomeRecords.put(apt.getId(), apptDetails);
+                    outcomeRecords.computeIfAbsent(pid, k -> new HashMap<>()).put(apt.getId(), apptDetails);
 
                     // update values for apppointment outcome record class as well
                     this.serviceType = service;
@@ -117,7 +116,6 @@ public class AppointmentOutcomeRecord {
 
             if (!found) {
                 boolean idExists = apptRecords.stream().anyMatch(apt -> apt.getId() == id);
-                // boolean statusCompleted = apptRecords.stream().anyMatch(apt -> apt.getStatus().equals("Completed"));
                 if (!idExists) {
                     System.out.println("No such appointment exists under that id!");
                 }
@@ -129,23 +127,31 @@ public class AppointmentOutcomeRecord {
         }
     }
 
-    public void getOutcomeRecords() {
+    public void viewAllOutcomeRecords() {
         if (outcomeRecords.isEmpty()) {
-            System.out.println("We have 0 outcome records under your name.");
+            System.out.println("We have 0 outcome records.");
         }
         else {
-            for (Map.Entry<Integer, Map<String, Object>> entry : outcomeRecords.entrySet()) {
-                Integer appointmentId = entry.getKey();
-                Map<String, Object> details = entry.getValue();
+            for (Map.Entry<String, Map<Integer, Map<String, Object>>> patientEntry : outcomeRecords.entrySet()) {
+                String patientId = patientEntry.getKey();
+                Map<Integer, Map<String, Object>> appointments = patientEntry.getValue();
     
-                System.out.println("Appointment Id: " + appointmentId);
-                System.out.println("Appointment Date: " + details.get("date"));
-                System.out.println("Appointment Service: " + details.get("stype"));
-                
-                Map<String, String> prescribedMed = (Map<String, String>) details.get("pmeds");
-                System.out.println("Prescribed Medication: " + prescribedMed.get("name") + " (" + prescribedMed.get("status") + ")");
-                System.out.println("Consultation Notes: " + details.get("cnotes"));
-                System.out.println("\n");
+                System.out.println("Patient Id: " + patientId);
+    
+                for (Map.Entry<Integer, Map<String, Object>> appointmentEntry : appointments.entrySet()) {
+                    Integer appointmentId = appointmentEntry.getKey();
+                    Map<String, Object> details = appointmentEntry.getValue();
+    
+                    System.out.println("Appointment Id: " + appointmentId);
+                    System.out.println("Appointment Date: " + details.get("date"));
+                    System.out.println("Appointment Service: " + details.get("stype"));
+    
+                    Map<String, String> prescribedMed = (Map<String, String>) details.get("pmeds");
+                    System.out.println("Prescribed Medication: " + prescribedMed.get("name") + " (" + prescribedMed.get("status") + ")");
+                    
+                    System.out.println("Consultation Notes: " + details.get("cnotes"));
+                    System.out.println("\n"); 
+                }
             }
         }
     }
