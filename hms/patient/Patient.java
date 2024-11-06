@@ -4,33 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Patient {
-    private int id;
+    private String id;
     private String name;
     private String dob;
     private String gender;
-    private String phone;
-    private String email;
+    private List<String> contactInformation;
     private String blood;
     private List<String> pastDiagnoses;
     private List<String> pastTreatments;
 
-    public Patient(int id, String name, String dob, String gender, String phone, String email, String blood, List<String> pd, List<String> pt) {
+    public Patient() {
+        // just to initialise empty constructor
+    }
+
+    public Patient(String id, String name, String dob, List<String> ci, String gender, String blood, List<String> pd, List<String> pt) {
         this.id = id;
         this.name = name;
         this.dob = dob;
+        this.contactInformation = new ArrayList<>(ci);
         this.gender = gender;
-        this.phone = phone;
-        this.email = email;
         this.blood = blood;
         this.pastDiagnoses = new ArrayList<>(pd);
         this.pastTreatments = new ArrayList<>(pt);
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
@@ -58,20 +60,12 @@ public class Patient {
         return this.gender;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setContactInformation(List<String> ci) {
+        this.contactInformation = ci;
     }
 
-    public String getPhone() {
-        return this.phone;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return this.email;
+    public List<String> getContactInformation() {
+        return this.contactInformation;
     }
 
     public void setBlood(String blood) {
@@ -99,20 +93,21 @@ public class Patient {
     }
 
     public void updatePersonalInformation(String phone, String email) {
-        if (!email.equals("no")) {
-            this.email = email;
+        if (!email.equalsIgnoreCase("no")) {
+            this.contactInformation.set(0, email);
         }
-        if (!phone.equals("no")) {
-            this.phone = phone;
+        if (!phone.equalsIgnoreCase("no")) {
+            this.contactInformation.set(1, phone);
         }
     }
+    
 
     public void viewMedicalRecord() {
         System.out.println("Patient's Id: " + getId());
         System.out.println("Patient's Name: " + getName());
         System.out.println("Patient's Date of Birth: " + getDOB());
         System.out.println("Patient's Gender: " + getGender());
-        System.out.println("Patient's Contact Information: " + getPhone() + " (phone) & " + getEmail() + " (email)");
+        System.out.println("Patient's Contact Information: " + getContactInformation().get(1) + " (phone) & " + getContactInformation().get(0) + " (email)");
         System.out.println("Patient's Blood Type: " + getBlood());
         System.out.println("Patient's Past Diagnoses and Treatments: ");
         System.out.println("----- Past Diagnoses ----- ");

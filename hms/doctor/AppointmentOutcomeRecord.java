@@ -83,7 +83,7 @@ public class AppointmentOutcomeRecord {
         Map<String, Object> apptDetails = new HashMap<>();
 
         // Appointment appt = new Appointment();
-        this.apptRecords = Appointment.getAppointments();
+        this.apptRecords = Appointment.getAllAppointments();
 
         boolean found =  false;
 

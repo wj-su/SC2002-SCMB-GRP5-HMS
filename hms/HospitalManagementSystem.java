@@ -16,20 +16,33 @@ import patient.Patient;
 
 public class HospitalManagementSystem {
 
+	static List<Map<String, String>> patientList = new ArrayList<>();
+	static Appointment defaultApts = new Appointment();
+	static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+
 	public static void main(String[] args) {
 
 		// Testing the functions! Remove when Daniel is done with his login page
 		Scanner sc = new Scanner(System.in);
+		int identity;
 
-		System.out.println("Who are you?"
-				+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
-		int identity = sc.nextInt();
+		createPatientList();
+
 
 		do {
 
+			System.out.println("\nWho are you?"
+				+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
+		 	identity = sc.nextInt();
+
 			switch (identity) {
 				case 1:
-					PatientOptions();
+					System.out.println("\nEnter Patient ID: ");
+					String pid = sc.next();
+					Patient selectedPatient = getSelectedPatient(pid);
+					if (selectedPatient != null) {
+						PatientOption(pid, selectedPatient);
+					}
 					break;
 
 				case 2:
@@ -50,15 +63,14 @@ public class HospitalManagementSystem {
 
 	}
 
-	public static void PatientOptions() {
-		String csvFile = "hms\\Patient_List.csv"; // Converted file path
+	public static void createPatientList() {
+		String csvFile = "hms\\Patient_List.csv"; // converted file path
         String line;
         String csvSplitBy = ",";
 
-        List<Map<String, String>> dataList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            // Read the first line as the header
+            // read the first line as the header
             String headerLine = br.readLine();
             if (headerLine == null) {
                 System.out.println("CSV file is empty");
@@ -66,43 +78,120 @@ public class HospitalManagementSystem {
             }
             String[] headers = headerLine.split(csvSplitBy);
 
-            // Read each subsequent line
+            // read each subsequent line
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(csvSplitBy);
 
-                // Create a map for the row data
+                // create a map for the row data
                 Map<String, String> dataMap = new HashMap<>();
 
                 for (int i = 0; i < headers.length; i++) {
-                    // Put header as key and cell data as value
+                    // put header as key and cell data as value
                     if (i < columns.length) {
                         dataMap.put(headers[i], columns[i]);
                     } else {
-                        dataMap.put(headers[i], ""); // Empty string if column is missing
+                        dataMap.put(headers[i], ""); // empty string if column is missing
                     }
                 }
 
-                dataList.add(dataMap);
+                patientList.add(dataMap);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+	}
 
-        // Print the list of maps to verify the data
-        for (Map<String, String> data : dataList) {
-            System.out.println(data);
-        }
-		// should have login stuff here first, then can access menu
+	public static Patient getSelectedPatient(String pid) {
+
+		// just to initialise
+		Patient p = null;
+
+		
+		boolean patientExists = false;
+
+		do {
+
+			// print the list of maps to verify the data
+			for (Map<String, String> data : patientList) {
+
+				// add pre-defined data to list
+	
+				String pId = data.get("Patient ID");
+	
+				if (pId.equals(pid)) {
+					String pName = data.get("Name");
+					String pDOB = data.get("Date of Birth");
+					String pGender = data.get("Gender");
+					
+					List<String> pContactInfo = new ArrayList<>();
+					if (data.get("Contact Information") != null) {
+						String contactInfo = data.get("Contact Information");
+						if (contactInfo.equals("NIL")) {
+							pContactInfo.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+						} else {
+							String[] contactDetails = contactInfo.split("\\|");
+							for (String contact : contactDetails) {
+								pContactInfo.add(contact.trim());
+							}
+						}
+					}
+					
+					List<String> pPastDiagnoses = new ArrayList<>();
+					if (data.get("Past Diagnoses") != null) {
+						String pastDiagnoses = data.get("Past Diagnoses");
+						if (pastDiagnoses.equals("NIL")) {
+							pPastDiagnoses.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+						} else {
+							String[] diagnoses = pastDiagnoses.split("\\|");
+							for (String diagnosis : diagnoses) {
+								pPastDiagnoses.add(diagnosis.trim());
+							}
+						}
+					}
+					
+					List<String> pPastTreatments = new ArrayList<>();
+					if (data.get("Past Treatment") != null) {
+						String pastTreatments = data.get("Past Treatment");
+						if (pastTreatments.equals("NIL")) {
+							pPastTreatments.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+						} else {
+							String[] treatments = pastTreatments.split("\\|");
+							for (String treatment : treatments) {
+								pPastTreatments.add(treatment.trim());
+							}
+						}
+					}
+					
+	
+					String pBloodType = data.get("Blood Type");
+	
+	
+					// Create and add Patient
+					p = new Patient(pId, pName, pDOB, pContactInfo, pGender, pBloodType, pPastDiagnoses, pPastTreatments);
+					patientExists = true;
+					break;
+					// patientList.add(patient);
+				}	
+			}
+	
+			if (patientExists == false) {
+				System.out.println("Patient does not exist!!");
+				return p;
+			}
+
+			return p;
+
+		} while (patientExists == true);
+
+	}
+	
+
+	public static void PatientOption(String pid, Patient p) {
 
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
 
-		List<String> pd = Arrays.asList("meet me", "at the", "apt.");
-		List<String> pt = Arrays.asList("hold on", "im on my way", "yeah yeah");
-
-		Patient p = new Patient(1, "Shaqilah", "21/10/2024", "Female", "12345678", "survivor@gmail.com", "O", pd, pt);
-		Appointment defaultApts = new Appointment();
-		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+		
 
 		do {
 			PatientMenu();
@@ -155,6 +244,7 @@ public class HospitalManagementSystem {
 					p.updatePersonalInformation(hp, email);
 					break;
 				case 3:
+					// HAVENT CONNECT WITH DOCTORS
 					System.out.println("View Available Appointment Slots");
 					System.out.println("Do you want see all of your appointments, or based on the doctor? ");
 					System.out.println("Type `all` to view all of your appointments");
@@ -204,7 +294,7 @@ public class HospitalManagementSystem {
 					}
 					if (doc != "" && date != "" && ts != "") {
 						Random rid = new Random();
-						Appointment apt = new Appointment(rid.nextInt(1000), doc, date, ts, "Pending");
+						Appointment apt = new Appointment(rid.nextInt(1000), pid, doc, date, ts, "Pending");
 						defaultApts.scheduleAppointment(apt, doc, date, ts);
 					}
 					break;
@@ -218,7 +308,7 @@ public class HospitalManagementSystem {
 					System.out.println("Enter the old timeslot : ");
 					String timeO = sc.nextLine();
 					// defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
-					if (defaultApts.appointmentExists(docO, dateO, timeO, "reschedule")) {
+					if (defaultApts.appointmentExists(pid, docO, dateO, timeO, "reschedule")) {
 						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
 						System.out.println("Yes or No?");
 						String decision = sc.nextLine();
@@ -245,13 +335,13 @@ public class HospitalManagementSystem {
 					String dateC = sc.nextLine();
 					System.out.println("Enter the cancelled timeslot : ");
 					String timeC = sc.nextLine();
-					defaultApts.appointmentExists(docC, dateC, timeC, "cancel");
+					defaultApts.appointmentExists(pid,docC, dateC, timeC, "cancel");
 
 					defaultApts.cancelAppointment(docC, dateC, timeC);
 					break;
 				case 7:
 					System.out.println("Below are your appointments...");
-					defaultApts.viewScheduledAppointments();
+					defaultApts.viewScheduledAppointments(pid);
 					break;
 				case 8:
 					System.out.println("Record Appointment Outcome...");
@@ -281,14 +371,16 @@ public class HospitalManagementSystem {
 					break;
 				case 9:
 					System.out.println("You have logged out!");
-					break;
+					return;
+					// break;
 				default:
 					System.out.println("Babes I still haven't work on the appointments stuff yet :(");
 					break;
 			}
-		} while (choice != 9);
+		} while (choice != 9);	
 
-		sc.close();
+		
+		// sc.close();
 	}
 
 	public static void DoctorOption() {

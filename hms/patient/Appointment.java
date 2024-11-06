@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Appointment {
     private int id;
+    private String patientId;
     private String doctor;
     // private Doctor doctor;
     private String date;
@@ -33,16 +34,17 @@ public class Appointment {
         }});
 
         // default completed appointment (just to check if code works)
-        Appointment defaultApt = new Appointment(1, "Shaqilah", "31/10/2024", "20:00", "Completed");
+        Appointment defaultApt = new Appointment(1, "P1001",  "Shaqilah", "31/10/2024", "20:00", "Completed");
         appointments.add(defaultApt);
 
-        Appointment defaultApt2 = new Appointment(2, "Dayana", "31/10/2024", "15:00", "Completed");
+        Appointment defaultApt2 = new Appointment(2, "P1002", "Dayana", "31/10/2024", "15:00", "Completed");
         appointments.add(defaultApt2);
         
     }
 
-    public Appointment(int id, String doc, String date, String time, String status) {
+    public Appointment(int id, String pid, String doc, String date, String time, String status) {
         this.id = id;
+        this.patientId = pid;
         this.doctor = doc;
         this.date = date;
         this.timeslot = time;
@@ -55,6 +57,14 @@ public class Appointment {
 
     public int getId() {
         return this.id;
+    }
+
+    public void setPatientId(String pid) {
+        this.patientId = pid;
+    }
+
+    public String getPatientId() {
+        return this.patientId;
     }
 
     public void setDoctor(String doc) {
@@ -93,7 +103,7 @@ public class Appointment {
         return this.apptSlots;
     }
 
-    public static List<Appointment> getAppointments() {
+    public static List<Appointment> getAllAppointments() {
         System.out.println("Getting appointments from Appointment instance: ");
         for (Appointment appt : appointments) {
             System.out.println("Appointment Id: " + appt.getId());
@@ -165,22 +175,24 @@ public class Appointment {
     }
 
 
-    public boolean appointmentExists(String doc, String date, String time, String type) {
+    public boolean appointmentExists(String pid, String doc, String date, String time, String type) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
         else {
             for (Appointment appt : appointments) {
-                if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
-                    System.out.println("You currently have an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
-                    if (type.toLowerCase().equals("reschedule")) {
-                        System.out.println("\nThese are our currently available appointments: ");
-                        viewAvailableApptByDoc(doc);
+                if (appt.getPatientId().equals(pid)) {
+                    if (appt.getDoctor().equals(doc) && appt.getDate().equals(date) && appt.getTimeslot().equals(time)) {
+                        System.out.println("You currently have an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
+                        if (type.toLowerCase().equals("reschedule")) {
+                            System.out.println("\nThese are our currently available appointments: ");
+                            viewAvailableApptByDoc(doc);
+                        }
+                        return true;
                     }
-                    return true;
-                }
-                else {
-                    return false;
+                    else {
+                        return false;
+                    }
                 }
             }
         }
@@ -272,12 +284,15 @@ public class Appointment {
         }
     }
 
-    public void viewScheduledAppointments() {
-        if (appointments.isEmpty()) {
-            System.out.println("No appointments has been scheduled!");
-        }
-        else {
-            for (Appointment appt : appointments) {
+    public void viewScheduledAppointments(String pid) {
+
+        boolean hasAppointments = false; 
+        // System.out.println("Total appointments: " + appointments.size());
+
+
+        for (Appointment appt : appointments) {
+            if (appt.getPatientId().equals(pid)) {
+                hasAppointments = true;
                 System.out.println("Appointment Id: " + appt.getId());
                 System.out.println("Appointment Doctor: " + appt.getDoctor());
                 System.out.println("Appointment Date: " + appt.getDate());
@@ -286,6 +301,11 @@ public class Appointment {
                 System.out.println("\n");
             }
         }
+
+        if (!hasAppointments) {
+            System.out.println("No appointments have been scheduled under you!");
+        }
+        
     }
 
 }
