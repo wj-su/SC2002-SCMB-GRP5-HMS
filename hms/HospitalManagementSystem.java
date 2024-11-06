@@ -1,22 +1,97 @@
-import java.io.File;
+import doctor.AppointmentOutcomeRecord;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Random;
-
-
 import patient.Appointment;
-import patient.AppointmentOutcomeRecord;
 import patient.Patient;
 
 public class HospitalManagementSystem {
 
 	public static void main(String[] args) {
-		
-		File patientFile = new File("Patient_List.xlsx");
-		
+
+		// Testing the functions! Remove when Daniel is done with his login page
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Who are you?"
+				+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
+		int identity = sc.nextInt();
+
+		do {
+
+			switch (identity) {
+				case 1:
+					PatientOptions();
+					break;
+
+				case 2:
+					DoctorOption();
+					break;
+
+				case 3:
+					// Pharmacist
+					break;
+
+				case 4:
+					// Admin func
+					break;
+
+			}
+
+		} while (identity != 0);
+
+	}
+
+	public static void PatientOptions() {
+		String csvFile = "hms\\Patient_List.csv"; // Converted file path
+        String line;
+        String csvSplitBy = ",";
+
+        List<Map<String, String>> dataList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            // Read the first line as the header
+            String headerLine = br.readLine();
+            if (headerLine == null) {
+                System.out.println("CSV file is empty");
+                return;
+            }
+            String[] headers = headerLine.split(csvSplitBy);
+
+            // Read each subsequent line
+            while ((line = br.readLine()) != null) {
+                String[] columns = line.split(csvSplitBy);
+
+                // Create a map for the row data
+                Map<String, String> dataMap = new HashMap<>();
+
+                for (int i = 0; i < headers.length; i++) {
+                    // Put header as key and cell data as value
+                    if (i < columns.length) {
+                        dataMap.put(headers[i], columns[i]);
+                    } else {
+                        dataMap.put(headers[i], ""); // Empty string if column is missing
+                    }
+                }
+
+                dataList.add(dataMap);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Print the list of maps to verify the data
+        for (Map<String, String> data : dataList) {
+            System.out.println(data);
+        }
 		// should have login stuff here first, then can access menu
 
 		int choice = 0;
@@ -52,35 +127,31 @@ public class HospitalManagementSystem {
 						hp = sc.nextLine();
 						if (hp.toLowerCase().equals("no")) {
 							break;
-						}
-						else {
+						} else {
 							Matcher checkHp = phonePattern.matcher(hp);
 							if (checkHp.matches()) {
 								break;
-							}
-							else {
+							} else {
 								System.out.println("\nInvalid phone number! Please enter a valid phone number!!\n");
 							}
 						}
 					}
-					
+
 					while (true) {
 						System.out.println("Enter your updated email address (type 'no' if no update): ");
 						email = sc.nextLine();
 						if (email.toLowerCase().equals("no")) {
 							break;
-						}
-						else {
+						} else {
 							Matcher checkEmail = emailPattern.matcher(email);
 							if (checkEmail.matches()) {
 								break;
-							}
-							else {
+							} else {
 								System.out.println("\nInvalid email! Please enter a valid email address!!\n");
 							}
 						}
 					}
-					
+
 					p.updatePersonalInformation(hp, email);
 					break;
 				case 3:
@@ -91,14 +162,12 @@ public class HospitalManagementSystem {
 					String type = sc.nextLine();
 					if (type.toLowerCase().equals("all")) {
 						defaultApts.viewAvailableAppt();
-					}
-					else if (type.toLowerCase().equals("doc")) {
+					} else if (type.toLowerCase().equals("doc")) {
 						System.out.println("Enter the doctor's name: ");
 						String dn = sc.nextLine();
 						dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
 						defaultApts.viewAvailableApptByDoc(dn);
-					}
-					else {
+					} else {
 						System.out.println("Please choose either `all` or `doc`!");
 					}
 
@@ -129,7 +198,7 @@ public class HospitalManagementSystem {
 						if (!defaultApts.getApptSlots().get(doc).get(date).contains(ts)) {
 							System.out.println("Timeslot not available!");
 							continue;
-						}	
+						}
 
 						break;
 					}
@@ -165,17 +234,17 @@ public class HospitalManagementSystem {
 						String timeR = sc.nextLine();
 						defaultApts.rescheduleAppointment(docO, newDoc, dateR, timeR, decision);
 					}
-					
+
 					break;
 				case 6:
 					System.out.println("Cancelling appointment...");
 					System.out.println("Enter the doctor's name you cancelling an appointment with: ");
 					String docC = sc.nextLine();
 					docC = Character.toUpperCase(docC.charAt(0)) + docC.substring(1).toLowerCase();
-                    System.out.println("Enter the cancelled date : ");
-                    String dateC = sc.nextLine();
-                    System.out.println("Enter the cancelled timeslot : ");
-                    String timeC = sc.nextLine();
+					System.out.println("Enter the cancelled date : ");
+					String dateC = sc.nextLine();
+					System.out.println("Enter the cancelled timeslot : ");
+					String timeC = sc.nextLine();
 					defaultApts.appointmentExists(docC, dateC, timeC, "cancel");
 
 					defaultApts.cancelAppointment(docC, dateC, timeC);
@@ -203,7 +272,7 @@ public class HospitalManagementSystem {
 					}
 					System.out.println("Enter Consultation Notes: ");
 					String consultNotes = sc.nextLine();
-					
+
 					outcome.addOutcomeRecord(aptid, st, mn, ms, consultNotes);
 
 					System.out.println("\n");
@@ -217,10 +286,13 @@ public class HospitalManagementSystem {
 					System.out.println("Babes I still haven't work on the appointments stuff yet :(");
 					break;
 			}
-		} while(choice != 9);
+		} while (choice != 9);
 
 		sc.close();
-		
+	}
+
+	public static void DoctorOption() {
+		DoctorMenu();
 	}
 
 	public static void PatientMenu() {
@@ -234,5 +306,21 @@ public class HospitalManagementSystem {
 		System.out.println("- View Scheduled Appointments (7)");
 		System.out.println("- View Past Appointments Outcome Records (8)");
 		System.out.println("- Logout (9)");
+	}
+
+	public static void DoctorMenu() {
+		System.out.println("---------------------------------------------");
+		System.out.println("|                Doctor Menu                 |");
+		System.out.println("----------------------------------------------");
+		System.out.println("|  - View Patient Medical Records        (1) | ");
+		System.out.println("|  - Update Patient Medical Records      (2) | ");
+		System.out.println("|  - View Personal Schedule              (3) | ");
+		System.out.println("|  - Set Availability for Appointments   (4) | ");
+		System.out.println("|  - Accept/Decline Appointment Requests (5) | ");
+		System.out.println("|  - View Upcoming Appointments          (6) | ");
+		System.out.println("|  - Record Appointment Outcome          (7) | ");
+		System.out.println("|  - Logout                              (8) | ");
+		System.out.println("----------------------------------------------");
+
 	}
 }

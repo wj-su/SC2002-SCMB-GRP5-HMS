@@ -1,4 +1,4 @@
-package patient;
+package doctor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
