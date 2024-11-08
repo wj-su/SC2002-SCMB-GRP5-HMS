@@ -181,27 +181,8 @@ public class HospitalManagementSystem {
 				}
 			}
 
-			// Print the doctorAvailability map in the required format
-			printDoctorAvailability();
-
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void printDoctorAvailability() {
-		for (String doctor : doctorAvailability.keySet()) {
-			System.out.println("Doctor: " + doctor);
-
-			Map<String, List<String>> dates = doctorAvailability.get(doctor);
-			for (String date : dates.keySet()) {
-				List<String> times = dates.get(date);
-				String timesStr = String.join(", ", times); // Join times into a single string for display
-
-				System.out.println("  Available Date: " + date);
-				System.out.println("  Available Timing: " + timesStr);
-			}
-			System.out.println(); // Blank line for readability between doctors
 		}
 	}
 
