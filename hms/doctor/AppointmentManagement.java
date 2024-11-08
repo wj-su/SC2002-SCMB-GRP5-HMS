@@ -41,33 +41,42 @@ public class AppointmentManagement {
         }
     }
 
-    // public void acceptAppointment(int appointmentId){
-    // for (Appointment appointment : appointments){
-    // if (appointment.getId() == appointmentId &&
-    // appointment.getStatus().equals("Pending")){ //link with patients appointment
-    // appointment.setStatus("Confirmed");
-    // System.out.println("Appointment ID "+ appointmentId + "confirmed.");
-    // return;
-    // }
-    // }
+    public void acceptAppointment(int appointmentId){
+        this.docAppts = Appointment.getAllAppointments();
+        boolean appointmentFound = false;
+    
+        for (Appointment apt : docAppts) {
+            if (apt.getId() == appointmentId && apt.getStatus().equals("Pending")) { // link with patient's appointment
+                apt.setStatus("Confirmed");
+                appointmentFound = true;
+                System.out.println("Appointment ID " + appointmentId + " has been accepted.");
+                break; // Exit loop after declining the appointment
+            }
+        }
+    
+        if (!appointmentFound) {
+            System.out.println("Appointment ID " + appointmentId + " not found or already confirmed.");
+        }
+    }
 
-    // System.out.println("Appointment ID "+ appointmentId+ " not found or already
-    // confirmed.");
-    // }
-
-    // public void declineAppointment(int AppointmentId){
-    // for(Appointment appointment : appointments){
-    // if(appointment.getId() == AppointmentId &&
-    // appointment.getStatus().equals("Pending")){
-    // appointment.setStatus("Cancelled");
-    // System.out.println("Appointment ID "+AppointmentId+" cancelled.");
-    // return;
-    // }
-    // }
-
-    // System.out.println("Appointment ID "+AppointmentId+" not found or already
-    // cancelled.");
-    // }
+    public void declineAppointment(int appointmentId) {
+        this.docAppts = Appointment.getAllAppointments();
+        boolean appointmentFound = false;
+    
+        for (Appointment apt : docAppts) {
+            if (apt.getId() == appointmentId && apt.getStatus().equals("Pending")) { // link with patient's appointment
+                apt.setStatus("Declined");
+                appointmentFound = true;
+                System.out.println("Appointment ID " + appointmentId + " has been declined.");
+                break; // Exit loop after declining the appointment
+            }
+        }
+    
+        if (!appointmentFound) {
+            System.out.println("Appointment ID " + appointmentId + " not found or already confirmed.");
+        }
+    }
+    
 
     public String printingOut() {
         return "AppointmentID: " + appointmentId + ", Patient ID: " + patientId + ", Date: " + date + ", Time: " + time

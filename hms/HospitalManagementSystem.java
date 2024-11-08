@@ -639,6 +639,15 @@ public class HospitalManagementSystem {
 					break;
 				case 5:
 					System.out.println("Accept or Decline Appointment Requests");
+					System.out.println("Enter Appointment ID: ");
+					int aptID = sc.nextInt();
+					System.out.println("Do you want to accept or decline this appointment? (Y/N)");
+					String opt = sc.next();
+					if (opt.equalsIgnoreCase("Y")){
+						am.acceptAppointment(aptID);
+					}else if (opt.equalsIgnoreCase("N")){
+						am.declineAppointment(aptID);
+					}
 					break;
 				case 6:
 					System.out.println("View Upcoming Appointments");
