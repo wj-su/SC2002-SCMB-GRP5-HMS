@@ -1,4 +1,5 @@
 import doctor.AppointmentOutcomeRecord;
+import doctor.doctor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class HospitalManagementSystem {
 
 				case 2:
 					DoctorOption();
+					getDoctorList();
 					break;
 
 				case 3:
@@ -460,4 +462,49 @@ public class HospitalManagementSystem {
 		System.out.println("----------------------------------------------");
 
 	}
+
+	public static void getDoctorList(){
+		String csvFile = "hms\\Staff_List.csv";  // Replace with the actual path
+        String line;
+        String csvSplitBy = ",";
+
+        List<doctor> doctors = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            // Read the header line (if any)
+            String headerLine = br.readLine();
+
+            // Read each subsequent line
+            while ((line = br.readLine()) != null) {
+                // Split the line into columns
+                String[] columns = line.split(csvSplitBy);
+
+                // Assuming columns: [ID, Name, Gender, ContactNumber, Availability, Role]
+                String role = columns[5];  // Assuming "Role" is the 6th column
+
+                // Check if this line represents a doctor
+                if (role.equalsIgnoreCase("doctor")) {
+                    String doctorId = columns[0];
+                    String name = columns[1];
+                    String gender = columns[2];
+                    String contactNumber = columns[3];
+                    String availDateTime = columns[4];
+
+                    // Create a Doctor object and add it to the list
+                    doctor doctor = new doctor(doctorId, name, gender, contactNumber, availDateTime);
+                    doctors.add(doctor);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Print out the list of doctors
+        for (doctor doctor : doctors) {
+            System.out.println(doctor);
+        }
+    }
+
+	
 }

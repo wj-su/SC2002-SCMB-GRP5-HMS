@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import pharmacist.Medication;
-
 import patient.Appointment;
 
 public class AppointmentOutcomeRecord {
@@ -81,49 +78,41 @@ public class AppointmentOutcomeRecord {
 
     public void addOutcomeRecord(String pid, int id, String service, String medName, String medStatus, String consultNotes) {
         Map<String, Object> apptDetails = new HashMap<>();
-
+    
         this.apptRecords = Appointment.getAllAppointments();
-
-        boolean found =  false;
-
-        if (apptRecords.size() > 0) {
-            for (Appointment apt : apptRecords) {
-                if (apt.getId() == id && apt.getStatus().equals("Completed")) {
-                    found = true;
-
-                    apptDetails.put("date", apt.getDate());
-                    apptDetails.put("stype", service);
-
-                    Map<String, String> prescribedMedications = new HashMap<>();
-                    prescribedMedications.put("name", medName);
-                    prescribedMedications.put("status", medStatus);
-
-                    apptDetails.put("pmeds", prescribedMedications);
-                    apptDetails.put("cnotes", consultNotes);
-
-                    outcomeRecords.computeIfAbsent(pid, k -> new HashMap<>()).put(apt.getId(), apptDetails);
-
-                    // update values for apppointment outcome record class as well
-                    this.serviceType = service;
-                    this.prescribedMeds = prescribedMedications;
-                    this.consultNotes = consultNotes;
-
-                    break;
-
-                }
-                
+        boolean found = false;
+    
+        for (Appointment apt : apptRecords) {
+            if (apt.getId() == id && apt.getStatus().equals("Completed")) {
+                found = true;
+    
+                // Populate appointment details
+                apptDetails.put("date", apt.getDate());
+                apptDetails.put("stype", service);
+    
+                // Set prescribed medications and consultation notes
+                Map<String, String> prescribedMedications = new HashMap<>();
+                prescribedMedications.put("name", medName);
+                prescribedMedications.put("status", medStatus);
+    
+                apptDetails.put("pmeds", prescribedMedications);
+                apptDetails.put("cnotes", consultNotes);
+    
+                // Update outcome records map
+                outcomeRecords.computeIfAbsent(pid, k -> new HashMap<>()).put(apt.getId(), apptDetails);
+    
+                // Update instance fields
+                this.serviceType = service;
+                this.prescribedMeds = prescribedMedications;
+                this.consultNotes = consultNotes;
+    
+                break;
             }
-
-            if (!found) {
-                boolean idExists = apptRecords.stream().anyMatch(apt -> apt.getId() == id);
-                if (!idExists) {
-                    System.out.println("No such appointment exists under that id!");
-                }
-
-                else {
-                    System.out.println("You have not completed your appointment yet!");
-                }
-            }
+        }
+    
+        if (!found) {
+            boolean idExists = apptRecords.stream().anyMatch(apt -> apt.getId() == id);
+            System.out.println(idExists ? "You have not completed your appointment yet!" : "No such appointment exists under that id!");
         }
     }
 
@@ -153,6 +142,15 @@ public class AppointmentOutcomeRecord {
                     System.out.println("\n"); 
                 }
             }
+        }
+    }
+
+    //Check whether patient has past records.
+    public void checkPatientRecords(String patientId) {
+        if (!outcomeRecords.containsKey(patientId) || outcomeRecords.get(patientId).isEmpty()) {
+            System.out.println("Patient " + patientId + " has no past appointment records.");
+        } else {
+            System.out.println("Patient " + patientId + " has past appointment records.");
         }
     }
 }
