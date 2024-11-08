@@ -20,6 +20,7 @@ public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
 	static List<Map<String, String>> doctorList = new ArrayList<>();
+	static List<Map<String, String>> medicineList = new ArrayList<>();
 	static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
 	static Appointment defaultApts = new Appointment();
 	static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
@@ -60,7 +61,6 @@ public class HospitalManagementSystem {
 					if (selectedDoc != null) {
 						DoctorOption(did, selectedDoc);
 					}
-					// getDoctorList();
 					break;
 
 				case 3:
@@ -202,6 +202,43 @@ public class HospitalManagementSystem {
 				System.out.println("  Available Timing: " + timesStr);
 			}
 			System.out.println(); // Blank line for readability between doctors
+		}
+	}
+
+	public static void createMedicineList() {
+		String csvFile = "hms\\Medicine_List.csv"; // converted file path
+		String line;
+		String csvSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			// read the first line as the header
+			String headerLine = br.readLine();
+			if (headerLine == null) {
+				System.out.println("CSV file is empty");
+				return;
+			}
+			String[] headers = headerLine.split(csvSplitBy);
+
+			// read each subsequent line
+			while ((line = br.readLine()) != null) {
+				String[] columns = line.split(csvSplitBy);
+
+				// create a map for the row data
+				Map<String, String> dataMap = new HashMap<>();
+
+				for (int i = 0; i < headers.length; i++) {
+					// put header as key and cell data as value
+					if (i < columns.length) {
+						dataMap.put(headers[i], columns[i]);
+					} else {
+						dataMap.put(headers[i], ""); // empty string if column is missing
+					}
+				}
+
+				medicineList.add(dataMap);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -627,9 +664,19 @@ public class HospitalManagementSystem {
 					break;
 				case 3:
 					System.out.println("View Personal Schedule");
+					System.out.println("----------------------");
+					System.out.println("Which date do you want to see (DD-MONTH-YYYY)?");
+					String date = sc.nextLine();
+					d.viewPersonalSchedule(date);
 					break;
 				case 4:
 					System.out.println("Set Availability for Appointments");
+					System.out.println("Enter date: ");
+					String dateInput = sc.nextLine();
+					System.out.println("Enter Time: ");
+					String timeInput = sc.nextLine();
+					am.setAvail(d.getName(),dateInput, timeInput, doctorAvailability);
+					//System.out.println("Set Availability for Appointments");
 					break;
 				case 5:
 					System.out.println("Accept or Decline Appointment Requests");
