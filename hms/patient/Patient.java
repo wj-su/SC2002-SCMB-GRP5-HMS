@@ -2,6 +2,7 @@ package patient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Patient {
     private String id;
@@ -92,12 +93,28 @@ public class Patient {
         return this.pastTreatments;
     }
 
-    public void updatePersonalInformation(String phone, String email) {
+    public void updatePersonalInformation(String phone, String email, List<Map<String, String>> patientList) {
         if (!email.equalsIgnoreCase("no")) {
             this.contactInformation.set(0, email);
         }
         if (!phone.equalsIgnoreCase("no")) {
             this.contactInformation.set(1, phone);
+        }
+
+        String updatedEmail = email.equalsIgnoreCase("no") ? this.contactInformation.get(0) : email;
+        String updatedPhone = phone.equalsIgnoreCase("no") ? this.contactInformation.get(1) : phone;
+        String updatedContactInfo = updatedEmail + "|" + updatedPhone;
+    
+        for (Map<String, String> patientData : patientList) {
+            String pid = patientData.get("Patient ID");
+    
+            if (pid != null && pid.equalsIgnoreCase(id)) {
+                patientData.put("Contact Information", updatedContactInfo);
+    
+                System.out.println("Updated Contact Information: " + patientData.get("Contact Information"));
+                System.out.println("========================\n");
+                break; // Exit loop after updating
+            }
         }
     }
     

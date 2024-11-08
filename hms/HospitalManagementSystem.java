@@ -457,10 +457,9 @@ public class HospitalManagementSystem {
 						}
 					}
 
-					p.updatePersonalInformation(hp, email);
+					p.updatePersonalInformation(hp, email, patientList);
 					break;
 				case 3:
-					// HAVENT CONNECT WITH DOCTORS
 					System.out.println("View Available Appointment Slots");
 					System.out.println("Do you want see all of your appointments, or based on the doctor? ");
 					System.out.println("Type `all` to view all of your appointments");
@@ -471,7 +470,7 @@ public class HospitalManagementSystem {
 					} else if (type.toLowerCase().equals("doc")) {
 						System.out.println("Enter the doctor's name: ");
 						String dn = sc.nextLine();
-						dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
+						// dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
 						defaultApts.viewAvailableApptByDoc(dn, doctorAvailability);
 					} else {
 						System.out.println("Please choose either `all` or `doc`!");
@@ -528,46 +527,41 @@ public class HospitalManagementSystem {
 					break;
 				case 5:
 					System.out.println("Rescheduling appointment...");
-					System.out.println("Enter the doctor's name you have an appointment with: ");
-					String docO = sc.nextLine();
-					docO = Character.toUpperCase(docO.charAt(0)) + docO.substring(1).toLowerCase();
-					System.out.println("Enter the old date: ");
-					String dateO = sc.nextLine();
-					System.out.println("Enter the old timeslot : ");
-					String timeO = sc.nextLine();
-					// defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
-					// if (defaultApts.appointmentExists(pid, docO, dateO, timeO, "reschedule")) {
-					// 	System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
-					// 	System.out.println("Yes or No?");
-					// 	String decision = sc.nextLine();
-					// 	String newDoc = "";
-					// 	if (decision.toLowerCase().equals("yes")) {
-					// 		System.out.println("Enter the new doctor's name: ");
-					// 		newDoc = sc.nextLine();
-					// 		newDoc = Character.toUpperCase(newDoc.charAt(0)) + newDoc.substring(1).toLowerCase();
-					// 	}
-					// 	System.out.println("Enter the new date : ");
-					// 	String dateR = sc.nextLine();
-					// 	System.out.println("Enter the new timeslot : ");
-					// 	String timeR = sc.nextLine();
-					// 	defaultApts.rescheduleAppointment(pid, docO, dateO, timeO, newDoc, dateR, timeR, decision);
-					// } else {
-					// 	System.out.println("Appointment doesn't exist!");
-					// }
+					System.out.println("Enter the appointment ID: ");
+					int aptid = sc.nextInt();
+					sc.nextLine(); // consume the newline after nextInt
+					
+					if (defaultApts.appointmentExists(pid, aptid, "reschedule", doctorAvailability)) {
+						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
+						System.out.println("Yes or No?");
+						String decision = sc.nextLine();
+						String newDoc = "";
+						if (decision.toLowerCase().equals("yes")) {
+							System.out.println("Enter the new doctor's name: ");
+							newDoc = sc.nextLine();
+							defaultApts.viewAvailableApptByDoc(newDoc, doctorAvailability);
+
+						}
+						System.out.println("Enter the new date : ");
+						String dateR = sc.nextLine();
+						System.out.println("Enter the new timeslot : ");
+						String timeR = sc.nextLine();
+						defaultApts.rescheduleAppointment(pid, aptid, newDoc, dateR, timeR, decision, doctorAvailability);
+
+					} else {
+						System.out.println("Appointment doesn't exist!");
+					}
 
 					break;
 				case 6:
 					System.out.println("Cancelling appointment...");
-					System.out.println("Enter the doctor's name you cancelling an appointment with: ");
-					String docC = sc.nextLine();
-					docC = Character.toUpperCase(docC.charAt(0)) + docC.substring(1).toLowerCase();
-					System.out.println("Enter the cancelled date : ");
-					String dateC = sc.nextLine();
-					System.out.println("Enter the cancelled timeslot : ");
-					String timeC = sc.nextLine();
-					// defaultApts.appointmentExists(pid, docC, dateC, timeC, "cancel");
-
-					// defaultApts.cancelAppointment(pid, docC, dateC, timeC);
+					System.out.println("Enter the appointment ID: ");
+					int aptId = sc.nextInt();
+					sc.nextLine();
+					if (!defaultApts.appointmentExists(pid, aptId, "cancel", doctorAvailability)) {
+						System.out.println("Appointment doesn't exist!");
+					}
+					defaultApts.cancelAppointment(pid, aptId, doctorAvailability);
 					break;
 				case 7:
 					System.out.println("Below are your appointments...");
