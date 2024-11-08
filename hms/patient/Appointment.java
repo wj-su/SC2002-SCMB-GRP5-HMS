@@ -93,7 +93,7 @@ public class Appointment {
             Map<String, List<String>> dates = doctorAvailability.get(doctor);
             for (String date : dates.keySet()) {
                 List<String> times = dates.get(date);
-                String timesStr = String.join(", ", times); // Join times into a single string for display
+                String timesStr = String.join(", ", times); 
 
                 System.out.println("  Available Date: " + date);
                 System.out.println("  Available Timing: " + timesStr);
@@ -114,7 +114,7 @@ public class Appointment {
     
                 System.out.println("Doctor: " + doctorName);
     
-                // Iterate over each date and its timeslots
+                
                 for (String date : dateSlots.keySet()) {
                     List<String> timeslots = dateSlots.get(date);
                     String timesStr = String.join(", ", timeslots); 
@@ -127,7 +127,7 @@ public class Appointment {
             }
         }
     
-        // If no matching doctor is found
+        
         if (!doctorFound) {
             System.out.println("No such doctor available!");
         }
@@ -309,7 +309,7 @@ public class Appointment {
             System.out.println("We have 0 outcome records.");
         }
         else {
-            // Check if records exist for the specified patient ID
+            
             Map<Integer, Map<String, Object>> selectedPatientOutcomeRecords = aptOutcomeRecs.get(pid);
             
             if (selectedPatientOutcomeRecords == null || selectedPatientOutcomeRecords.isEmpty()) {
@@ -324,7 +324,7 @@ public class Appointment {
                     System.out.println("Appointment Date: " + details.get("date"));
                     System.out.println("Appointment Service: " + details.get("stype"));
                     
-                    // Retrieve and print prescribed medications if they exist
+                    
                     Map<String, String> prescribedMed = (Map<String, String>) details.get("pmeds");
                     if (prescribedMed != null) {
                         System.out.println("Prescribed Medication: " + prescribedMed.get("name") + " (" + prescribedMed.get("status") + ")");

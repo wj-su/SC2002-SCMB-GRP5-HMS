@@ -113,7 +113,7 @@ public class Patient {
     
                 System.out.println("Updated Contact Information: " + patientData.get("Contact Information"));
                 System.out.println("========================\n");
-                break; // Exit loop after updating
+                break; 
             }
         }
     }

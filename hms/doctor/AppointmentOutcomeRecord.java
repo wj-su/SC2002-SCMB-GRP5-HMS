@@ -16,35 +16,7 @@ public class AppointmentOutcomeRecord {
     private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
     public AppointmentOutcomeRecord() {
- 
-        // test case
-        for (int i = 1; i <= 5; i++) {
-            // Create an appointment details map
-            Map<String, Object> apptDetails = new HashMap<>();
-            apptDetails.put("date", "31/10/2024");
-            apptDetails.put("stype", (i % 2 == 0) ? "Consultation" : "X-Ray");
-
-            // Create prescribed medications map
-            Map<String, String> prescribedMedications = new HashMap<>();
-            prescribedMedications.put("name", "Medication " + i);
-            prescribedMedications.put("status", (i % 2 == 0) ? "Dispensed" : "Pending");
-
-            // Add prescribed medications and consultation notes
-            apptDetails.put("pmeds", prescribedMedications);
-            apptDetails.put("cnotes", "Consultation notes for appointment " + i);
-
-            // Retrieve or create the map for the patient
-            String patientId = "P1001";
-            Map<Integer, Map<String, Object>> patientRecords = outcomeRecords.get(patientId);
-            
-            if (patientRecords == null) {
-                patientRecords = new HashMap<>();
-                outcomeRecords.put(patientId, patientRecords);
-            }
-
-            // Add the appointment details to the patient's records
-            patientRecords.put(i, apptDetails);
-        }
+        
     }
 
 
@@ -86,11 +58,11 @@ public class AppointmentOutcomeRecord {
             if (apt.getId() == id && apt.getStatus().equals("Completed")) {
                 found = true;
     
-                // Populate appointment details
+                
                 apptDetails.put("date", apt.getDate());
                 apptDetails.put("stype", service);
     
-                // Set prescribed medications and consultation notes
+                
                 Map<String, String> prescribedMedications = new HashMap<>();
                 prescribedMedications.put("name", medName);
                 prescribedMedications.put("status", medStatus);
@@ -98,10 +70,10 @@ public class AppointmentOutcomeRecord {
                 apptDetails.put("pmeds", prescribedMedications);
                 apptDetails.put("cnotes", consultNotes);
     
-                // Update outcome records map
+                
                 outcomeRecords.computeIfAbsent(pid, k -> new HashMap<>()).put(apt.getId(), apptDetails);
     
-                // Update instance fields
+               
                 this.serviceType = service;
                 this.prescribedMeds = prescribedMedications;
                 this.consultNotes = consultNotes;
