@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import patient.Appointment;
 import patient.Patient;
+import doctor.doctorApp;
 
 public class HospitalManagementSystem {
 
@@ -371,7 +372,6 @@ public class HospitalManagementSystem {
 
 		do {
 			DoctorMenu();
-
 
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();

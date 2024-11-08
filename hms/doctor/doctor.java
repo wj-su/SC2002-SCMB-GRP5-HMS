@@ -1,7 +1,10 @@
 package doctor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import patient.Appointment;
 
 public class doctor {
@@ -11,6 +14,7 @@ public class doctor {
     private String contactNumber;
     private List<String> availDateTime;
     private List<Appointment> appointments;
+    private  Map<String, MedicalRecordManagement> medicalRecords;
 
     public doctor(String doctorId, String name, String gender, String contactNumber, List<String> availDateTime){
         this.doctorId = doctorId;
@@ -19,6 +23,7 @@ public class doctor {
         this.contactNumber = contactNumber;
         this.availDateTime = availDateTime;
         this.appointments = new ArrayList<>();
+        this.medicalRecords = new HashMap<>();
     }
     
     public String getDoctorId(){
@@ -39,6 +44,14 @@ public class doctor {
 
     public List<String> getAvailDateTime(){
         return availDateTime;
+    }
+
+    public void addMedicalRecord(MedicalRecordManagement record){
+        medicalRecords.put(record.getPatientId(), record);
+    }
+
+    public void viewMedicalRecord(String patientId){
+        MedicalR
     }
 
     public void viewUpcomingAppointments(){
