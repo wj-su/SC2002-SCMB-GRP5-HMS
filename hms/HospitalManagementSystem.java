@@ -1,5 +1,5 @@
 import doctor.AppointmentOutcomeRecord;
-import doctor.doctor;
+import doctor.Doctor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import doctor.doctorApp;
 public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
+	static List<Map<String, String>> doctorList = new ArrayList<>();
 	static Appointment defaultApts = new Appointment();
 	static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
 
@@ -28,6 +29,8 @@ public class HospitalManagementSystem {
 		int identity;
 
 		createPatientList();
+		createDoctorList();
+
 
 
 		do {
@@ -48,8 +51,15 @@ public class HospitalManagementSystem {
 					break;
 
 				case 2:
-					DoctorOption();
-					getDoctorList();
+
+					System.out.println("\nEnter Doctor ID: ");
+					String did = sc.next();
+					did = Character.toUpperCase(did.charAt(0)) + did.substring(1);
+					Doctor selectedDoc = getSelectedDoctor(did);
+					if (selectedDoc != null) {
+						DoctorOption(did, selectedDoc);
+					}
+					// getDoctorList();
 					break;
 
 				case 3:
@@ -64,6 +74,56 @@ public class HospitalManagementSystem {
 
 		} while (identity != 0);
 
+	}
+
+	public static void createDoctorList() {
+		String csvFile = "hms\\Staff_List.csv"; // converted file path
+        String line;
+        String csvSplitBy = ",";
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            // read the first line as the header
+            String headerLine = br.readLine();
+            if (headerLine == null) {
+                System.out.println("CSV file is empty");
+                return;
+            }
+            String[] headers = headerLine.split(csvSplitBy);
+
+            // read each subsequent line
+            while ((line = br.readLine()) != null) {
+                String[] columns = line.split(csvSplitBy);
+
+                // create a map for the row data
+                Map<String, String> dataMap = new HashMap<>();
+
+                boolean isDoctor = false;
+				for (int i = 0; i < headers.length; i++) {
+					// Check if the header is "role" and verify if the role is "Doctor"
+					if (headers[i].equalsIgnoreCase("role")) {
+						if (i < columns.length && columns[i].equalsIgnoreCase("Doctor")) {
+							isDoctor = true;
+						}
+					}
+
+					// put header as key and cell data as value
+					if (i < columns.length) {
+						dataMap.put(headers[i], columns[i]);
+					} else {
+						dataMap.put(headers[i], ""); // empty string if column is missing
+					}
+				}
+
+				// only add to the list if the role is "Doctor"
+				if (isDoctor) {
+					doctorList.add(dataMap);
+				}
+			}
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	public static void createPatientList() {
@@ -186,6 +246,87 @@ public class HospitalManagementSystem {
 
 	}
 	
+	public static Doctor getSelectedDoctor(String did) {
+
+		// just to initialise
+		Doctor d = null;	
+		boolean doctorExists = false;
+
+		do {
+
+			// print the list of maps to verify the data
+			for (Map<String, String> data : doctorList) {
+
+				// add pre-defined data to list
+	
+				String dId = data.get("Staff ID");
+	
+				if (dId.equals(did)) {
+					String dName = data.get("Name");
+					String dGender = data.get("Gender");
+					String dAge = data.get("Age");
+					String dContact = data.get("Contact Number");
+					
+					List<String> dAvailabilityList = new ArrayList<>();
+
+					// Check if "Availability Dates" is present
+					if (data.get("Availability Dates") != null) {
+						String availDetails = data.get("Availability Dates");
+
+						// Split by '|' to get each date and its time slots
+						String[] availInfo = availDetails.split("\\|");
+
+						// Iterate over each date entry
+						for (String avail : availInfo) {
+							avail = avail.trim(); // Trim any leading/trailing spaces
+
+							// Split the entry by space to separate date and time slots
+							int firstSpaceIndex = avail.indexOf(' ');
+
+							// Ensure that the date and time slots are correctly identified
+							if (firstSpaceIndex != -1) {
+								String date = avail.substring(0, firstSpaceIndex).trim(); // Extract the date
+								String timeSlots = avail.substring(firstSpaceIndex).trim(); // Extract the time slots
+
+								// Split time slots by '/'
+								String[] times = timeSlots.split("/");
+
+								// Format the time slots as a comma-separated string
+								String formattedTimeSlots = String.join(", ", times);
+
+								// Create a formatted string for the availability entry
+								String availabilityEntry = date + ": " + formattedTimeSlots;
+
+								// Add this formatted string to the availability list
+								dAvailabilityList.add(availabilityEntry);
+							}
+						}
+					}
+
+					// Example usage: printing the availability list
+					for (String availability : dAvailabilityList) {
+						System.out.println(availability);
+					}
+
+	
+	
+					// Create and add Doctor
+					d = new Doctor(did, dName, dAge, dGender, dContact, dAvailabilityList);
+					doctorExists = true;
+					break;
+				}	
+			}
+	
+			if (doctorExists == false) {
+				System.out.println("Doctor does not exist!!");
+				return d;
+			}
+
+			return d;
+
+		} while (doctorExists == true);
+
+	}
 
 	public static void PatientOption(String pid, Patient p) {
 
@@ -363,7 +504,7 @@ public class HospitalManagementSystem {
 		// sc.close();
 	}
 
-	public static void DoctorOption() {
+	public static void DoctorOption(String did, Doctor d) {
 
 		Scanner sc = new Scanner(System.in);
 		int choice = 0;
@@ -380,6 +521,10 @@ public class HospitalManagementSystem {
 			switch (choice) {
 				case 1:
 					System.out.println("View Patient Medical Records");
+					System.out.println("Which patient's medical record are you viewing?");
+					System.out.println("Enter Patient ID");
+					String pidD = sc.next();
+					d.viewMedicalRecord(pidD, patientList);
 					break;
 				case 2:
 					System.out.println("Update Patient Medical Records");
@@ -463,48 +608,48 @@ public class HospitalManagementSystem {
 
 	}
 
-	public static void getDoctorList(){
-		String csvFile = "hms\\Staff_List.csv";  // Replace with the actual path
-        String line;
-        String csvSplitBy = ",";
+	// public static void getDoctorList(){
+	// 	String csvFile = "hms\\Staff_List.csv";  // Replace with the actual path
+    //     String line;
+    //     String csvSplitBy = ",";
 
-        List<doctor> doctors = new ArrayList<>();
+    //     List<doctor> doctors = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            // Read the header line (if any)
-            String headerLine = br.readLine();
+    //     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+    //         // Read the header line (if any)
+    //         String headerLine = br.readLine();
 
-            // Read each subsequent line
-            while ((line = br.readLine()) != null) {
-                // Split the line into columns
-                String[] columns = line.split(csvSplitBy);
+    //         // Read each subsequent line
+    //         while ((line = br.readLine()) != null) {
+    //             // Split the line into columns
+    //             String[] columns = line.split(csvSplitBy);
 
-                // Assuming columns: [ID, Name, Gender, ContactNumber, Availability, Role]
-                String role = columns[5];  // Assuming "Role" is the 6th column
+    //             // Assuming columns: [ID, Name, Gender, ContactNumber, Availability, Role]
+    //             String role = columns[5];  // Assuming "Role" is the 6th column
 
-                // Check if this line represents a doctor
-                if (role.equalsIgnoreCase("doctor")) {
-                    String doctorId = columns[0];
-                    String name = columns[1];
-                    String gender = columns[2];
-                    String contactNumber = columns[3];
-                    String availDateTime = columns[4];
+    //             // Check if this line represents a doctor
+    //             if (role.equalsIgnoreCase("doctor")) {
+    //                 String doctorId = columns[0];
+    //                 String name = columns[1];
+    //                 String gender = columns[2];
+    //                 String contactNumber = columns[3];
+    //                 String availDateTime = columns[4];
 
-                    // Create a Doctor object and add it to the list
-                    doctor doctor = new doctor(doctorId, name, gender, contactNumber, availDateTime);
-                    doctors.add(doctor);
-                }
-            }
+    //                 // Create a Doctor object and add it to the list
+    //                 doctor doctor = new doctor(doctorId, name, gender, contactNumber, availDateTime);
+    //                 doctors.add(doctor);
+    //             }
+    //         }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
 
-        // Print out the list of doctors
-        for (doctor doctor : doctors) {
-            System.out.println(doctor);
-        }
-    }
+    //     // Print out the list of doctors
+    //     for (doctor doctor : doctors) {
+    //         System.out.println(doctor);
+    //     }
+    // }
 
 	
 }
