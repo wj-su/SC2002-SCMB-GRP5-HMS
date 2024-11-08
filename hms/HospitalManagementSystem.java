@@ -22,8 +22,8 @@ public class HospitalManagementSystem {
 	static List<Map<String, String>> doctorList = new ArrayList<>();
 	static List<Map<String, String>> medicineList = new ArrayList<>();
 	static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
-	static Appointment defaultApts = new Appointment();
-	static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+	// static Appointment defaultApts = new Appointment();
+	// static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
 
 	public static void main(String[] args) {
 
@@ -426,6 +426,8 @@ public class HospitalManagementSystem {
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
 
+		Appointment defaultApts = new Appointment();
+
 		do {
 			PatientMenu();
 
@@ -609,6 +611,7 @@ public class HospitalManagementSystem {
 
 		MedicalRecordManagement mr = new MedicalRecordManagement();
 		AppointmentManagement am = new AppointmentManagement();
+		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
 
 		do {
 			DoctorMenu();
