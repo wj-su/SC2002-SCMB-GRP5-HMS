@@ -38,7 +38,7 @@ public class Appointment {
         }});
 
         // default completed appointment (just to check if code works)
-        Appointment defaultApt = new Appointment(1, "P1001",  "Shaqilah", "31/10/2024", "20:00", "Completed");
+        Appointment defaultApt = new Appointment(1, "P1001",  "Shaqilah", "31/10/2024", "20:00", "Pending");
         appointments.add(defaultApt);
 
         Appointment defaultApt2 = new Appointment(2, "P1002", "Dayana", "31/10/2024", "15:00", "Completed");
@@ -108,16 +108,16 @@ public class Appointment {
     }
 
     public static List<Appointment> getAllAppointments() {
-        System.out.println("Getting appointments from Appointment instance: ");
-        for (Appointment appt : appointments) {
-            System.out.println("Patient Id: " + appt.getPatientId());
-            System.out.println("Appointment Id: " + appt.getId());
-            System.out.println("Appointment Doctor: " + appt.getDoctor());
-            System.out.println("Appointment Date: " + appt.getDate());
-            System.out.println("Appointment Time: " + appt.getTimeslot());
-            System.out.println("Appointment Status: " + appt.getStatus());
-            System.out.println("\n");
-        }
+        // System.out.println("Getting appointments from Appointment instance: ");
+        // for (Appointment appt : appointments) {
+        //     System.out.println("Patient Id: " + appt.getPatientId());
+        //     System.out.println("Appointment Id: " + appt.getId());
+        //     System.out.println("Appointment Doctor: " + appt.getDoctor());
+        //     System.out.println("Appointment Date: " + appt.getDate());
+        //     System.out.println("Appointment Time: " + appt.getTimeslot());
+        //     System.out.println("Appointment Status: " + appt.getStatus());
+        //     System.out.println("\n");
+        // }
         return appointments;
     }
 

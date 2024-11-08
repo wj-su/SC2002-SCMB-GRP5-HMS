@@ -1,5 +1,6 @@
 import doctor.AppointmentOutcomeRecord;
 import doctor.Doctor;
+import doctor.MedicalRecordManagement;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import patient.Appointment;
 import patient.Patient;
-import doctor.doctorApp;
 
 public class HospitalManagementSystem {
 
@@ -509,6 +509,8 @@ public class HospitalManagementSystem {
 		Scanner sc = new Scanner(System.in);
 		int choice = 0;
 
+		MedicalRecordManagement mr = new MedicalRecordManagement();
+
 		
 
 		do {
@@ -523,11 +525,26 @@ public class HospitalManagementSystem {
 					System.out.println("View Patient Medical Records");
 					System.out.println("Which patient's medical record are you viewing?");
 					System.out.println("Enter Patient ID");
-					String pidD = sc.next();
-					d.viewMedicalRecord(pidD, patientList);
+					String pidD = sc.nextLine();
+					pidD = Character.toUpperCase(pidD.charAt(0)) + pidD.substring(1).toLowerCase();
+					mr.viewMedicalRecord(pidD, patientList);
 					break;
 				case 2:
 					System.out.println("Update Patient Medical Records");
+					System.out.println("Which patient's medical record are you updating?");
+					System.out.println("Enter Patient ID");
+					String pid2 = sc.nextLine();
+					pid2 = Character.toUpperCase(pid2.charAt(0)) + pid2.substring(1).toLowerCase();
+					System.out.println("Enter Appointment ID");
+					int apt = sc.nextInt();
+					sc.nextLine();
+					System.out.println("Enter New Diagnosis:");
+					String diag = sc.nextLine();
+					System.out.println("Enter New Treatment:");
+					String treat = sc.nextLine();
+					System.out.println("Enter New Medication:");
+					String med = sc.nextLine();
+					mr.updateMedicalRecord(pid2, patientList, apt, diag, treat, med);
 					break;
 				case 3:
 					System.out.println("View Personal Schedule");
@@ -608,48 +625,9 @@ public class HospitalManagementSystem {
 
 	}
 
-	// public static void getDoctorList(){
-	// 	String csvFile = "hms\\Staff_List.csv";  // Replace with the actual path
-    //     String line;
-    //     String csvSplitBy = ",";
 
-    //     List<doctor> doctors = new ArrayList<>();
 
-    //     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-    //         // Read the header line (if any)
-    //         String headerLine = br.readLine();
-
-    //         // Read each subsequent line
-    //         while ((line = br.readLine()) != null) {
-    //             // Split the line into columns
-    //             String[] columns = line.split(csvSplitBy);
-
-    //             // Assuming columns: [ID, Name, Gender, ContactNumber, Availability, Role]
-    //             String role = columns[5];  // Assuming "Role" is the 6th column
-
-    //             // Check if this line represents a doctor
-    //             if (role.equalsIgnoreCase("doctor")) {
-    //                 String doctorId = columns[0];
-    //                 String name = columns[1];
-    //                 String gender = columns[2];
-    //                 String contactNumber = columns[3];
-    //                 String availDateTime = columns[4];
-
-    //                 // Create a Doctor object and add it to the list
-    //                 doctor doctor = new doctor(doctorId, name, gender, contactNumber, availDateTime);
-    //                 doctors.add(doctor);
-    //             }
-    //         }
-
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-
-    //     // Print out the list of doctors
-    //     for (doctor doctor : doctors) {
-    //         System.out.println(doctor);
-    //     }
-    // }
+	
 
 	
 }
