@@ -90,9 +90,9 @@ public class Appointment {
 
             Map<String, List<String>> dates = doctorAvailability.get(doctor);
             List<String> sortedDates = new ArrayList<>(dates.keySet());
-            Collections.sort(sortedDates); // Sorts dates as strings from earliest to latest
+            Collections.sort(sortedDates); 
 
-            // Print sorted availability
+            
             for (String date : sortedDates) {
                 List<String> times = dates.get(date);
                 String timesStr = String.join(", ", times);
@@ -111,13 +111,17 @@ public class Appointment {
         for (String doctorName : doctorAvailability.keySet()) {
             if (doctorName.toLowerCase().equals(normalizedDocName)) {
                 doctorFound = true;
-                Map<String, List<String>> dateSlots = doctorAvailability.get(doctorName);
+                Map<String, List<String>> dates = doctorAvailability.get(doctorName);
 
                 System.out.println("Doctor: " + doctorName);
 
-                for (String date : dateSlots.keySet()) {
-                    List<String> timeslots = dateSlots.get(date);
-                    String timesStr = String.join(", ", timeslots);
+                List<String> sortedDates = new ArrayList<>(dates.keySet());
+                Collections.sort(sortedDates); 
+
+                
+                for (String date : sortedDates) {
+                    List<String> times = dates.get(date);
+                    String timesStr = String.join(", ", times);
 
                     System.out.println("  Available Date: " + date);
                     System.out.println("  Available Timing: " + timesStr);
