@@ -53,39 +53,6 @@ public class Doctor {
     //     medicalRecords.put(record.getPatientId(), record);
     // 
 
-    public void viewUpcomingAppointments(){
-        System.out.println("Upcoming Appointments for Dr. " + name);
-        for (Appointment appointment : appointments){
-            if (appointment.getStatus().equals("Confirmed")){
-                System.out.println(appointment);
-            }
-        }
-    }
-
-    public void acceptAppointment(int appointmentId){
-        for (Appointment appointment : appointments){
-            if (appointment.getId() == appointmentId && appointment.getStatus().equals("Pending")){ //link with patients appointment
-                appointment.setStatus("Confirmed");
-                System.out.println("Appointment ID "+ appointmentId + "confirmed.");
-                return;
-            }
-        }
-
-        System.out.println("Appointment ID "+ appointmentId+ " not found or already confirmed.");
-    }
-
-    public void declineAppointment(int AppointmentId){
-        for(Appointment appointment : appointments){
-            if(appointment.getId() == AppointmentId && appointment.getStatus().equals("Pending")){
-                appointment.setStatus("Cancelled");
-                System.out.println("Appointment ID "+AppointmentId+" cancelled.");
-                return;
-            }
-        }
-
-        System.out.println("Appointment ID "+AppointmentId+" not found or already cancelled.");
-    }
-
     @Override
 
     public String toString(){

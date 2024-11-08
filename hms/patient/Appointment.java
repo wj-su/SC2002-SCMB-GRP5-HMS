@@ -16,7 +16,7 @@ public class Appointment {
     private String timeslot;
     private String status;
 
-    private Map<String, Map<String, List<String>>> apptSlots;
+    // private Map<String, Map<String, List<String>>> apptSlots;
 
     // private AppointmentOutcomeRecord apptRecords;
 
@@ -26,23 +26,23 @@ public class Appointment {
 
 
     public Appointment() {
-        apptSlots = new HashMap<>();
-        apptSlots.put("Shaqilah", new HashMap<>() {{
-            put("21/10/2024", new ArrayList<>(List.of("10:00", "14:00")));
-            put("22/10/2024", new ArrayList<>(List.of("17:00", "20:00")));
-        }});
+        // apptSlots = new HashMap<>();
+        // apptSlots.put("Shaqilah", new HashMap<>() {{
+        //     put("21/10/2024", new ArrayList<>(List.of("10:00", "14:00")));
+        //     put("22/10/2024", new ArrayList<>(List.of("17:00", "20:00")));
+        // }});
 
-        apptSlots.put("Dayana", new HashMap<>() {{
-            put("21/10/2024", new ArrayList<>(List.of("08:00", "09:00")));
-            put("22/10/2024", new ArrayList<>(List.of("12:00")));
-        }});
+        // apptSlots.put("Dayana", new HashMap<>() {{
+        //     put("21/10/2024", new ArrayList<>(List.of("08:00", "09:00")));
+        //     put("22/10/2024", new ArrayList<>(List.of("12:00")));
+        // }});
 
         // default completed appointment (just to check if code works)
-        Appointment defaultApt = new Appointment(1, "P1001",  "Shaqilah", "31/10/2024", "20:00", "Pending");
-        appointments.add(defaultApt);
+        // Appointment defaultApt = new Appointment(1, "P1001",  "Shaqilah", "31/10/2024", "20:00", "Pending");
+        // appointments.add(defaultApt);
 
-        Appointment defaultApt2 = new Appointment(2, "P1002", "Dayana", "31/10/2024", "15:00", "Completed");
-        appointments.add(defaultApt2);
+        // Appointment defaultApt2 = new Appointment(2, "P1002", "Dayana", "31/10/2024", "15:00", "Completed");
+        // appointments.add(defaultApt2);
         
     }
 
@@ -103,9 +103,9 @@ public class Appointment {
         return this.status;
     }
 
-    public Map<String, Map<String, List<String>>> getApptSlots() {
-        return this.apptSlots;
-    }
+    // public Map<String, Map<String, List<String>>> getApptSlots() {
+    //     return this.apptSlots;
+    // }
 
     public static List<Appointment> getAllAppointments() {
         // System.out.println("Getting appointments from Appointment instance: ");
@@ -121,54 +121,59 @@ public class Appointment {
         return appointments;
     }
 
-    public void viewAvailableAppt() {
-        List<String> doctors = new ArrayList<>(apptSlots.keySet());
+    public void viewAvailableAppt(Map<String, Map<String, List<String>>> doctorAvailability) {
+        for (String doctor : doctorAvailability.keySet()) {
+            System.out.println("Doctor: " + doctor);
 
-        for (int i = 0; i < doctors.size(); i++) {
-            String doc = doctors.get(i);
-            Map<String, List<String>> dateSlots = apptSlots.get(doc);
+            Map<String, List<String>> dates = doctorAvailability.get(doctor);
+            for (String date : dates.keySet()) {
+                List<String> times = dates.get(date);
+                String timesStr = String.join(", ", times); // Join times into a single string for display
 
-            System.out.println("Doctor: " + doc);
-
-            List<String> dates = new ArrayList<>(dateSlots.keySet());
-            for (int j = 0; j < dates.size(); j++) {
-                String date = dates.get(j);
-                List<String> timeslots = dateSlots.get(date); 
-
-                System.out.println("Date: " + date);
-                System.out.println("Available Timeslots: " + timeslots);
+                System.out.println("  Available Date: " + date);
+                System.out.println("  Available Timing: " + timesStr);
             }
-            System.out.println("");
+            System.out.println(); // Blank line for readability between doctors
         }
     }
+    
 
-    public void viewAvailableApptByDoc(String doc) {
-        if (!apptSlots.containsKey(doc)) {
-            System.out.println("No such doctor available!!");
-        }
-        else {
-
-            Map<String, List<String>> dateSlots = apptSlots.get(doc);
-
-            System.out.println("Doctor: " + doc);
-
-            List<String> dates = new ArrayList<>(dateSlots.keySet());
-            for (int j = 0; j < dates.size(); j++) {
-                String date = dates.get(j);
-                List<String> timeslots = dateSlots.get(date); 
-
-                System.out.println("Date: " + date);
-                System.out.println("Available Timeslots: " + timeslots);
+    public void viewAvailableApptByDoc(String doc, Map<String, Map<String, List<String>>> doctorAvailability) {
+        // Normalize the doctor name to lowercase for comparison
+        String normalizedDocName = doc.trim().toLowerCase();
+    
+        // Check if a matching doctor exists in the map
+        boolean doctorFound = false;
+        for (String doctorName : doctorAvailability.keySet()) {
+            if (doctorName.toLowerCase().equals(normalizedDocName)) {
+                doctorFound = true;
+                Map<String, List<String>> dateSlots = doctorAvailability.get(doctorName);
+    
+                System.out.println("Doctor: " + doctorName);
+    
+                // Iterate over each date and its timeslots
+                for (String date : dateSlots.keySet()) {
+                    List<String> timeslots = dateSlots.get(date);
+                    String timesStr = String.join(", ", timeslots); // Format times as a comma-separated string
+    
+                    System.out.println("  Available Date: " + date);
+                    System.out.println("  Available Timing: " + timesStr);
+                }
+                System.out.println(); // Blank line for readability
+                break;
             }
-            System.out.println("");
-            
+        }
+    
+        // If no matching doctor is found
+        if (!doctorFound) {
+            System.out.println("No such doctor available!");
         }
     }
+    
 
-
-    public void scheduleAppointment(Appointment apt, String doc, String date, String ts) {
+    public void scheduleAppointment(Appointment apt, String doc, String date, String ts, Map<String, Map<String, List<String>>> doctorAvailability) {
         appointments.add(apt);
-        apptSlots.get(doc).get(date).remove(ts); // remove selected time
+        doctorAvailability.get(doc).get(date).remove(ts); // remove selected time
 
         System.out.println("Your appointment has been scheduled successfully! :D");
         System.out.println("Appointment Details for " + apt.getPatientId());
@@ -180,7 +185,7 @@ public class Appointment {
     }
 
 
-    public boolean appointmentExists(String pid, String doc, String date, String time, String type) {
+    public boolean appointmentExists(String pid, String doc, String date, String time, String type, Map<String, Map<String, List<String>>> apptSlots) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
@@ -192,7 +197,7 @@ public class Appointment {
                         System.out.println("You currently have an appointment with " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTimeslot());
                         if (type.toLowerCase().equals("reschedule")) {
                             System.out.println("\nThese are our currently available appointments: ");
-                            viewAvailableApptByDoc(doc);
+                            viewAvailableApptByDoc(doc, apptSlots);
                         }
                         return true;
                     }
@@ -266,7 +271,7 @@ public class Appointment {
         }
     }
     
-    public void cancelAppointment(String pid, String doc, String date, String time) {
+    public void cancelAppointment(String pid, String doc, String date, String time, Map<String, Map<String, List<String>>> apptSlots) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         }
@@ -282,7 +287,7 @@ public class Appointment {
                         }
                     }
 
-                    appt.setStatus("Canceled");
+                    appt.setStatus("Cancelled");
                     System.out.println("You have canceled an appointment your appointment");
                 }
             }

@@ -1,3 +1,4 @@
+import doctor.AppointmentManagement;
 import doctor.AppointmentOutcomeRecord;
 import doctor.Doctor;
 import doctor.MedicalRecordManagement;
@@ -19,6 +20,7 @@ public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
 	static List<Map<String, String>> doctorList = new ArrayList<>();
+    static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
 	static Appointment defaultApts = new Appointment();
 	static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
 
@@ -30,14 +32,13 @@ public class HospitalManagementSystem {
 
 		createPatientList();
 		createDoctorList();
-
-
+		createDoctorAvailList();
 
 		do {
 
 			System.out.println("\nWho are you?"
-				+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
-		 	identity = sc.nextInt();
+					+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
+			identity = sc.nextInt();
 
 			switch (identity) {
 				case 1:
@@ -78,27 +79,26 @@ public class HospitalManagementSystem {
 
 	public static void createDoctorList() {
 		String csvFile = "hms\\Staff_List.csv"; // converted file path
-        String line;
-        String csvSplitBy = ",";
+		String line;
+		String csvSplitBy = ",";
 
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			// read the first line as the header
+			String headerLine = br.readLine();
+			if (headerLine == null) {
+				System.out.println("CSV file is empty");
+				return;
+			}
+			String[] headers = headerLine.split(csvSplitBy);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            // read the first line as the header
-            String headerLine = br.readLine();
-            if (headerLine == null) {
-                System.out.println("CSV file is empty");
-                return;
-            }
-            String[] headers = headerLine.split(csvSplitBy);
+			// read each subsequent line
+			while ((line = br.readLine()) != null) {
+				String[] columns = line.split(csvSplitBy);
 
-            // read each subsequent line
-            while ((line = br.readLine()) != null) {
-                String[] columns = line.split(csvSplitBy);
+				// create a map for the row data
+				Map<String, String> dataMap = new HashMap<>();
 
-                // create a map for the row data
-                Map<String, String> dataMap = new HashMap<>();
-
-                boolean isDoctor = false;
+				boolean isDoctor = false;
 				for (int i = 0; i < headers.length; i++) {
 					// Check if the header is "role" and verify if the role is "Doctor"
 					if (headers[i].equalsIgnoreCase("role")) {
@@ -121,19 +121,17 @@ public class HospitalManagementSystem {
 				}
 			}
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public static void createPatientList() {
-		String csvFile = "hms\\Patient_List.csv"; // converted file path
+    public static void createDoctorAvailList() {
+        String csvFile = "hms\\Staff_List.csv"; // Update the path as needed
         String line;
         String csvSplitBy = ",";
 
-
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            // read the first line as the header
             String headerLine = br.readLine();
             if (headerLine == null) {
                 System.out.println("CSV file is empty");
@@ -141,33 +139,114 @@ public class HospitalManagementSystem {
             }
             String[] headers = headerLine.split(csvSplitBy);
 
-            // read each subsequent line
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(csvSplitBy);
-
-                // create a map for the row data
                 Map<String, String> dataMap = new HashMap<>();
+                boolean isDoctor = false;
 
                 for (int i = 0; i < headers.length; i++) {
-                    // put header as key and cell data as value
+                    if (headers[i].equalsIgnoreCase("role") && i < columns.length && columns[i].equalsIgnoreCase("Doctor")) {
+                        isDoctor = true;
+                    }
                     if (i < columns.length) {
                         dataMap.put(headers[i], columns[i]);
                     } else {
-                        dataMap.put(headers[i], ""); // empty string if column is missing
+                        dataMap.put(headers[i], "");
                     }
                 }
 
-                patientList.add(dataMap);
+                if (isDoctor) {
+                    String doctorName = dataMap.get("Name");
+                    String availability = dataMap.get("Availability Dates");
+                    if (availability != null && !availability.isEmpty()) {
+                        Map<String, List<String>> dateMap = new HashMap<>();
+
+                        String[] dates = availability.split("\\|");
+                        for (String dateEntry : dates) {
+                            String[] dateAndTimes = dateEntry.trim().split(" ");
+                            if (dateAndTimes.length >= 2) {
+                                String date = dateAndTimes[0].trim();
+                                String[] times = dateAndTimes[1].split("/");
+
+                                List<String> timeList = new ArrayList<>();
+                                for (String time : times) {
+                                    timeList.add(time.trim());
+                                }
+                                dateMap.put(date, timeList);
+                            }
+                        }
+                        doctorAvailability.put(doctorName, dateMap);
+                    }
+                }
             }
+
+            // Print the doctorAvailability map in the required format
+            printDoctorAvailability();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void printDoctorAvailability() {
+        for (String doctor : doctorAvailability.keySet()) {
+            System.out.println("Doctor: " + doctor);
+
+            Map<String, List<String>> dates = doctorAvailability.get(doctor);
+            for (String date : dates.keySet()) {
+                List<String> times = dates.get(date);
+                String timesStr = String.join(", ", times); // Join times into a single string for display
+
+                System.out.println("  Available Date: " + date);
+                System.out.println("  Available Timing: " + timesStr);
+            }
+            System.out.println(); // Blank line for readability between doctors
+        }
+    }
+
+
+
+	public static void createPatientList() {
+		String csvFile = "hms\\Patient_List.csv"; // converted file path
+		String line;
+		String csvSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			// read the first line as the header
+			String headerLine = br.readLine();
+			if (headerLine == null) {
+				System.out.println("CSV file is empty");
+				return;
+			}
+			String[] headers = headerLine.split(csvSplitBy);
+
+			// read each subsequent line
+			while ((line = br.readLine()) != null) {
+				String[] columns = line.split(csvSplitBy);
+
+				// create a map for the row data
+				Map<String, String> dataMap = new HashMap<>();
+
+				for (int i = 0; i < headers.length; i++) {
+					// put header as key and cell data as value
+					if (i < columns.length) {
+						dataMap.put(headers[i], columns[i]);
+					} else {
+						dataMap.put(headers[i], ""); // empty string if column is missing
+					}
+				}
+
+				patientList.add(dataMap);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static Patient getSelectedPatient(String pid) {
 
 		// just to initialise
-		Patient p = null;	
+		Patient p = null;
 		boolean patientExists = false;
 
 		do {
@@ -176,19 +255,19 @@ public class HospitalManagementSystem {
 			for (Map<String, String> data : patientList) {
 
 				// add pre-defined data to list
-	
+
 				String pId = data.get("Patient ID");
-	
+
 				if (pId.equals(pid)) {
 					String pName = data.get("Name");
 					String pDOB = data.get("Date of Birth");
 					String pGender = data.get("Gender");
-					
+
 					List<String> pContactInfo = new ArrayList<>();
 					if (data.get("Contact Information") != null) {
 						String contactInfo = data.get("Contact Information");
 						if (contactInfo.equals("NIL")) {
-							pContactInfo.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+							pContactInfo.add("NIL"); // Add "NIL" if the value is exactly "NIL"
 						} else {
 							String[] contactDetails = contactInfo.split("\\|");
 							for (String contact : contactDetails) {
@@ -196,12 +275,12 @@ public class HospitalManagementSystem {
 							}
 						}
 					}
-					
+
 					List<String> pPastDiagnoses = new ArrayList<>();
 					if (data.get("Past Diagnoses") != null) {
 						String pastDiagnoses = data.get("Past Diagnoses");
 						if (pastDiagnoses.equals("NIL")) {
-							pPastDiagnoses.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+							pPastDiagnoses.add("NIL"); // Add "NIL" if the value is exactly "NIL"
 						} else {
 							String[] diagnoses = pastDiagnoses.split("\\|");
 							for (String diagnosis : diagnoses) {
@@ -209,12 +288,12 @@ public class HospitalManagementSystem {
 							}
 						}
 					}
-					
+
 					List<String> pPastTreatments = new ArrayList<>();
 					if (data.get("Past Treatment") != null) {
 						String pastTreatments = data.get("Past Treatment");
 						if (pastTreatments.equals("NIL")) {
-							pPastTreatments.add("NIL");  // Add "NIL" if the value is exactly "NIL"
+							pPastTreatments.add("NIL"); // Add "NIL" if the value is exactly "NIL"
 						} else {
 							String[] treatments = pastTreatments.split("\\|");
 							for (String treatment : treatments) {
@@ -222,19 +301,18 @@ public class HospitalManagementSystem {
 							}
 						}
 					}
-					
-	
+
 					String pBloodType = data.get("Blood Type");
-	
-	
+
 					// Create and add Patient
-					p = new Patient(pId, pName, pDOB, pContactInfo, pGender, pBloodType, pPastDiagnoses, pPastTreatments);
+					p = new Patient(pId, pName, pDOB, pContactInfo, pGender, pBloodType, pPastDiagnoses,
+							pPastTreatments);
 					patientExists = true;
 					break;
 					// patientList.add(patient);
-				}	
+				}
 			}
-	
+
 			if (patientExists == false) {
 				System.out.println("Patient does not exist!!");
 				return p;
@@ -245,11 +323,11 @@ public class HospitalManagementSystem {
 		} while (patientExists == true);
 
 	}
-	
+
 	public static Doctor getSelectedDoctor(String did) {
 
 		// just to initialise
-		Doctor d = null;	
+		Doctor d = null;
 		boolean doctorExists = false;
 
 		do {
@@ -258,15 +336,15 @@ public class HospitalManagementSystem {
 			for (Map<String, String> data : doctorList) {
 
 				// add pre-defined data to list
-	
+
 				String dId = data.get("Staff ID");
-	
+
 				if (dId.equals(did)) {
 					String dName = data.get("Name");
 					String dGender = data.get("Gender");
 					String dAge = data.get("Age");
 					String dContact = data.get("Contact Number");
-					
+
 					List<String> dAvailabilityList = new ArrayList<>();
 
 					// Check if "Availability Dates" is present
@@ -308,15 +386,13 @@ public class HospitalManagementSystem {
 						System.out.println(availability);
 					}
 
-	
-	
 					// Create and add Doctor
 					d = new Doctor(did, dName, dAge, dGender, dContact, dAvailabilityList);
 					doctorExists = true;
 					break;
-				}	
+				}
 			}
-	
+
 			if (doctorExists == false) {
 				System.out.println("Doctor does not exist!!");
 				return d;
@@ -332,7 +408,6 @@ public class HospitalManagementSystem {
 
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
-		
 
 		do {
 			PatientMenu();
@@ -392,12 +467,12 @@ public class HospitalManagementSystem {
 					System.out.println("Type `doc` to view appointments with a specific doctor");
 					String type = sc.nextLine();
 					if (type.toLowerCase().equals("all")) {
-						defaultApts.viewAvailableAppt();
+						defaultApts.viewAvailableAppt(doctorAvailability);
 					} else if (type.toLowerCase().equals("doc")) {
 						System.out.println("Enter the doctor's name: ");
 						String dn = sc.nextLine();
 						dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
-						defaultApts.viewAvailableApptByDoc(dn);
+						defaultApts.viewAvailableApptByDoc(dn, doctorAvailability);
 					} else {
 						System.out.println("Please choose either `all` or `doc`!");
 					}
@@ -411,22 +486,34 @@ public class HospitalManagementSystem {
 					while (true) {
 						System.out.println("Choose a doctor: ");
 						doc = sc.nextLine();
-						doc = Character.toUpperCase(doc.charAt(0)) + doc.substring(1).toLowerCase();
-						if (!defaultApts.getApptSlots().containsKey(doc)) {
-							System.out.println("Doctor not found!");
-							continue;
+						// doc = Character.toUpperCase(doc.charAt(0)) + doc.substring(1).toLowerCase();
+						String normalizedDoc = doc.toLowerCase();
+
+					// Check if doctor exists in doctorAvailability using normalized names
+					boolean doctorFound = false;
+					for (String doctorName : doctorAvailability.keySet()) {
+						if (doctorName.toLowerCase().equals(normalizedDoc)) {
+							doctorFound = true;
+							doc = doctorName;  // Use the exact name from doctorAvailability for consistency
+							break;
 						}
+					}
+					
+					if (!doctorFound) {
+						System.out.println("Doctor not found!");
+						continue;
+					}
 
 						System.out.println("Choose a date:");
 						date = sc.nextLine();
-						if (!defaultApts.getApptSlots().get(doc).containsKey(date)) {
+						if (!doctorAvailability.get(doc).containsKey(date)) {
 							System.out.println("Date not available for the chosen doctor!");
 							continue;
 						}
 
 						System.out.println("Choose an available time slot: ");
 						ts = sc.nextLine();
-						if (!defaultApts.getApptSlots().get(doc).get(date).contains(ts)) {
+						if (!doctorAvailability.get(doc).get(date).contains(ts)) {
 							System.out.println("Timeslot not available!");
 							continue;
 						}
@@ -436,7 +523,7 @@ public class HospitalManagementSystem {
 					if (doc != "" && date != "" && ts != "") {
 						Random rid = new Random();
 						Appointment apt = new Appointment(rid.nextInt(1000), pid, doc, date, ts, "Pending");
-						defaultApts.scheduleAppointment(apt, doc, date, ts);
+						defaultApts.scheduleAppointment(apt, doc, date, ts, doctorAvailability);
 					}
 					break;
 				case 5:
@@ -449,25 +536,24 @@ public class HospitalManagementSystem {
 					System.out.println("Enter the old timeslot : ");
 					String timeO = sc.nextLine();
 					// defaultApts.appointmentExists(docO, dateO, timeO, "reschedule");
-					if (defaultApts.appointmentExists(pid, docO, dateO, timeO, "reschedule")) {
-						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
-						System.out.println("Yes or No?");
-						String decision = sc.nextLine();
-						String newDoc = "";
-						if (decision.toLowerCase().equals("yes")) {
-							System.out.println("Enter the new doctor's name: ");
-							newDoc = sc.nextLine();
-							newDoc = Character.toUpperCase(newDoc.charAt(0)) + newDoc.substring(1).toLowerCase();
-						}
-						System.out.println("Enter the new date : ");
-						String dateR = sc.nextLine();
-						System.out.println("Enter the new timeslot : ");
-						String timeR = sc.nextLine();
-						defaultApts.rescheduleAppointment(pid, docO, dateO, timeO, newDoc, dateR, timeR, decision);
-					}
-					else {
-						System.out.println("Appointment doesn't exist!");  
-					}
+					// if (defaultApts.appointmentExists(pid, docO, dateO, timeO, "reschedule")) {
+					// 	System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
+					// 	System.out.println("Yes or No?");
+					// 	String decision = sc.nextLine();
+					// 	String newDoc = "";
+					// 	if (decision.toLowerCase().equals("yes")) {
+					// 		System.out.println("Enter the new doctor's name: ");
+					// 		newDoc = sc.nextLine();
+					// 		newDoc = Character.toUpperCase(newDoc.charAt(0)) + newDoc.substring(1).toLowerCase();
+					// 	}
+					// 	System.out.println("Enter the new date : ");
+					// 	String dateR = sc.nextLine();
+					// 	System.out.println("Enter the new timeslot : ");
+					// 	String timeR = sc.nextLine();
+					// 	defaultApts.rescheduleAppointment(pid, docO, dateO, timeO, newDoc, dateR, timeR, decision);
+					// } else {
+					// 	System.out.println("Appointment doesn't exist!");
+					// }
 
 					break;
 				case 6:
@@ -479,9 +565,9 @@ public class HospitalManagementSystem {
 					String dateC = sc.nextLine();
 					System.out.println("Enter the cancelled timeslot : ");
 					String timeC = sc.nextLine();
-					defaultApts.appointmentExists(pid, docC, dateC, timeC, "cancel");
+					// defaultApts.appointmentExists(pid, docC, dateC, timeC, "cancel");
 
-					defaultApts.cancelAppointment(pid, docC, dateC, timeC);
+					// defaultApts.cancelAppointment(pid, docC, dateC, timeC);
 					break;
 				case 7:
 					System.out.println("Below are your appointments...");
@@ -489,7 +575,8 @@ public class HospitalManagementSystem {
 					break;
 				case 8:
 					System.out.println("Below are your past appointment records...");
-					defaultApts.viewPastAppointmentOutcomeRecords(pid);;
+					defaultApts.viewPastAppointmentOutcomeRecords(pid);
+					;
 					break;
 				case 9:
 					System.out.println("You have logged out!");
@@ -498,9 +585,8 @@ public class HospitalManagementSystem {
 					System.out.println("Babes choose options 1 - 9 pls :(");
 					break;
 			}
-		} while (choice != 9);	
+		} while (choice != 9);
 
-		
 		// sc.close();
 	}
 
@@ -510,8 +596,7 @@ public class HospitalManagementSystem {
 		int choice = 0;
 
 		MedicalRecordManagement mr = new MedicalRecordManagement();
-
-		
+		AppointmentManagement am = new AppointmentManagement();
 
 		do {
 			DoctorMenu();
@@ -519,7 +604,7 @@ public class HospitalManagementSystem {
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();
 			sc.nextLine();
-			
+
 			switch (choice) {
 				case 1:
 					System.out.println("View Patient Medical Records");
@@ -557,6 +642,19 @@ public class HospitalManagementSystem {
 					break;
 				case 6:
 					System.out.println("View Upcoming Appointments");
+					String doc = "";
+					for (Map<String, String> data : doctorList) {
+
+						// add pre-defined data to list
+
+						String dId = data.get("Staff ID");
+
+						if (dId.equals(did)) {
+							doc = data.get("Name");
+						}
+					}
+
+					am.viewUpcomingAppointments(doc);
 					break;
 				case 7:
 					System.out.println("Record Appointment Outcome...");
@@ -625,9 +723,4 @@ public class HospitalManagementSystem {
 
 	}
 
-
-
-	
-
-	
 }
