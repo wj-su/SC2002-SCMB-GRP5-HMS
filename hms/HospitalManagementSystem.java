@@ -34,6 +34,7 @@ public class HospitalManagementSystem {
 		createPatientList();
 		createDoctorList();
 		createDoctorAvailList();
+		createPharmacistList();
 
 		do {
 
@@ -214,7 +215,7 @@ public class HospitalManagementSystem {
 				// create a map for the row data
 				Map<String, String> dataMap = new HashMap<>();
 
-				boolean isDoctor = false;
+				boolean isPharmacist = false;
 				for (int i = 0; i < headers.length; i++) {
 					// Check if the header is "role" and verify if the role is "Doctor"
 					if (headers[i].equalsIgnoreCase("role")) {
@@ -233,7 +234,7 @@ public class HospitalManagementSystem {
 
 				// only add to the list if the role is "Pharmacist "
 				if (isPharmacist) {
-					PharmacistList.add(dataMap);
+					pharmacistList.add(dataMap);
 				}
 			}
 
