@@ -1,19 +1,19 @@
 package pharmacist;
 public class Medication {
-    private String medicationId;
+    private String medId;
     private String name;
     private int stockLevel;
     private int lowStockAlertLevel;
 
-    public Medication(String medicationId, String name, int stockLevel, int lowStockAlertLevel) {
-        this.medicationId = medicationId;
+    public Medication(String medId, String name, int stockLevel, int lowStockAlertLevel) {
+        this.medId = medId;
         this.name = name;
         updateStockLevel(stockLevel);
         setLowStockAlertLevel(lowStockAlertLevel);
     }
 
-    public String getMedicationId() {
-        return medicationId;
+    public String getmedId() {
+        return medId;
     }
 
     public String getName() {
@@ -54,6 +54,6 @@ public class Medication {
 
     @Override
     public String toString() {
-        return "Medication [ID=" + medicationId + ", Name=" + name + ", Stock Level=" + stockLevel + ", Low Stock Alert=" + lowStockAlertLevel + "]";
+        return "Medication [ID=" + medId + ", Name=" + name + ", Stock Level=" + stockLevel + ", Low Stock Alert=" + lowStockAlertLevel + "]";
     }
 }
