@@ -64,7 +64,13 @@ public class HospitalManagementSystem {
 					break;
 
 				case 3:
-					// Pharmacist
+					System.out.println("\nEnter Pharmacist ID: ");
+					String phid = sc.next();
+					phid = Character.toUpperCase(did.charAt(0)) + did.substring(1);
+					Pharmacist selectedPharmacist = getSelectedPharmacist(phid);
+					if (SelectedPharmacist != null) {
+						PharmacistOption(phid, selectedPharmacist);
+					}
 					break;
 
 				case 4:
@@ -178,6 +184,56 @@ public class HospitalManagementSystem {
 						}
 						doctorAvailability.put(doctorName, dateMap);
 					}
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public static void createPharmacistList() {
+		String csvFile = "hms\\Staff_List.csv"; // converted file path
+		String line;
+		String csvSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			// read the first line as the header
+			String headerLine = br.readLine();
+			if (headerLine == null) {
+				System.out.println("CSV file is empty");
+				return;
+			}
+			String[] headers = headerLine.split(csvSplitBy);
+
+			// read each subsequent line
+			while ((line = br.readLine()) != null) {
+				String[] columns = line.split(csvSplitBy);
+
+				// create a map for the row data
+				Map<String, String> dataMap = new HashMap<>();
+
+				boolean isDoctor = false;
+				for (int i = 0; i < headers.length; i++) {
+					// Check if the header is "role" and verify if the role is "Doctor"
+					if (headers[i].equalsIgnoreCase("role")) {
+						if (i < columns.length && columns[i].equalsIgnoreCase("Pharmacist")) {
+							isPharmacist = true;
+						}
+					}
+
+					// put header as key and cell data as value
+					if (i < columns.length) {
+						dataMap.put(headers[i], columns[i]);
+					} else {
+						dataMap.put(headers[i], ""); // empty string if column is missing
+					}
+				}
+
+				// only add to the list if the role is "Pharmacist "
+				if (isPharmacist) {
+					PharmacistList.add(dataMap);
 				}
 			}
 
@@ -728,6 +784,52 @@ public class HospitalManagementSystem {
 
 	}
 
+		public static void PharmacistOption(String phid, pharmacist ph) {
+
+		Scanner sc = new Scanner(System.in);
+		int choice = 0;
+
+		MedicalRecordManagement mr = new MedicalRecordManagement();
+		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+
+		do {
+    			PharmacistMenu();
+
+			System.out.println("What do you want to do?");
+			choice = sc.nextInt();
+			sc.nextLine();
+
+			switch (choice) {
+				case 1:
+					viewAppointmentOutcomeRecords();
+					break;
+				case 2:
+		            System.out.println("Enter Appointment ID:");
+                    int apptId = sc.nextInt();
+                    sc.nextLine(); 
+                    System.out.println("Enter new status:");
+                    String status = sc.nextLine();
+                    updatePrescriptionStatus(apptId, status);
+                    break;
+				case 3:
+					viewMedicineInventory();
+					break;
+				case 4:
+					System.out.println("Enter Medication ID:");
+                    String medId = sc.nextLine();
+                    System.out.println("Enter quantity needed:");
+                    int qty = sc.nextInt();
+                    submitReplenishmentRequest(medId, qty);
+                    break;
+                default: 
+                    System.out.println("Please choose from 1-4 thank you!!");
+                    break;
+		    } 
+    	}while (choice != 4);
+
+}
+
+
 	public static void PatientMenu() {
 		System.out.println("\nPatient Menu:");
 		System.out.println("- View Medical Record (1)");
@@ -756,5 +858,13 @@ public class HospitalManagementSystem {
 		System.out.println("----------------------------------------------");
 
 	}
-
+	
+	public static void PharmacistMenu(){ 
+	    System.out.println("PharmacistMenu:");
+        	System.out.println("1. View Appointment Outcomes");
+        	System.out.println("2. Update Prescription Status");
+        	System.out.println("3. View Medication Inventory");
+        	System.out.println("4. Submit Replenishment Request");
+        	System.out.println("5. logout");
+	}
 }
