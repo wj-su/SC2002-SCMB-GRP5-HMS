@@ -317,6 +317,31 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	public static Pharmacist getSelectedPharmacist(String phid) {
+    		Pharmacist ph = null;
+    		boolean pharmacistExists = false;
+
+    		for (Map<String, String> data : pharmacistList) {
+        		String phId = data.get("Pharmacist ID");
+        		if (phId.equals(phid)) {
+            			String phName = data.get("Name");
+            			String phContact = data.get("Contact Number"); 
+            			// Create and add Pharmacist
+            			ph = new Pharmacist(phid, phName, phContact);
+            			pharmacistExists = true;
+            			break;
+        		}
+   		}
+
+   		if (!pharmacistExists) {
+        		System.out.println("Pharmacist not found with ID: " + phid);
+        		return null;
+    		}
+
+   		return p;
+	}
+
+
 	public static Patient getSelectedPatient(String pid) {
 
 		// just to initialise
@@ -785,7 +810,7 @@ public class HospitalManagementSystem {
 
 	}
 
-		public static void PharmacistOption(String phid, pharmacist ph) {
+		public static void PharmacistOption(String phid, Pharmacist ph) {
 
 		Scanner sc = new Scanner(System.in);
 		int choice = 0;
