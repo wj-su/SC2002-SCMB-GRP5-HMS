@@ -805,13 +805,12 @@ public class HospitalManagementSystem {
 					viewAppointmentOutcomeRecords();
 					break;
 				case 2:
-		           		System.out.println("Enter Appointment ID:");
-                    			int apptId = sc.nextInt();
-                    			sc.nextLine(); 
-                    			System.out.println("Enter new status:");
+		           		System.out.println("Enter Prescription ID:");
+                    			String prescriptionId = sc.nextLine();
+                    			System.out.println("Enter new status (Pending/Dispensed):");
                     			String status = sc.nextLine();
-                    			updatePrescriptionStatus(apptId, status);
-                    			break;
+                    			selectedPharmacist.updatePrescriptionStatus(prescriptionId, status);
+                   			break;
 				case 3:
 					viewMedicineInventory();
 					break;
