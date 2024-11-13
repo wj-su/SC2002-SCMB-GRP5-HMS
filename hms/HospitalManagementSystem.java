@@ -816,18 +816,18 @@ public class HospitalManagementSystem {
 					break;
 				case 4:
 					System.out.println("Enter Medication ID:");
-                    String medId = sc.nextLine();
-                    System.out.println("Enter quantity needed:");
-                    int qty = sc.nextInt();
-                    submitReplenishmentRequest(medId, qty);
-                    break;
-                default: 
-                    System.out.println("Please choose from 1-4 thank you!!");
-                    break;
-		    } 
-    	}while (choice != 4);
+                    			String medId = sc.nextLine();
+                    			System.out.println("Enter quantity needed:");
+                    			int qty = sc.nextInt();
+                    			submitReplenishmentRequest(medId, qty);
+                    			break;
+                		default: 
+                    			System.out.println("Please choose from 1-4 thank you!!");
+                    			break;
+		    	} 
+    		}while (choice != 4);
 
-}
+	}
 
 
 	public static void PatientMenu() {
