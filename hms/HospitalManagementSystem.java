@@ -67,7 +67,7 @@ public class HospitalManagementSystem {
 				case 3:
 					System.out.println("\nEnter Pharmacist ID: ");
 					String phid = sc.next();
-					phid = Character.toUpperCase(did.charAt(0)) + did.substring(1);
+					phid = Character.toUpperCase(phid.charAt(0)) + phid.substring(1);
 					Pharmacist selectedPharmacist = getSelectedPharmacist(phid);
 					if (SelectedPharmacist != null) {
 						PharmacistOption(phid, selectedPharmacist);
@@ -805,13 +805,13 @@ public class HospitalManagementSystem {
 					viewAppointmentOutcomeRecords();
 					break;
 				case 2:
-		            System.out.println("Enter Appointment ID:");
-                    int apptId = sc.nextInt();
-                    sc.nextLine(); 
-                    System.out.println("Enter new status:");
-                    String status = sc.nextLine();
-                    updatePrescriptionStatus(apptId, status);
-                    break;
+		           		System.out.println("Enter Appointment ID:");
+                    			int apptId = sc.nextInt();
+                    			sc.nextLine(); 
+                    			System.out.println("Enter new status:");
+                    			String status = sc.nextLine();
+                    			updatePrescriptionStatus(apptId, status);
+                    			break;
 				case 3:
 					viewMedicineInventory();
 					break;
