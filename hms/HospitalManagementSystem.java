@@ -326,7 +326,7 @@ public class HospitalManagementSystem {
 
 		do {
 			for (Map<String, String> data : pharmacistList) {
-				String phId = data.get("Pharmacist ID");
+				String phId = data.get("Staff ID");
 				if (phId.equals(phid)) {
 					String phName = data.get("Name");
 					String phContact = data.get("Contact Number");
@@ -838,21 +838,21 @@ public class HospitalManagementSystem {
 					outcome.viewAllOutcomeRecords();
 					break;
 				case 2:
-					System.out.println("Enter Prescription ID:");
-					String prescriptionId = sc.nextLine();
+					System.out.println("Enter Appointment ID:");
+					String apptId = sc.nextLine();
 					System.out.println("Enter new status (Pending/Dispensed):");
 					String status = sc.nextLine();
 					ph.updatePrescriptionStatus(prescriptionId, status);
 					break;
 				case 3:
-					viewMedicineInventory(); 
+					md.viewMedicationInventory(medicineList); 
 					break;
 				case 4:
 					System.out.println("Enter Medication ID:");
 					String medId = sc.nextLine();
 					System.out.println("Enter quantity needed:");
 					int qty = sc.nextInt();
-					submitReplenishmentRequest(medId, qty);
+					// submitReplenishmentRequest(medId, qty);
 					break;
 				default:
 					System.out.println("Please choose from 1-4 thank you!!");

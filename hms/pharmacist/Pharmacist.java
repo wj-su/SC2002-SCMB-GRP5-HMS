@@ -69,17 +69,20 @@ public class Pharmacist {
     }
 
     public static void submitReplenishmentRequest(String medId, int qty) {
-    if (medicineInventory.containsKey(medId)) {
-        int currentQty = medicineInventory.get(medId);
-        medicineInventory.put(medId, currentQty + qty);  // Update inventory
-        System.out.println("Replenishment successful for Medicine ID: " + medId + ". Total quantity now: " + (currentQty + qty));
-    } else {
-        System.out.println("Medicine ID " + medId + " not found in inventory.");
+        if (medicineInventory.containsKey(medId)) {
+            int currentQty = medicineInventory.get(medId);
+            medicineInventory.put(medId, currentQty + qty); // Update inventory
+            System.out.println("Replenishment successful for Medicine ID: " + medId + ". Total quantity now: "
+                    + (currentQty + qty));
+        } else {
+            System.out.println("Medicine ID " + medId + " not found in inventory.");
+        }
     }
-}
+
     @Override
     public String toString() {
-        return "Pharmacist ID: " + getPharmacistId() + ", Name: " + getName() + ", Age: " + getAge() + ", Gender: " + getGender()
+        return "Pharmacist ID: " + getPharmacistId() + ", Name: " + getName() + ", Age: " + getAge() + ", Gender: "
+                + getGender()
                 + ", Contact Number: " + getContactNumber();
     }
 }
