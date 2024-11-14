@@ -15,11 +15,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import patient.Appointment;
 import patient.Patient;
+import pharmacist.Medication;
+import pharmacist.Pharmacist;
+import pharmacist.Prescription;
 
 public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
 	static List<Map<String, String>> doctorList = new ArrayList<>();
+	static List<Map<String, String>> pharmacistList = new ArrayList<>();
 	static List<Map<String, String>> medicineList = new ArrayList<>();
 	static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
 	// static Appointment defaultApts = new Appointment();
@@ -69,7 +73,7 @@ public class HospitalManagementSystem {
 					String phid = sc.next();
 					phid = Character.toUpperCase(phid.charAt(0)) + phid.substring(1);
 					Pharmacist selectedPharmacist = getSelectedPharmacist(phid);
-					if (SelectedPharmacist != null) {
+					if (selectedPharmacist != null) {
 						PharmacistOption(phid, selectedPharmacist);
 					}
 					break;
@@ -192,7 +196,6 @@ public class HospitalManagementSystem {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static void createPharmacistList() {
 		String csvFile = "hms\\Staff_List.csv"; // converted file path
@@ -318,29 +321,32 @@ public class HospitalManagementSystem {
 	}
 
 	public static Pharmacist getSelectedPharmacist(String phid) {
-    		Pharmacist ph = null;
-    		boolean pharmacistExists = false;
+		Pharmacist ph = null;
+		boolean pharmacistExists = false;
 
-    		for (Map<String, String> data : pharmacistList) {
-        		String phId = data.get("Pharmacist ID");
-        		if (phId.equals(phid)) {
-            			String phName = data.get("Name");
-            			String phContact = data.get("Contact Number"); 
-            			// Create and add Pharmacist
-            			ph = new Pharmacist(phid, phName, phContact);
-            			pharmacistExists = true;
-            			break;
-        		}
-   		}
+		do {
+			for (Map<String, String> data : pharmacistList) {
+				String phId = data.get("Pharmacist ID");
+				if (phId.equals(phid)) {
+					String phName = data.get("Name");
+					String phContact = data.get("Contact Number");
+					String phAge = data.get("Age");
+					String phGender = data.get("Gender");
+					// Create and add Pharmacist
+					ph = new Pharmacist(phid, phName, phAge, phGender, phContact);
+					pharmacistExists = true;
+					break;
+				}
+			}
 
-   		if (!pharmacistExists) {
-        		System.out.println("Pharmacist not found with ID: " + phid);
-        		return null;
-    		}
+			if (pharmacistExists == false) {
+				System.out.println("Pharmacist not found with ID: " + phid);
+				return null;
+			}
 
-   		return p;
+			return ph;
+		} while (pharmacistExists == true);
 	}
-
 
 	public static Patient getSelectedPatient(String pid) {
 
@@ -589,12 +595,12 @@ public class HospitalManagementSystem {
 						// doc = Character.toUpperCase(doc.charAt(0)) + doc.substring(1).toLowerCase();
 						String normalizedDoc = doc.toLowerCase();
 
-						// check if doctor exists in doctorAvailability 
+						// check if doctor exists in doctorAvailability
 						boolean doctorFound = false;
 						for (String doctorName : doctorAvailability.keySet()) {
 							if (doctorName.toLowerCase().equals(normalizedDoc)) {
 								doctorFound = true;
-								doc = doctorName; 
+								doc = doctorName;
 								break;
 							}
 						}
@@ -741,8 +747,8 @@ public class HospitalManagementSystem {
 					String dateInput = sc.nextLine();
 					System.out.println("Enter Time: ");
 					String timeInput = sc.nextLine();
-					am.setAvail(d.getName(),dateInput, timeInput, doctorAvailability);
-					//System.out.println("Set Availability for Appointments");
+					am.setAvail(d.getName(), dateInput, timeInput, doctorAvailability);
+					// System.out.println("Set Availability for Appointments");
 					break;
 				case 5:
 					System.out.println("Accept or Decline Appointment Requests");
@@ -810,16 +816,18 @@ public class HospitalManagementSystem {
 
 	}
 
-		public static void PharmacistOption(String phid, Pharmacist ph) {
+	public static void PharmacistOption(String phid, Pharmacist ph) {
 
 		Scanner sc = new Scanner(System.in);
 		int choice = 0;
 
 		MedicalRecordManagement mr = new MedicalRecordManagement();
 		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+		Medication md = new Medication();
+		Prescription pcp = new Prescription();
 
 		do {
-    			PharmacistMenu();
+			PharmacistMenu();
 
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();
@@ -827,33 +835,32 @@ public class HospitalManagementSystem {
 
 			switch (choice) {
 				case 1:
-					viewAppointmentOutcomeRecords();
+					outcome.viewAllOutcomeRecords();
 					break;
 				case 2:
-		           		System.out.println("Enter Prescription ID:");
-                    			String prescriptionId = sc.nextLine();
-                    			System.out.println("Enter new status (Pending/Dispensed):");
-                    			String status = sc.nextLine();
-                    			selectedPharmacist.updatePrescriptionStatus(prescriptionId, status);
-                   			break;
+					System.out.println("Enter Prescription ID:");
+					String prescriptionId = sc.nextLine();
+					System.out.println("Enter new status (Pending/Dispensed):");
+					String status = sc.nextLine();
+					ph.updatePrescriptionStatus(prescriptionId, status);
+					break;
 				case 3:
-					viewMedicineInventory();
+					viewMedicineInventory(); 
 					break;
 				case 4:
 					System.out.println("Enter Medication ID:");
-                    			String medId = sc.nextLine();
-                    			System.out.println("Enter quantity needed:");
-                    			int qty = sc.nextInt();
-                    			submitReplenishmentRequest(medId, qty);
-                    			break;
-                		default: 
-                    			System.out.println("Please choose from 1-4 thank you!!");
-                    			break;
-		    	} 
-    		}while (choice != 4);
+					String medId = sc.nextLine();
+					System.out.println("Enter quantity needed:");
+					int qty = sc.nextInt();
+					submitReplenishmentRequest(medId, qty);
+					break;
+				default:
+					System.out.println("Please choose from 1-4 thank you!!");
+					break;
+			}
+		} while (choice != 4);
 
 	}
-
 
 	public static void PatientMenu() {
 		System.out.println("\nPatient Menu:");
@@ -883,13 +890,13 @@ public class HospitalManagementSystem {
 		System.out.println("----------------------------------------------");
 
 	}
-	
-	public static void PharmacistMenu(){ 
-	    System.out.println("PharmacistMenu:");
-        	System.out.println("1. View Appointment Outcomes");
-        	System.out.println("2. Update Prescription Status");
-        	System.out.println("3. View Medication Inventory");
-        	System.out.println("4. Submit Replenishment Request");
-        	System.out.println("5. logout");
+
+	public static void PharmacistMenu() {
+		System.out.println("PharmacistMenu:");
+		System.out.println("1. View Appointment Outcomes");
+		System.out.println("2. Update Prescription Status");
+		System.out.println("3. View Medication Inventory");
+		System.out.println("4. Submit Replenishment Request");
+		System.out.println("5. logout");
 	}
 }

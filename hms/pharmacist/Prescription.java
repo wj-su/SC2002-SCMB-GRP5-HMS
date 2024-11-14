@@ -6,6 +6,10 @@ public class Prescription {
     private String dosage;
     private String status; // status: pending or dispensed 
 
+    public Prescription() {
+        
+    }
+
     public Prescription(String prescriptionId, String appointmentId, String medicationName, String dosage) {
         this.prescriptionId = prescriptionId;
         this.appointmentId = appointmentId;

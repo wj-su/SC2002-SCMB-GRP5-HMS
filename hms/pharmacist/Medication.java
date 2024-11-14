@@ -5,6 +5,10 @@ public class Medication {
     private int stockLevel;
     private int lowStockAlertLevel;
 
+    public Medication() {
+        
+    }
+
     public Medication(String medId, String name, int stockLevel, int lowStockAlertLevel) {
         this.medId = medId;
         this.name = name;
