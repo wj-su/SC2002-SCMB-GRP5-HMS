@@ -16,7 +16,36 @@ public class AppointmentOutcomeRecord {
     private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
     public AppointmentOutcomeRecord() {
+        // Map<Integer, Map<String, Object>> patientP1001Appointments = new HashMap<>();
 
+        // // Create appointment record with Appointment ID "343"
+        // Map<String, Object> appointmentDetails = new HashMap<>();
+        
+        // // Adding appointment details
+        // appointmentDetails.put("date", "12-Nov-2024");  // Appointment Date
+        // appointmentDetails.put("stype", "Consultation");  // Service Type
+        
+        // // Create a list of medications
+        // List<Map<String, String>> medications = new ArrayList<>();
+        // Map<String, String> medication = new HashMap<>();
+        // medication.put("quantity", "15");  // Quantity of the medication
+        // medication.put("name", "Painkiller");  // Medication Name
+        // medication.put("status", "Pending");  // Medication Status
+        
+        // // Add the medication to the list
+        // medications.add(medication);
+        
+        // // Add medications to the appointment details
+        // appointmentDetails.put("pmeds", medications);
+        
+        // // Adding consultation notes
+        // appointmentDetails.put("cnotes", "IDK");
+
+        // // Add the appointment details for Appointment ID 343 to the patient's records
+        // patientP1001Appointments.put(343, appointmentDetails);
+
+        // // Add this patient's appointments to the main records (outrecs)
+        // outcomeRecords.put("P1001", patientP1001Appointments);
     }
 
     public void setServiceType(String st) {

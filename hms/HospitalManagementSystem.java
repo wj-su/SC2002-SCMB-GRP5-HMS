@@ -619,7 +619,7 @@ public class HospitalManagementSystem {
 		ExportData exportData = new ExportData();
 		AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord();
 		BillingDetails bill = new BillingDetails();
-
+		bill.initializeBills(medicineList);
 
 		do {
 			p.displayMenu();
@@ -790,15 +790,20 @@ public class HospitalManagementSystem {
 					exportData.patientViewOrExportRecords(pid, AppointmentOutcomeRecord.getAllOutcomeRecords(), true);
 					break;
 
-					case 10:
+				case 10:
 					System.out.println("Viewing existing bills...");
-					System.out.println("Enter Appointment ID:");
-					int apptId = sc.nextInt();
-					sc.nextLine();
-					bill.ViewBillingInfo(pid, apptId, medicineList);
+					bill.viewAllBills(pid);
 					break;
 
 				case 11:
+					System.out.println("Paying a specific existing bill...");
+					System.out.println("Enter Billing ID:");
+					int billId = sc.nextInt();
+					sc.nextLine();
+					bill.makePayment(billId);
+					break;
+
+				case 12:
 					System.out.println("You have logged out!");
 					return;
 
