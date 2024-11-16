@@ -54,7 +54,7 @@ public class InventoryManagement {
 
         for (Map<String, String> medicine : medicineList) {
             if (medicine.get("Medicine Name").equalsIgnoreCase(medicineName)) {
-                medicine.put("Initial Stock Level", String.valueOf(newStockLevel));
+                medicine.put("Initial Stock", String.valueOf(newStockLevel));
                 found = true;
                 System.out.println("Updated stock level for " + medicineName + " to " + newStockLevel);
                 break;
@@ -91,21 +91,20 @@ public class InventoryManagement {
             if (request.get("Medicine Name").equalsIgnoreCase(medicineName)) {
                 request.put("Status", "Approved");
                 System.out.println("Updated replenishment request for: " + medicineName);
-                found = true;
+
+                for (Map<String, String> medicine : medicineList) {
+                    if (medicine.get("Medicine Name").equalsIgnoreCase(medicineName)) {
+                        medicine.put("Initial Stock", request.get("Requested Quantity"));
+                        System.out.println("Updated stock level for " + medicineName + " to " + request.get("Requested Quantity") );
+                        break;
+                    }
+                }
+
+
                 break;
             }
         }
-        if (found){
-            for (Map<String, String> medicine : medicineList) {
-                if (medicine.get("Medicine Name").equalsIgnoreCase(medicineName)) {
-                    int initialStock = Integer.parseInt(medicine.get("Initial Stock"));
-                    medicine.put("Initial Stock Level", String.valueOf(initialStock * 2));
-                    System.out.println("Updated stock level for " + medicineName + " to " + initialStock*2 );
-                    break;
-                }
-            }
-    
-        }
+
         if (replenishmentRequests.isEmpty()) {
             System.out.println("No medications require replenishment.");
         } else {

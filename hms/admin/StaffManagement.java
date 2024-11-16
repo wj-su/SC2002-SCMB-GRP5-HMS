@@ -77,11 +77,12 @@ public class StaffManagement {
                     staff.put("Role", role);
                     staff.put("Gender", gender);
                     staff.put("Age", String.valueOf(age));
+                    staffFound = true;
+                    System.out.println("Staff member updated successfully: " + name);
+                    break;
                 }
 
-                staffFound = true;
-                System.out.println("Staff member updated successfully: " + name);
-                break;
+
             }
         } else {
             for (Map<String, String> staff : staffList) {
