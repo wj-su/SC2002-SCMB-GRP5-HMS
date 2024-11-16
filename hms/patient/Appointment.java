@@ -21,7 +21,7 @@ public class Appointment {
     private int rating;
 
     private static List<Appointment> appointments = new ArrayList<>();
-
+    private Map<String, Map<Integer, Map<String, Object>>> aptOutcomeRecs = new HashMap<>();
     /**
      * Default constructor.
      */
