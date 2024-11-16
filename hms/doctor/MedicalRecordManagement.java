@@ -35,7 +35,7 @@ public class MedicalRecordManagement {
 
         // Iterate over the patientList
         for (Map<String, String> patientData : patientList) {
-            System.out.println("Checking patient: " + patientData);
+            
 
             String id = patientData.get("Patient ID");
 

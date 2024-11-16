@@ -14,6 +14,8 @@ public class Appointment {
     private String date;
     private String timeslot;
     private String status;
+    private int rating;
+    
 
     private static List<Appointment> appointments = new ArrayList<>();
 
@@ -30,6 +32,7 @@ public class Appointment {
         this.date = date;
         this.timeslot = time;
         this.status = status; // Pending -> Confirmed/Accepted -> Declined/Canceled -> Completed
+        this.rating = -1;
     }
 
     public void setId(int id) {
@@ -82,6 +85,14 @@ public class Appointment {
 
     public static List<Appointment> getAllAppointments() {
         return appointments;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getRating() {
+        return rating;
     }
 
     public void viewAvailableAppt(Map<String, Map<String, List<String>>> doctorAvailability) {
@@ -336,4 +347,33 @@ public class Appointment {
             }
         }
     }
+
+    public void rateDoctorAfterAppointment(String patientId, int appointmentId, int rating) {
+        if (rating < 1 || rating > 5) {
+            System.out.println("Invalid rating. Please rate between 1 and 5.");
+            return;
+        }
+    
+        // Fetch the list of appointments for the patient
+        for (Appointment appt : appointments) {
+            if (appt.getPatientId().equals(patientId) && appt.getId() == appointmentId) {
+                // Check if the appointment has been completed
+                if (appt.getStatus().equals("Completed")) {
+                    // If the appointment is completed, we can rate
+    
+                    // set the rating for this appointment
+                    appt.setRating(rating);
+                    System.out.println("Thank you for your feedback!");
+                    return;
+                } else {
+                    System.out.println("You cannot rate the doctor yet. Please complete your appointment first.");
+                    return;
+                }
+            }
+        }
+    
+        // If no appointment was found for the patient with the given ID and appointment ID
+        System.out.println("No appointment found for patient with the given appointment ID.");
+    }
+    
 }

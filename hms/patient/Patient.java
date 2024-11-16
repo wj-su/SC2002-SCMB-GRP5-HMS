@@ -91,7 +91,8 @@ public class Patient implements User {
         System.out.println("|- Export your own data                   (9) |");
         System.out.println("|- View Billing Info                      (10) |");
         System.out.println("|- Pay A Bill                             (11) |");
-        System.out.println("|- Logout                                 (12) |");
+        System.out.println("|- Rate Doctor                            (12) |");
+        System.out.println("|- Logout                                 (13) |");
         System.out.println("----------------------------------------------");
     }
 
