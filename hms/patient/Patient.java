@@ -1,10 +1,12 @@
 package patient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import user.User;
 
-public class Patient {
+public class Patient implements User {
     private String id;
     private String name;
     private String dob;
@@ -13,12 +15,15 @@ public class Patient {
     private String blood;
     private List<String> pastDiagnoses;
     private List<String> pastTreatments;
+    private String password;
+    private String role;
 
     public Patient() {
         // just to initialise empty constructor
     }
 
-    public Patient(String id, String name, String dob, List<String> ci, String gender, String blood, List<String> pd, List<String> pt) {
+    public Patient(String id, String name, String dob, List<String> ci, String gender, String blood, List<String> pd,
+            List<String> pt) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -27,6 +32,65 @@ public class Patient {
         this.blood = blood;
         this.pastDiagnoses = new ArrayList<>(pd);
         this.pastTreatments = new ArrayList<>(pt);
+        this.role = "Patient";
+        this.password = "password";
+    }
+
+    public static Map<String, Boolean> loginStatus = new HashMap<>();
+
+    @Override
+    public boolean isFirstLogin() {
+        return loginStatus.getOrDefault(this.getId(), true); // Default to true
+    }
+
+    @Override
+    public void setFirstLogin(boolean firstLogin) {
+        loginStatus.put(this.getId(), firstLogin);
+    }
+
+    @Override
+    public String getRole() {
+        return this.role;
+    }
+
+    @Override
+    public boolean login(String pw) {
+        return this.password.equals(pw);
+    }
+
+    @Override
+    public void changePassword(String pw, List<Map<String, String>> selectedList) {
+        this.password = pw; // Update the local instance variable
+    
+        // Update the password and FirstLogin fields in the selected list
+        for (Map<String, String> patientData : selectedList) {
+            if (patientData.get("Patient ID").equals(this.getId())) {
+                patientData.put("Password", pw); // Update the password in the list
+                patientData.put("FirstLogin", "false"); // Update the first login status
+                break;
+            }
+        }
+    
+        System.out.println("Password has been changed successfully.");
+    }
+    
+
+    @Override
+    public void displayMenu() {
+        System.out.println("---------------------------------------------");
+        System.out.println("|                Patient Menu                 |");
+        System.out.println("----------------------------------------------");
+        System.out.println("|- View Medical Record                    (1) |");
+        System.out.println("|- Update Personal Information            (2) |");
+        System.out.println("|- View Available Appointment Slots       (3) |");
+        System.out.println("|- Schedule an Appointment                (4) |");
+        System.out.println("|- Reschedule an Appointment              (5) |");
+        System.out.println("|- Cancel an Appointment                  (6) |");
+        System.out.println("|- View Scheduled Appointments            (7) |");
+        System.out.println("|- View Past Appointments Outcome Records (8) |");
+        System.out.println("|- Export your own data                   (9) |");
+        System.out.println("|- Logout                                 (10) |");
+        System.out.println("----------------------------------------------");
     }
 
     public void setId(String id) {
@@ -104,27 +168,27 @@ public class Patient {
         String updatedEmail = email.equalsIgnoreCase("no") ? this.contactInformation.get(0) : email;
         String updatedPhone = phone.equalsIgnoreCase("no") ? this.contactInformation.get(1) : phone;
         String updatedContactInfo = updatedEmail + "|" + updatedPhone;
-    
+
         for (Map<String, String> patientData : patientList) {
             String pid = patientData.get("Patient ID");
-    
+
             if (pid != null && pid.equalsIgnoreCase(id)) {
                 patientData.put("Contact Information", updatedContactInfo);
-    
+
                 System.out.println("Updated Contact Information: " + patientData.get("Contact Information"));
                 System.out.println("========================\n");
-                break; 
+                break;
             }
         }
     }
-    
 
     public void viewMedicalRecord() {
         System.out.println("Patient's Id: " + getId());
         System.out.println("Patient's Name: " + getName());
         System.out.println("Patient's Date of Birth: " + getDOB());
         System.out.println("Patient's Gender: " + getGender());
-        System.out.println("Patient's Contact Information: " + getContactInformation().get(1) + " (phone) & " + getContactInformation().get(0) + " (email)");
+        System.out.println("Patient's Contact Information: " + getContactInformation().get(1) + " (phone) & "
+                + getContactInformation().get(0) + " (email)");
         System.out.println("Patient's Blood Type: " + getBlood());
         System.out.println("Patient's Past Diagnoses and Treatments: ");
         System.out.println("----- Past Diagnoses ----- ");

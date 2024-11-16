@@ -324,10 +324,10 @@ public class Appointment {
                     System.out.println("Appointment Date: " + details.get("date"));
                     System.out.println("Appointment Service: " + details.get("stype"));
 
-                    Map<String, String> prescribedMed = (Map<String, String>) details.get("pmeds");
-                    if (prescribedMed != null) {
-                        System.out.println("Prescribed Medication: " + prescribedMed.get("name") + " ("
-                                + prescribedMed.get("status") + ")");
+                    List<Map<String, String>> medications = (List<Map<String, String>>) details.get("pmeds");
+                    System.out.println("Prescribed Medications:");
+                    for (Map<String, String> med : medications) {
+                        System.out.println(" - " + med.get("name") + " (" + med.get("status") + ")");
                     }
 
                     System.out.println("Consultation Notes: " + details.get("cnotes"));

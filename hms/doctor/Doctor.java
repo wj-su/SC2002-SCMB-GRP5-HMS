@@ -1,63 +1,90 @@
 package doctor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import patient.Appointment;
+import staff.Staff;
+import user.User;
 
-public class Doctor {
-    private String doctorId;
-    private String name;
-    private String gender;
-    private String age;
-    private String contactNumber;
-    private List<String> availDateTime;
+public class Doctor extends Staff implements User {
     private List<Appointment> appointments;
-    // private Map<String, MedicalRecordManagement> medicalRecords;
+    private String role;
+    private String password;
 
-    public Doctor(String doctorId, String name, String age, String gender, String contactNumber,
-            List<String> availDateTime) {
-        this.doctorId = doctorId;
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
-        this.contactNumber = contactNumber;
-        this.availDateTime = availDateTime;
-        // this.appointments = new ArrayList<>();
-        // this.medicalRecords = new HashMap<>();
+    public Doctor(String doctorId, String name, String age, String gender) {
+        super(doctorId, name, age, gender);
+        this.role = "Doctor";
+        this.password = "password";
     }
 
-    public String getDoctorId() {
-        return doctorId;
+    public static Map<String, Boolean> loginStatus = new HashMap<>();
+
+    @Override
+    public boolean isFirstLogin() {
+        return loginStatus.getOrDefault(getStaffId(), true); // Default to true
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public void setFirstLogin(boolean firstLogin) {
+        loginStatus.put(this.getStaffId(), firstLogin);
     }
 
-    public String getAge() {
-        return age;
+
+    @Override
+    public boolean login(String pw) {
+        return this.password.equals(pw);
     }
 
-    public String getGender() {
-        return gender;
+    @Override
+    public void changePassword(String pw, List<Map<String, String>> selectedList) {
+        this.password = pw; // Update the local instance variable
+    
+        // Update the password and FirstLogin fields in the selected list
+        for (Map<String, String> doctorData : selectedList) {
+            if (doctorData.get("Staff ID").equals(this.getStaffId())) {
+                doctorData.put("Password", pw); // Update the password in the list
+                doctorData.put("FirstLogin", "false"); // Update the first login status
+                break;
+            }
+        }
+    
+        System.out.println("Password has been changed successfully.");
     }
 
-    public String getContactNumber() {
-        return contactNumber;
+    @Override
+    public void displayMenu() {
+        System.out.println("---------------------------------------------");
+        System.out.println("|                Doctor Menu                 |");
+        System.out.println("----------------------------------------------");
+        System.out.println("|  - View Patient Medical Records        (1) | ");
+        System.out.println("|  - Update Patient Medical Records      (2) | ");
+        System.out.println("|  - View Personal Schedule              (3) | ");
+        System.out.println("|  - Set Availability for Appointments   (4) | ");
+        System.out.println("|  - Accept/Decline Appointment Requests (5) | ");
+        System.out.println("|  - View Upcoming Appointments          (6) | ");
+        System.out.println("|  - Record Appointment Outcome          (7) | ");
+        System.out.println("|  - Logout                              (8) | ");
+        System.out.println("----------------------------------------------");
+
     }
 
-    public List<String> getAvailDateTime() {
-        return availDateTime;
+    @Override
+    public String getRole() {
+        return this.role;
     }
 
     public void viewPersonalSchedule(String date) {
         this.appointments = Appointment.getAllAppointments();
         System.out.println("Personal Appointments for Dr. " + getName());
-    
+
         boolean foundAppointments = false;
-    
+
         for (Appointment apt : appointments) {
-            // Check if the appointment is for this doctor, is on the specified date, and is confirmed
-            if (apt.getDoctor().equals(getName()) && apt.getDate().equals(date) && apt.getStatus().equals("Confirmed")) {
+            // Check if the appointment is for this doctor, is on the specified date, and is
+            // confirmed
+            if (apt.getDoctor().equals(getName()) && apt.getDate().equals(date)
+                    && apt.getStatus().equals("Confirmed")) {
                 foundAppointments = true;
                 System.out.println("Patient Id: " + apt.getPatientId());
                 System.out.println("Appointment Id: " + apt.getId());
@@ -67,17 +94,11 @@ public class Doctor {
                 System.out.println("\n");
             }
         }
-    
+
         // If no appointments were found, display a message
         if (!foundAppointments) {
             System.out.println("No appointments found for Dr. " + getName() + " on " + date);
         }
     }
-    
-    @Override
 
-    public String toString() {
-        return "Doctor ID: " + getDoctorId() + ", Name: " + getName() + ", Age: " + age + ", Gender: " + getGender()
-                + ", Contact Number: " + getContactNumber() + ", Available Dates: " + getAvailDateTime();
-    }
 }

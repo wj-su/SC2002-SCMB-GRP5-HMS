@@ -1,4 +1,6 @@
-﻿Medicine Name,Initial Stock,Low Stock Level Alert
-Paracetamol,100,20
-Ibuprofen,50,10
-Amoxicillin,75,15
+﻿Medicine Name,Initial Stock,Low Stock Level Alert,Price
+Paracetamol,100,20,0.25
+Ibuprofen,9,10,0.36
+Amoxicillin,75,15,0.24
+Painkiller,50,5,0.5
+Antiobiotics,90,30,0.4

@@ -1,5 +1,6 @@
 package pharmacist;
 
+import static java.lang.Integer.parseInt;
 import java.util.List;
 import java.util.Map;
 
@@ -60,29 +61,27 @@ public class Medication {
     }
 
     public void viewMedicationInventory(List<Map<String, String>> medicineList) {
+        if (medicineList.isEmpty()) {
+            System.out.println("The medicine list is empty. Please load data first.");
+            return;
+        }
+    
         for (Map<String, String> medicineData : medicineList) {
-            System.out.println("Checking medication: " + medicineData);
-
-            System.out.println("\n=== Medication Details ===");
-
-            
+            System.out.println("=== Medication Details ===");
+    
             String mn = medicineData.getOrDefault("Medicine Name", "N/A");
             String is = medicineData.getOrDefault("Initial Stock", "N/A");
             String ls = medicineData.getOrDefault("Low Stock Level Alert", "N/A");
-            
-
-            // Display each detail with a label
+            String pr = medicineData.getOrDefault("Price", "N/A");
+    
             System.out.println("Medicine Name           : " + mn);
             System.out.println("Initial Stock           : " + is);
             System.out.println("Low Stock Level Alert   : " + ls);
+            System.out.println("Price                   : " + pr);
+            if(parseInt(is) <= parseInt(ls)){
+                System.out.println("Your current stock quantity is LOW. Please submit replenishment request to admin!");
+            }
             System.out.println("========================\n");
         }
-
-    }
-
-    @Override
-    public String toString() {
-        return "Medication [ID=" + medId + ", Name=" + name + ", Stock Level=" + stockLevel + ", Low Stock Alert="
-                + lowStockAlertLevel + "]";
     }
 }

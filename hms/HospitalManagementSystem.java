@@ -1,3 +1,6 @@
+import admin.Administrator;
+import admin.InventoryManagement;
+import admin.StaffManagement;
 import doctor.AppointmentManagement;
 import doctor.AppointmentOutcomeRecord;
 import doctor.Doctor;
@@ -18,74 +21,352 @@ import patient.Patient;
 import pharmacist.Medication;
 import pharmacist.Pharmacist;
 import pharmacist.Prescription;
+import user.User;
 
 public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
+	static List<Map<String, String>> staffList = new ArrayList<>();
 	static List<Map<String, String>> doctorList = new ArrayList<>();
 	static List<Map<String, String>> pharmacistList = new ArrayList<>();
 	static List<Map<String, String>> medicineList = new ArrayList<>();
 	static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
-	// static Appointment defaultApts = new Appointment();
-	// static AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+	static List<Map<String, String>> replenishmentRequests = new ArrayList<>();
+	static Map<String, String> loginCredentials = new HashMap<>();
 
 	public static void main(String[] args) {
 
-		// Testing the functions! Remove when Daniel is done with his login page
 		Scanner sc = new Scanner(System.in);
-		int identity;
+		String hospitalId;
 
 		createPatientList();
 		createDoctorList();
 		createDoctorAvailList();
 		createPharmacistList();
+		createStaffList();
+		createMedicineList();
 
 		do {
 
-			System.out.println("\nWho are you?"
-					+ "\n(1) Patient" + "\n(2) Doctor" + "\n(3) Pharmacist" + "\n(4) Administrator" + "\n(0) Quit");
-			identity = sc.nextInt();
+			System.out.println("Enter Hospital ID (Enter -1 to quit): ");
+			hospitalId = sc.next();
 
-			switch (identity) {
-				case 1:
-					System.out.println("\nEnter Patient ID: ");
-					String pid = sc.next();
-					pid = Character.toUpperCase(pid.charAt(0)) + pid.substring(1);
-					Patient selectedPatient = getSelectedPatient(pid);
-					if (selectedPatient != null) {
-						PatientOption(pid, selectedPatient);
+			if (!hospitalId.equals("-1")) {
+				System.out.println("Enter Password: ");
+				String password = sc.next();
+				User user = authenticate(hospitalId, password);
+				if (user != null) {
+					System.out.println("Login successful as " + user.getRole());
+					if (user instanceof Patient) {
+						Patient p = (Patient) user;
+						if (user.isFirstLogin()) {
+							System.out.println("Please change your password since this is your first time logging in:");
+							String newPw = sc.next();
+							user.changePassword(newPw, patientList);
+							loginCredentials.put(hospitalId, newPw);
+							user.setFirstLogin(false);
+						} else {
+							System.out.println("Do you want to change your password? (y/n)");
+							String opt = sc.next();
+
+							if (opt.equalsIgnoreCase("y")) {
+								System.out.println("Please enter your new password:");
+								String newPw = sc.next();
+								user.changePassword(newPw, patientList);
+								loginCredentials.put(hospitalId, newPw);
+							}
+						}
+						PatientOption(hospitalId, p);
+						System.out.println("Patient authenticated: " + p.getName());
+					} else if (user instanceof Doctor) {
+						Doctor d = (Doctor) user;
+						if (user.isFirstLogin()) {
+							System.out.println("Please change your password since this is your first time logging in:");
+							String newPw = sc.next();
+							user.changePassword(newPw, staffList);
+							loginCredentials.put(hospitalId, newPw);
+							user.setFirstLogin(false);
+						} else {
+							System.out.println("Do you want to change your password? (y/n)");
+							String opt = sc.next();
+
+							if (opt.equalsIgnoreCase("y")) {
+								System.out.println("Please enter your new password:");
+								String newPw = sc.next();
+								user.changePassword(newPw, staffList);
+								loginCredentials.put(hospitalId, newPw);
+							}
+						}
+						DoctorOption(hospitalId, d);
+						System.out.println("Doctor authenticated: " + d.getName());
+					} else if (user instanceof Pharmacist) {
+						Pharmacist pm = (Pharmacist) user;
+						if (user.isFirstLogin()) {
+							System.out.println("Please change your password since this is your first time logging in:");
+							String newPw = sc.next();
+							user.changePassword(newPw, staffList);
+							loginCredentials.put(hospitalId, newPw);
+							user.setFirstLogin(false);
+						} else {
+							System.out.println("Do you want to change your password? (y/n)");
+							String opt = sc.next();
+
+							if (opt.equalsIgnoreCase("y")) {
+								System.out.println("Please enter your new password:");
+								String newPw = sc.next();
+								user.changePassword(newPw, staffList);
+								loginCredentials.put(hospitalId, newPw);
+							}
+						}
+						PharmacistOption(hospitalId, pm);
+						System.out.println("Pharmacist authenticated: " + pm.getName());
+					} else if (user instanceof Administrator) {
+						Administrator ad = (Administrator) user;
+						if (user.isFirstLogin()) {
+							System.out.println("Please change your password since this is your first time logging in:");
+							String newPw = sc.next();
+							user.changePassword(newPw, staffList);
+							loginCredentials.put(hospitalId, newPw);
+							user.setFirstLogin(false);
+						} else {
+							System.out.println("Do you want to change your password? (y/n)");
+							String opt = sc.next();
+
+							if (opt.equalsIgnoreCase("y")) {
+								System.out.println("Please enter your new password:");
+								String newPw = sc.next();
+								user.changePassword(newPw, staffList);
+								loginCredentials.put(hospitalId, newPw);
+							}
+						}
+						AdministratorOption(hospitalId, ad);
+						System.out.println("Administrator authenticated: " + ad.getName());
 					}
-					break;
+				} else {
+					System.out.println("Login failed. Invalid credentials.");
+				}
 
-				case 2:
+			} else {
+				System.out.println("You have exited the program.");
+				break;
+			}
+		} while (!hospitalId.equals("-1"));
+	}
 
-					System.out.println("\nEnter Doctor ID: ");
-					String did = sc.next();
-					did = Character.toUpperCase(did.charAt(0)) + did.substring(1);
-					Doctor selectedDoc = getSelectedDoctor(did);
-					if (selectedDoc != null) {
-						DoctorOption(did, selectedDoc);
+	public static User authenticate(String hospitalId, String password) {
+		for (Map<String, String> data : patientList) {
+			String storedUserId = data.get("Patient ID");
+			String storedPassword = data.getOrDefault("Password", "password"); // Default to "password" if not present
+
+			List<String> pContactInfo = new ArrayList<>();
+			if (data.get("Contact Information") != null) {
+				String contactInfo = data.get("Contact Information");
+				if (contactInfo.equals("NIL")) {
+					pContactInfo.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+				} else {
+					String[] contactDetails = contactInfo.split("\\|");
+					for (String contact : contactDetails) {
+						pContactInfo.add(contact.trim());
 					}
-					break;
-
-				case 3:
-					System.out.println("\nEnter Pharmacist ID: ");
-					String phid = sc.next();
-					phid = Character.toUpperCase(phid.charAt(0)) + phid.substring(1);
-					Pharmacist selectedPharmacist = getSelectedPharmacist(phid);
-					if (selectedPharmacist != null) {
-						PharmacistOption(phid, selectedPharmacist);
-					}
-					break;
-
-				case 4:
-					// Admin func
-					break;
-
+				}
 			}
 
-		} while (identity != 0);
+			List<String> pPastTreatments = new ArrayList<>();
+			if (data.get("Past Treatment") != null) {
+				String pastTreatments = data.get("Past Treatment");
+				if (pastTreatments.equals("NIL")) {
+					pPastTreatments.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+				} else {
+					String[] treatments = pastTreatments.split("\\|");
+					for (String treatment : treatments) {
+						pPastTreatments.add(treatment.trim());
+					}
+				}
+			}
 
+			List<String> pPastDiagnoses = new ArrayList<>();
+			if (data.get("Past Diagnoses") != null) {
+				String pastDiagnoses = data.get("Past Diagnoses");
+				if (pastDiagnoses.equals("NIL")) {
+					pPastDiagnoses.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+				} else {
+					String[] diagnoses = pastDiagnoses.split("\\|");
+					for (String diagnosis : diagnoses) {
+						pPastDiagnoses.add(diagnosis.trim());
+					}
+				}
+			}
+
+			Patient patient = new Patient(
+					storedUserId,
+					data.get("Name"),
+					data.get("Date of Birth"),
+					pContactInfo,
+					data.get("Gender"),
+					data.get("Blood Type"),
+					pPastDiagnoses,
+					pPastTreatments);
+
+			if (storedUserId.equals(hospitalId) && storedPassword.equals(password)) {
+				return patient;
+			}
+		}
+
+		for (Map<String, String> data : staffList) {
+			String storedUserId = data.get("Staff ID");
+			String storedPassword = data.getOrDefault("Password", "password"); // Default to "password" if not present
+
+			String currentRole = data.get("Role");
+			if (storedUserId.equals(hospitalId) && storedPassword.equals(password)) {
+				switch (currentRole) {
+					case "Doctor":
+						return new Doctor(storedUserId, data.get("Name"), data.get("Age"), data.get("Gender"));
+					case "Pharmacist":
+						return new Pharmacist(storedUserId, data.get("Name"), data.get("Age"), data.get("Gender"));
+					case "Administrator":
+						return new Administrator(storedUserId, data.get("Name"), data.get("Age"), data.get("Gender"));
+				}
+			}
+		}
+
+		return null; // Return null if authentication fails
+	}
+
+	// public static User authenticate(String hospitalId, String password) {
+	// for (Map<String, String> data : patientList) {
+	// String storedUserId = data.get("Patient ID");
+	// String storedPassword = data.get("Password") != null ? data.get("Password") :
+	// "password"; // Default password
+
+	// List<String> pContactInfo = new ArrayList<>();
+	// if (data.get("Contact Information") != null) {
+	// String contactInfo = data.get("Contact Information");
+	// if (contactInfo.equals("NIL")) {
+	// pContactInfo.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+	// } else {
+	// String[] contactDetails = contactInfo.split("\\|");
+	// for (String contact : contactDetails) {
+	// pContactInfo.add(contact.trim());
+	// }
+	// }
+	// }
+
+	// List<String> pPastTreatments = new ArrayList<>();
+	// if (data.get("Past Treatment") != null) {
+	// String pastTreatments = data.get("Past Treatment");
+	// if (pastTreatments.equals("NIL")) {
+	// pPastTreatments.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+	// } else {
+	// String[] treatments = pastTreatments.split("\\|");
+	// for (String treatment : treatments) {
+	// pPastTreatments.add(treatment.trim());
+	// }
+	// }
+	// }
+
+	// List<String> pPastDiagnoses = new ArrayList<>();
+	// if (data.get("Past Diagnoses") != null) {
+	// String pastDiagnoses = data.get("Past Diagnoses");
+	// if (pastDiagnoses.equals("NIL")) {
+	// pPastDiagnoses.add("NIL"); // Add "NIL" if the value is exactly "NIL"
+	// } else {
+	// String[] diagnoses = pastDiagnoses.split("\\|");
+	// for (String diagnosis : diagnoses) {
+	// pPastDiagnoses.add(diagnosis.trim());
+	// }
+	// }
+	// }
+
+	// //String storedPassword = Patient.passwords.getOrDefault(storedUserId,
+	// "password");
+
+	// Patient patient = new Patient(
+	// storedUserId,
+	// data.get("Name"),
+	// data.get("Date of Birth"),
+	// pContactInfo,
+	// data.get("Gender"),
+	// data.get("Blood Type"),
+	// pPastDiagnoses,
+	// pPastTreatments);
+
+	// if (!Patient.loginStatus.containsKey(storedUserId)) {
+	// patient.setFirstLogin(true);
+	// }
+
+	// if (storedUserId.equals(hospitalId) && patient.login(password)) {
+	// return patient;
+	// }
+	// }
+
+	// for (Map<String, String> data : staffList) {
+	// String storedUserId = data.get("Staff ID");
+	// String currentRole = data.get("Role");
+
+	// Doctor doc = new Doctor(hospitalId, data.get("Name"), data.get("Age"),
+	// data.get("Gender")); // Mock doctor
+	// // object
+
+	// Pharmacist pharmacist = new Pharmacist(hospitalId, data.get("Name"),
+	// data.get("Age"), data.get("Gender")); // Mock
+	// // doctor
+	// // object
+
+	// Administrator administrator = new Administrator(hospitalId, data.get("Name"),
+	// data.get("Age"),
+	// data.get("Gender")); // Mock doctor object
+
+	// if (storedUserId.equals(hospitalId)) {
+	// if (currentRole.equals("Doctor") && doc.login(password)) {
+	// return doc;
+	// } else if (currentRole.equals("Pharmacist") && pharmacist.login(password)) {
+	// return pharmacist;
+	// } else if (currentRole.equals("Administrator") &&
+	// administrator.login(password)) {
+	// return administrator;
+	// }
+	// }
+	// }
+
+	// // Return null if not found
+	// return null;
+	// }
+
+	public static void createStaffList() {
+		String csvFile = "hms\\Staff_List.csv"; // converted file path
+		String line;
+		String csvSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			// read the first line as the header
+			String headerLine = br.readLine();
+			if (headerLine == null) {
+				System.out.println("CSV file is empty");
+				return;
+			}
+			String[] headers = headerLine.split(csvSplitBy);
+
+			// read each subsequent line
+			while ((line = br.readLine()) != null) {
+				String[] columns = line.split(csvSplitBy);
+
+				// create a map for the row data
+				Map<String, String> dataMap = new HashMap<>();
+
+				for (int i = 0; i < headers.length; i++) {
+					// put header as key and cell data as value
+					if (i < columns.length) {
+						dataMap.put(headers[i], columns[i]);
+					} else {
+						dataMap.put(headers[i], ""); // empty string if column is missing
+					}
+				}
+
+				staffList.add(dataMap);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void createDoctorList() {
@@ -247,35 +528,43 @@ public class HospitalManagementSystem {
 	}
 
 	public static void createMedicineList() {
-		String csvFile = "hms\\Medicine_List.csv"; // converted file path
+		String csvFile = "hms\\Medicine_List.csv"; // Path to your CSV file
 		String line;
 		String csvSplitBy = ",";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-			// read the first line as the header
+			// Read the first line as the header
 			String headerLine = br.readLine();
 			if (headerLine == null) {
 				System.out.println("CSV file is empty");
 				return;
 			}
+
+			// Remove BOM if present and split headers
+			headerLine = headerLine.replace("\uFEFF", ""); // Remove BOM
 			String[] headers = headerLine.split(csvSplitBy);
 
-			// read each subsequent line
+			// Trim headers to avoid leading/trailing spaces
+			for (int i = 0; i < headers.length; i++) {
+				headers[i] = headers[i].trim();
+			}
+
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				// create a map for the row data
+				// Create a map for the row data
 				Map<String, String> dataMap = new HashMap<>();
 
 				for (int i = 0; i < headers.length; i++) {
-					// put header as key and cell data as value
+					// Put header as key and cell data as value
 					if (i < columns.length) {
-						dataMap.put(headers[i], columns[i]);
+						dataMap.put(headers[i], columns[i].trim()); // Trim column values
 					} else {
-						dataMap.put(headers[i], ""); // empty string if column is missing
+						dataMap.put(headers[i], ""); // Empty string if column is missing
 					}
 				}
 
+				// Add the map to the medicine list
 				medicineList.add(dataMap);
 			}
 		} catch (IOException e) {
@@ -320,204 +609,17 @@ public class HospitalManagementSystem {
 		}
 	}
 
-	public static Pharmacist getSelectedPharmacist(String phid) {
-		Pharmacist ph = null;
-		boolean pharmacistExists = false;
-
-		do {
-			for (Map<String, String> data : pharmacistList) {
-				String phId = data.get("Staff ID");
-				if (phId.equals(phid)) {
-					String phName = data.get("Name");
-					String phContact = data.get("Contact Number");
-					String phAge = data.get("Age");
-					String phGender = data.get("Gender");
-					// Create and add Pharmacist
-					ph = new Pharmacist(phid, phName, phAge, phGender, phContact);
-					pharmacistExists = true;
-					break;
-				}
-			}
-
-			if (pharmacistExists == false) {
-				System.out.println("Pharmacist not found with ID: " + phid);
-				return null;
-			}
-
-			return ph;
-		} while (pharmacistExists == true);
-	}
-
-	public static Patient getSelectedPatient(String pid) {
-
-		// just to initialise
-		Patient p = null;
-		boolean patientExists = false;
-
-		do {
-
-			// print the list of maps to verify the data
-			for (Map<String, String> data : patientList) {
-
-				// add pre-defined data to list
-
-				String pId = data.get("Patient ID");
-
-				if (pId.equals(pid)) {
-					String pName = data.get("Name");
-					String pDOB = data.get("Date of Birth");
-					String pGender = data.get("Gender");
-
-					List<String> pContactInfo = new ArrayList<>();
-					if (data.get("Contact Information") != null) {
-						String contactInfo = data.get("Contact Information");
-						if (contactInfo.equals("NIL")) {
-							pContactInfo.add("NIL"); // Add "NIL" if the value is exactly "NIL"
-						} else {
-							String[] contactDetails = contactInfo.split("\\|");
-							for (String contact : contactDetails) {
-								pContactInfo.add(contact.trim());
-							}
-						}
-					}
-
-					List<String> pPastDiagnoses = new ArrayList<>();
-					if (data.get("Past Diagnoses") != null) {
-						String pastDiagnoses = data.get("Past Diagnoses");
-						if (pastDiagnoses.equals("NIL")) {
-							pPastDiagnoses.add("NIL"); // Add "NIL" if the value is exactly "NIL"
-						} else {
-							String[] diagnoses = pastDiagnoses.split("\\|");
-							for (String diagnosis : diagnoses) {
-								pPastDiagnoses.add(diagnosis.trim());
-							}
-						}
-					}
-
-					List<String> pPastTreatments = new ArrayList<>();
-					if (data.get("Past Treatment") != null) {
-						String pastTreatments = data.get("Past Treatment");
-						if (pastTreatments.equals("NIL")) {
-							pPastTreatments.add("NIL"); // Add "NIL" if the value is exactly "NIL"
-						} else {
-							String[] treatments = pastTreatments.split("\\|");
-							for (String treatment : treatments) {
-								pPastTreatments.add(treatment.trim());
-							}
-						}
-					}
-
-					String pBloodType = data.get("Blood Type");
-
-					// Create and add Patient
-					p = new Patient(pId, pName, pDOB, pContactInfo, pGender, pBloodType, pPastDiagnoses,
-							pPastTreatments);
-					patientExists = true;
-					break;
-					// patientList.add(patient);
-				}
-			}
-
-			if (patientExists == false) {
-				System.out.println("Patient does not exist!!");
-				return p;
-			}
-
-			return p;
-
-		} while (patientExists == true);
-
-	}
-
-	public static Doctor getSelectedDoctor(String did) {
-
-		// just to initialise
-		Doctor d = null;
-		boolean doctorExists = false;
-
-		do {
-
-			// print the list of maps to verify the data
-			for (Map<String, String> data : doctorList) {
-
-				// add pre-defined data to list
-
-				String dId = data.get("Staff ID");
-
-				if (dId.equals(did)) {
-					String dName = data.get("Name");
-					String dGender = data.get("Gender");
-					String dAge = data.get("Age");
-					String dContact = data.get("Contact Number");
-
-					List<String> dAvailabilityList = new ArrayList<>();
-
-					// Check if "Availability Dates" is present
-					if (data.get("Availability Dates") != null) {
-						String availDetails = data.get("Availability Dates");
-
-						// Split by '|' to get each date and its time slots
-						String[] availInfo = availDetails.split("\\|");
-
-						// Iterate over each date entry
-						for (String avail : availInfo) {
-							avail = avail.trim(); // Trim any leading/trailing spaces
-
-							// Split the entry by space to separate date and time slots
-							int firstSpaceIndex = avail.indexOf(' ');
-
-							// Ensure that the date and time slots are correctly identified
-							if (firstSpaceIndex != -1) {
-								String date = avail.substring(0, firstSpaceIndex).trim(); // Extract the date
-								String timeSlots = avail.substring(firstSpaceIndex).trim(); // Extract the time slots
-
-								// Split time slots by '/'
-								String[] times = timeSlots.split("/");
-
-								// Format the time slots as a comma-separated string
-								String formattedTimeSlots = String.join(", ", times);
-
-								// Create a formatted string for the availability entry
-								String availabilityEntry = date + ": " + formattedTimeSlots;
-
-								// Add this formatted string to the availability list
-								dAvailabilityList.add(availabilityEntry);
-							}
-						}
-					}
-
-					// Example usage: printing the availability list
-					for (String availability : dAvailabilityList) {
-						System.out.println(availability);
-					}
-
-					// Create and add Doctor
-					d = new Doctor(did, dName, dAge, dGender, dContact, dAvailabilityList);
-					doctorExists = true;
-					break;
-				}
-			}
-
-			if (doctorExists == false) {
-				System.out.println("Doctor does not exist!!");
-				return d;
-			}
-
-			return d;
-
-		} while (doctorExists == true);
-
-	}
-
 	public static void PatientOption(String pid, Patient p) {
 
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
 
 		Appointment defaultApts = new Appointment();
+		ExportData exportData = new ExportData();
+		AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord();
 
 		do {
-			PatientMenu();
+			p.displayMenu();
 
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();
@@ -681,8 +783,14 @@ public class HospitalManagementSystem {
 					;
 					break;
 				case 9:
+					System.out.println("Exporting your Records...");
+					exportData.patientViewOrExportRecords(pid, AppointmentOutcomeRecord.getAllOutcomeRecords(), true);
+					break;
+
+				case 10:
 					System.out.println("You have logged out!");
 					return;
+
 				default:
 					System.out.println("Babes choose options 1 - 9 pls :(");
 					break;
@@ -700,9 +808,10 @@ public class HospitalManagementSystem {
 		MedicalRecordManagement mr = new MedicalRecordManagement();
 		AppointmentManagement am = new AppointmentManagement();
 		AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord();
+		ExportData exportData = new ExportData();
 
 		do {
-			DoctorMenu();
+			d.displayMenu();
 
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();
@@ -792,22 +901,26 @@ public class HospitalManagementSystem {
 					String needMed = sc.nextLine();
 					String mn = "";
 					String ms = "";
+					String mq = "";
 					if (needMed.toLowerCase().equals("yes")) {
 						System.out.println("Enter Medication Name: ");
 						mn = sc.nextLine();
 						System.out.println("Enter Medication Status: ");
 						ms = sc.nextLine();
+						System.out.println("Enter Medication Quantity: ");
+						mq = sc.nextLine();
 					}
 					System.out.println("Enter Consultation Notes: ");
 					String consultNotes = sc.nextLine();
 
-					outcome.addOutcomeRecord(pid, aptid, st, mn, ms, consultNotes);
+					outcome.addOutcomeRecord(pid, aptid, st, mn, ms, mq,consultNotes);
 
 					System.out.println("\n");
 					break;
 				case 8:
 					System.out.println("You have logged out!");
 					return;
+
 				default:
 					System.out.println("Babes choose options 1 - 8 :(");
 					break;
@@ -827,7 +940,7 @@ public class HospitalManagementSystem {
 		Prescription pcp = new Prescription();
 
 		do {
-			PharmacistMenu();
+			ph.displayMenu();
 
 			System.out.println("What do you want to do?");
 			choice = sc.nextInt();
@@ -838,65 +951,167 @@ public class HospitalManagementSystem {
 					outcome.viewAllOutcomeRecords();
 					break;
 				case 2:
+					System.out.println("Enter Patient ID:");
+					String ptId = sc.nextLine();
 					System.out.println("Enter Appointment ID:");
 					String apptId = sc.nextLine();
+					System.out.println("Which prescription are you trying to update?");
+					String presc = sc.nextLine();
 					System.out.println("Enter new status (Pending/Dispensed):");
 					String status = sc.nextLine();
-					ph.updatePrescriptionStatus(prescriptionId, status);
+					ph.updatePrescriptionStatus(ptId, apptId, presc, status, outcome.getAllOutcomeRecords());
 					break;
 				case 3:
-					md.viewMedicationInventory(medicineList); 
+					md.viewMedicationInventory(medicineList);
 					break;
 				case 4:
-					System.out.println("Enter Medication ID:");
-					String medId = sc.nextLine();
-					System.out.println("Enter quantity needed:");
-					int qty = sc.nextInt();
-					// submitReplenishmentRequest(medId, qty);
+					ph.submitReplenishmentRequest(medicineList, replenishmentRequests);
 					break;
+				case 5:
+					System.out.println("You have logged out!");
+					return;
 				default:
-					System.out.println("Please choose from 1-4 thank you!!");
+					System.out.println("Please choose from 1-5 thank you!!");
 					break;
 			}
 		} while (choice != 4);
 
 	}
 
-	public static void PatientMenu() {
-		System.out.println("\nPatient Menu:");
-		System.out.println("- View Medical Record (1)");
-		System.out.println("- Update Personal Information (2)");
-		System.out.println("- View Available Appointment Slots (3)");
-		System.out.println("- Schedule an Appointment (4)");
-		System.out.println("- Reschedule an Appointment (5)");
-		System.out.println("- Cancel an Appointment (6)");
-		System.out.println("- View Scheduled Appointments (7)");
-		System.out.println("- View Past Appointments Outcome Records (8)");
-		System.out.println("- Logout (9)");
-	}
+	public static void AdministratorOption(String aid, Administrator ad) {
+		StaffManagement sm = new StaffManagement();
+		Appointment ap = new Appointment();
+		InventoryManagement im = new InventoryManagement();
 
-	public static void DoctorMenu() {
-		System.out.println("---------------------------------------------");
-		System.out.println("|                Doctor Menu                 |");
-		System.out.println("----------------------------------------------");
-		System.out.println("|  - View Patient Medical Records        (1) | ");
-		System.out.println("|  - Update Patient Medical Records      (2) | ");
-		System.out.println("|  - View Personal Schedule              (3) | ");
-		System.out.println("|  - Set Availability for Appointments   (4) | ");
-		System.out.println("|  - Accept/Decline Appointment Requests (5) | ");
-		System.out.println("|  - View Upcoming Appointments          (6) | ");
-		System.out.println("|  - Record Appointment Outcome          (7) | ");
-		System.out.println("|  - Logout                              (8) | ");
-		System.out.println("----------------------------------------------");
+		Scanner sc = new Scanner(System.in);
+		int choice;
+		do {
+			ad.displayMenu();
 
-	}
+			System.out.println("What do you want to do?");
+			choice = sc.nextInt();
+			sc.nextLine();
 
-	public static void PharmacistMenu() {
-		System.out.println("PharmacistMenu:");
-		System.out.println("1. View Appointment Outcomes");
-		System.out.println("2. Update Prescription Status");
-		System.out.println("3. View Medication Inventory");
-		System.out.println("4. Submit Replenishment Request");
-		System.out.println("5. logout");
+			switch (choice) {
+				case 1:
+					System.out.println("Do you want to view or manage the staffs? (V/M)");
+					String adOpt = sc.nextLine();
+					if (adOpt.equalsIgnoreCase("V")) {
+						System.out.println("Enter role to filter (or press Enter to skip): ");
+						String role = sc.nextLine().trim();
+						role = role.isEmpty() ? null : role;
+
+						System.out.println("Enter gender to filter (or press Enter to skip): ");
+						String gender = sc.nextLine().trim();
+						gender = gender.isEmpty() ? null : gender;
+
+						System.out.println("Enter minimum age to filter: ");
+						int minAge = sc.nextInt();
+
+						System.out.println("Enter maximum age to filter: ");
+						int maxAge = sc.nextInt();
+
+						sm.viewStaff(staffList, role, gender, minAge, maxAge);
+					} else if (adOpt.equalsIgnoreCase("M")) {
+						System.out.println("Do you want to Add(a), Update(u) OR remove (r) staffs?");
+						String manageOpt = sc.nextLine();
+						if (manageOpt.equalsIgnoreCase("a")) {
+							System.out.println("Enter a new staff ID: ");
+							String newId = sc.nextLine();
+							System.out.println("Enter Staff Name:");
+							String newName = sc.nextLine();
+							System.out.println("Enter Staff Role:");
+							String newRole = sc.nextLine();
+							System.out.println("Enter Staff Gender:");
+							String newGender = sc.nextLine();
+							System.out.println("Enter Staff Age:");
+							String newAge = sc.nextLine();
+							sm.addStaff(staffList, newId, newName, newRole, newGender, newAge);
+						} else if (manageOpt.equalsIgnoreCase("u")) {
+							System.out.println("Enter the Staff ID you want to update:");
+							String updatedId = sc.nextLine();
+							System.out.println("Do you want to update everything or only a specific field? (E/S)");
+							String updateChoice = sc.nextLine();
+							if (updateChoice.equalsIgnoreCase("E")) {
+								System.out.println("Enter Staff Name:");
+								String upName = sc.nextLine();
+								System.out.println("Enter Staff Role:");
+								String upRole = sc.nextLine();
+								System.out.println("Enter Staff Gender:");
+								String upGender = sc.nextLine();
+								System.out.println("Enter Staff Age:");
+								String upAge = sc.nextLine();
+								sm.updateStaff(staffList, updatedId, upName, upRole, upGender, upAge, updateChoice);
+							} else {
+								String updatedName = "";
+								String updatedRole = "";
+								String updatedGender = "";
+								String updatedAge = "";
+								System.out.println("Which field you want to update? (Name/Role/Gender/Age)");
+								String fieldChoice = sc.nextLine();
+								if (fieldChoice.equalsIgnoreCase("name")) {
+									System.out.println("Enter the new name:");
+									updatedName = sc.nextLine();
+									updateChoice = "Name";
+								} else if (fieldChoice.equalsIgnoreCase("role")) {
+									System.out.println("Enter the new role:");
+									updatedRole = sc.nextLine();
+									updateChoice = "Role";
+								} else if (fieldChoice.equalsIgnoreCase("Gender")) {
+									System.out.println("Enter the new gender:");
+									updatedGender = sc.nextLine();
+									updateChoice = "Gender";
+								} else if (fieldChoice.equalsIgnoreCase("age")) {
+									System.out.println("Enter the new age:");
+									updatedAge = sc.nextLine();
+									updateChoice = "Age";
+								}
+								sm.updateStaff(staffList, updatedId, updatedName, updatedRole, updatedGender,
+										updatedAge, updateChoice);
+							}
+						} else if (manageOpt.equalsIgnoreCase("r")) {
+							System.out.println("Enter the staff id you want to remove:");
+							String removeId = sc.nextLine();
+							sm.removeStaff(staffList, removeId);
+						}
+					}
+					break;
+				case 2:
+					ad.viewAppointmentsAdmin();
+					break;
+				case 3:
+					System.out.println(
+							"Do you want to update current stock level or change the low stock level alert? (U/C)");
+					String stockOption = sc.nextLine();
+					if (stockOption.equalsIgnoreCase("U")) {
+						System.out.println("Enter the medicine you want to restock:");
+						String medName = sc.nextLine();
+						System.out.println("Enter the quantity you want to replenish:");
+						String quantity = sc.nextLine();
+						im.updateStockLevel(medicineList, medName, quantity);
+					} else if (stockOption.equalsIgnoreCase("C")) {
+						System.out.println("Enter the medicine you want to change the low stock value:");
+						String newVal = sc.nextLine();
+						System.out.println("Enter the quantity you want to change to:");
+						String newQuant = sc.nextLine();
+						im.updateLowStockAlert(medicineList, newVal, newQuant);
+					}
+					break;
+				case 4:
+					im.viewReplenishmentRequests(replenishmentRequests);
+					System.out.println("Enter medication name to approve:");
+					String Appr = sc.nextLine();
+					im.approveReplenishmentRequest(medicineList, replenishmentRequests, Appr);
+
+					break;
+				case 5:
+					System.out.println("You have logged out!");
+					return;
+				default:
+					System.out.println("Please choose from 1-4 thank you!!");
+					break;
+			}
+		} while (choice != 4);
+
 	}
 }
