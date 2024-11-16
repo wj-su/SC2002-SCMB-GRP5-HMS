@@ -17,6 +17,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import patient.Appointment;
+import patient.BillingDetails;
 import patient.Patient;
 import pharmacist.Medication;
 import pharmacist.Pharmacist;
@@ -617,6 +618,8 @@ public class HospitalManagementSystem {
 		Appointment defaultApts = new Appointment();
 		ExportData exportData = new ExportData();
 		AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord();
+		BillingDetails bill = new BillingDetails();
+
 
 		do {
 			p.displayMenu();
@@ -787,12 +790,20 @@ public class HospitalManagementSystem {
 					exportData.patientViewOrExportRecords(pid, AppointmentOutcomeRecord.getAllOutcomeRecords(), true);
 					break;
 
-				case 10:
+					case 10:
+					System.out.println("Viewing existing bills...");
+					System.out.println("Enter Appointment ID:");
+					int apptId = sc.nextInt();
+					sc.nextLine();
+					bill.ViewBillingInfo(pid, apptId, medicineList);
+					break;
+
+				case 11:
 					System.out.println("You have logged out!");
 					return;
 
 				default:
-					System.out.println("Babes choose options 1 - 9 pls :(");
+					System.out.println("Babes choose options 1 - 10 pls :(");
 					break;
 			}
 		} while (choice != 9);

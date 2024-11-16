@@ -89,7 +89,8 @@ public class Patient implements User {
         System.out.println("|- View Scheduled Appointments            (7) |");
         System.out.println("|- View Past Appointments Outcome Records (8) |");
         System.out.println("|- Export your own data                   (9) |");
-        System.out.println("|- Logout                                 (10) |");
+        System.out.println("|- View Billing Info                      (10) |");
+        System.out.println("|- Logout                                 (11) |");
         System.out.println("----------------------------------------------");
     }
 
