@@ -448,9 +448,15 @@ public class HospitalManagementSystem {
 					}
 				}
 
+				Map<String, String> doctorGender = new HashMap<>();
+
 				if (isDoctor) {
 					String doctorName = dataMap.get("Name");
 					String availability = dataMap.get("Availability Dates");
+					String gender = dataMap.get("Gender");
+
+					doctorGender.put(doctorName, gender);
+
 					if (availability != null && !availability.isEmpty()) {
 						Map<String, List<String>> dateMap = new HashMap<>();
 
@@ -468,14 +474,23 @@ public class HospitalManagementSystem {
 								dateMap.put(date, timeList);
 							}
 						}
-						doctorAvailability.put(doctorName, dateMap);
-					}
-				}
-			}
+						// doctorAvailability.put(doctorName, dateMap);
+						Map<String, Object> doctorDetails = new HashMap<>();
+						doctorDetails.put("Gender", gender);
+						doctorDetails.put("Availability", dateMap);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+						doctorAvailability.put(doctorName, doctorDetails);
+					}
+				
+			}
 		}
+
+	}catch(
+
+	IOException e)
+	{
+		e.printStackTrace();
+	}
 	}
 
 	public static void createPharmacistList() {
@@ -913,7 +928,7 @@ public class HospitalManagementSystem {
 					System.out.println("Enter Consultation Notes: ");
 					String consultNotes = sc.nextLine();
 
-					outcome.addOutcomeRecord(pid, aptid, st, mn, ms, mq,consultNotes);
+					outcome.addOutcomeRecord(pid, aptid, st, mn, ms, mq, consultNotes);
 
 					System.out.println("\n");
 					break;
