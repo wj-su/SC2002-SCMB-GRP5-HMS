@@ -448,15 +448,9 @@ public class HospitalManagementSystem {
 					}
 				}
 
-				Map<String, String> doctorGender = new HashMap<>();
-
 				if (isDoctor) {
 					String doctorName = dataMap.get("Name");
 					String availability = dataMap.get("Availability Dates");
-					String gender = dataMap.get("Gender");
-
-					doctorGender.put(doctorName, gender);
-
 					if (availability != null && !availability.isEmpty()) {
 						Map<String, List<String>> dateMap = new HashMap<>();
 
@@ -474,23 +468,14 @@ public class HospitalManagementSystem {
 								dateMap.put(date, timeList);
 							}
 						}
-						// doctorAvailability.put(doctorName, dateMap);
-						Map<String, Object> doctorDetails = new HashMap<>();
-						doctorDetails.put("Gender", gender);
-						doctorDetails.put("Availability", dateMap);
-
-						doctorAvailability.put(doctorName, doctorDetails);
+						doctorAvailability.put(doctorName, dateMap);
 					}
-				
+				}
 			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-	}catch(
-
-	IOException e)
-	{
-		e.printStackTrace();
-	}
 	}
 
 	public static void createPharmacistList() {
