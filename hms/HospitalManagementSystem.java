@@ -24,6 +24,22 @@ import pharmacist.Pharmacist;
 import pharmacist.Prescription;
 import user.User;
 
+/**
+ * Main class for the Hospital Management System (HMS).
+ * 
+ * This system manages user authentication and provides role-specific
+ * functionalities for
+ * patients, doctors, pharmacists, and administrators. Data is loaded from CSV
+ * files, and
+ * users interact with the system via a command-line interface.
+ * 
+ * Features include:
+ * - User authentication
+ * - Role-based menus and options
+ * - Management of appointments, medical records, medications, and staff
+ * - Exporting patient records
+ * 
+ */
 public class HospitalManagementSystem {
 
 	static List<Map<String, String>> patientList = new ArrayList<>();
@@ -35,8 +51,15 @@ public class HospitalManagementSystem {
 	static List<Map<String, String>> replenishmentRequests = new ArrayList<>();
 	static Map<String, String> loginCredentials = new HashMap<>();
 
-	 
-
+	/**
+	 * Entry point for the Hospital Management System.
+	 * 
+	 * Prompts users to log in with their hospital ID and password. Upon successful
+	 * authentication,
+	 * displays role-specific menus and options.
+	 * 
+	 * @param args Command-line arguments (not used in this application).
+	 */
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
@@ -156,16 +179,24 @@ public class HospitalManagementSystem {
 		} while (!hospitalId.equals("-1"));
 	}
 
+	/**
+	 * Authenticates a user based on their hospital ID and password.
+	 * 
+	 * @param hospitalId The ID of the user attempting to log in.
+	 * @param password   The password entered by the user.
+	 * @return A {@link User} object representing the authenticated user, or
+	 *         {@code null} if authentication fails.
+	 */
 	public static User authenticate(String hospitalId, String password) {
 		for (Map<String, String> data : patientList) {
 			String storedUserId = data.get("Patient ID");
-			String storedPassword = data.getOrDefault("Password", "password"); 
+			String storedPassword = data.getOrDefault("Password", "password");
 
 			List<String> pContactInfo = new ArrayList<>();
 			if (data.get("Contact Information") != null) {
 				String contactInfo = data.get("Contact Information");
 				if (contactInfo.equals("NIL")) {
-					pContactInfo.add("NIL"); 
+					pContactInfo.add("NIL");
 				} else {
 					String[] contactDetails = contactInfo.split("\\|");
 					for (String contact : contactDetails) {
@@ -178,7 +209,7 @@ public class HospitalManagementSystem {
 			if (data.get("Past Treatment") != null) {
 				String pastTreatments = data.get("Past Treatment");
 				if (pastTreatments.equals("NIL")) {
-					pPastTreatments.add("NIL"); 
+					pPastTreatments.add("NIL");
 				} else {
 					String[] treatments = pastTreatments.split("\\|");
 					for (String treatment : treatments) {
@@ -191,7 +222,7 @@ public class HospitalManagementSystem {
 			if (data.get("Past Diagnoses") != null) {
 				String pastDiagnoses = data.get("Past Diagnoses");
 				if (pastDiagnoses.equals("NIL")) {
-					pPastDiagnoses.add("NIL"); 
+					pPastDiagnoses.add("NIL");
 				} else {
 					String[] diagnoses = pastDiagnoses.split("\\|");
 					for (String diagnosis : diagnoses) {
@@ -217,7 +248,7 @@ public class HospitalManagementSystem {
 
 		for (Map<String, String> data : staffList) {
 			String storedUserId = data.get("Staff ID");
-			String storedPassword = data.getOrDefault("Password", "password"); 
+			String storedPassword = data.getOrDefault("Password", "password");
 
 			String currentRole = data.get("Role");
 			if (storedUserId.equals(hospitalId) && storedPassword.equals(password)) {
@@ -232,12 +263,16 @@ public class HospitalManagementSystem {
 			}
 		}
 
-		return null; 
+		return null;
 	}
 
-
+	/**
+	 * Loads the staff list from a CSV file.
+	 * 
+	 * Populates the {@code staffList} with data from the file.
+	 */
 	public static void createStaffList() {
-		String csvFile = "hms\\Staff_List.csv"; 
+		String csvFile = "hms\\Staff_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -249,18 +284,16 @@ public class HospitalManagementSystem {
 			}
 			String[] headers = headerLine.split(csvSplitBy);
 
-			
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				
 				Map<String, String> dataMap = new HashMap<>();
 
 				for (int i = 0; i < headers.length; i++) {
 					if (i < columns.length) {
 						dataMap.put(headers[i], columns[i]);
 					} else {
-						dataMap.put(headers[i], ""); 
+						dataMap.put(headers[i], "");
 					}
 				}
 
@@ -271,8 +304,14 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Loads the doctor list from a CSV file, filtering only records where the role
+	 * is "Doctor".
+	 * 
+	 * Populates the {@code doctorList} with doctor-specific data.
+	 */
 	public static void createDoctorList() {
-		String csvFile = "hms\\Staff_List.csv"; 
+		String csvFile = "hms\\Staff_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -284,11 +323,9 @@ public class HospitalManagementSystem {
 			}
 			String[] headers = headerLine.split(csvSplitBy);
 
-			
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				
 				Map<String, String> dataMap = new HashMap<>();
 
 				boolean isDoctor = false;
@@ -300,15 +337,13 @@ public class HospitalManagementSystem {
 						}
 					}
 
-					
 					if (i < columns.length) {
 						dataMap.put(headers[i], columns[i]);
 					} else {
-						dataMap.put(headers[i], ""); 
+						dataMap.put(headers[i], "");
 					}
 				}
 
-				
 				if (isDoctor) {
 					doctorList.add(dataMap);
 				}
@@ -319,8 +354,14 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Loads doctor availability data from a CSV file.
+	 * 
+	 * Parses the availability dates and times for each doctor and populates the
+	 * {@code doctorAvailability} map.
+	 */
 	public static void createDoctorAvailList() {
-		String csvFile = "hms\\Staff_List.csv"; 
+		String csvFile = "hms\\Staff_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -379,8 +420,14 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Loads the pharmacist list from a CSV file, filtering only records where the
+	 * role is "Pharmacist".
+	 * 
+	 * Populates the {@code pharmacistList} with pharmacist-specific data.
+	 */
 	public static void createPharmacistList() {
-		String csvFile = "hms\\Staff_List.csv"; 
+		String csvFile = "hms\\Staff_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -392,11 +439,9 @@ public class HospitalManagementSystem {
 			}
 			String[] headers = headerLine.split(csvSplitBy);
 
-			
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				
 				Map<String, String> dataMap = new HashMap<>();
 
 				boolean isPharmacist = false;
@@ -408,15 +453,13 @@ public class HospitalManagementSystem {
 						}
 					}
 
-					
 					if (i < columns.length) {
 						dataMap.put(headers[i], columns[i]);
 					} else {
-						dataMap.put(headers[i], ""); 
+						dataMap.put(headers[i], "");
 					}
 				}
 
-				
 				if (isPharmacist) {
 					pharmacistList.add(dataMap);
 				}
@@ -427,8 +470,14 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Loads the medicine inventory from a CSV file.
+	 * 
+	 * Populates the {@code medicineList} with data about medications, including
+	 * stock levels and prices.
+	 */
 	public static void createMedicineList() {
-		String csvFile = "hms\\Medicine_List.csv"; 
+		String csvFile = "hms\\Medicine_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -439,10 +488,9 @@ public class HospitalManagementSystem {
 				return;
 			}
 
-			headerLine = headerLine.replace("\uFEFF", ""); 
+			headerLine = headerLine.replace("\uFEFF", "");
 			String[] headers = headerLine.split(csvSplitBy);
 
-			
 			for (int i = 0; i < headers.length; i++) {
 				headers[i] = headers[i].trim();
 			}
@@ -450,19 +498,17 @@ public class HospitalManagementSystem {
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				
 				Map<String, String> dataMap = new HashMap<>();
 
 				for (int i = 0; i < headers.length; i++) {
-					
+
 					if (i < columns.length) {
-						dataMap.put(headers[i], columns[i].trim()); 
+						dataMap.put(headers[i], columns[i].trim());
 					} else {
-						dataMap.put(headers[i], ""); 
+						dataMap.put(headers[i], "");
 					}
 				}
 
-				
 				medicineList.add(dataMap);
 			}
 		} catch (IOException e) {
@@ -470,8 +516,14 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Loads the patient list from a CSV file.
+	 * 
+	 * Populates the {@code patientList} with patient-specific data, including
+	 * medical history and contact information.
+	 */
 	public static void createPatientList() {
-		String csvFile = "hms\\Patient_List.csv"; 
+		String csvFile = "hms\\Patient_List.csv";
 		String line;
 		String csvSplitBy = ",";
 
@@ -483,19 +535,17 @@ public class HospitalManagementSystem {
 			}
 			String[] headers = headerLine.split(csvSplitBy);
 
-			
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
-				
 				Map<String, String> dataMap = new HashMap<>();
 
 				for (int i = 0; i < headers.length; i++) {
-					
+
 					if (i < columns.length) {
 						dataMap.put(headers[i], columns[i]);
 					} else {
-						dataMap.put(headers[i], ""); 
+						dataMap.put(headers[i], "");
 					}
 				}
 
@@ -506,6 +556,18 @@ public class HospitalManagementSystem {
 		}
 	}
 
+	/**
+	 * Displays menu options for a logged-in patient and handles their interactions.
+	 * 
+	 * Allows patients to:
+	 * - View and update personal information
+	 * - Manage appointments
+	 * - View billing details
+	 * - Export records
+	 * 
+	 * @param pid The ID of the logged-in patient.
+	 * @param p   The {@link Patient} object representing the authenticated patient.
+	 */
 	public static void PatientOption(String pid, Patient p) {
 
 		int choice = 0;
@@ -517,7 +579,6 @@ public class HospitalManagementSystem {
 		BillingDetails bill = new BillingDetails();
 		bill.initializeBills(medicineList);
 
-
 		do {
 			p.displayMenu();
 
@@ -528,7 +589,7 @@ public class HospitalManagementSystem {
 			switch (choice) {
 				case 1:
 					p.viewMedicalRecord();
-					break;		
+					break;
 
 				case 2:
 					String email, hp = "";
@@ -594,7 +655,7 @@ public class HospitalManagementSystem {
 					while (true) {
 						System.out.println("Choose a doctor: ");
 						doc = sc.nextLine();
-						
+
 						String normalizedDoc = doc.toLowerCase();
 
 						// check if doctor exists in doctorAvailability
@@ -638,7 +699,7 @@ public class HospitalManagementSystem {
 					System.out.println("Rescheduling appointment...");
 					System.out.println("Enter the appointment ID: ");
 					int aptid = sc.nextInt();
-					sc.nextLine(); 
+					sc.nextLine();
 
 					if (defaultApts.appointmentExists(pid, aptid, "reschedule", doctorAvailability, doctorList)) {
 						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
@@ -721,9 +782,21 @@ public class HospitalManagementSystem {
 			}
 		} while (choice != 9);
 
-		
 	}
 
+	/**
+	 * Displays menu options for a logged-in doctor and handles their interactions.
+	 * 
+	 * Allows doctors to:
+	 * - View and update patient medical records
+	 * - Manage their schedules and availability
+	 * - Accept or decline appointment requests
+	 * - Record appointment outcomes
+	 * - View their ratings
+	 * 
+	 * @param did The ID of the logged-in doctor.
+	 * @param d   The {@link Doctor} object representing the authenticated doctor.
+	 */
 	public static void DoctorOption(String did, Doctor d) {
 
 		Scanner sc = new Scanner(System.in);
@@ -838,7 +911,7 @@ public class HospitalManagementSystem {
 					System.out.println("\n");
 					break;
 
-					case 8:
+				case 8:
 					System.out.println("Viewing own ratings...");
 					String docName = "";
 					for (Map<String, String> data : doctorList) {
@@ -848,7 +921,6 @@ public class HospitalManagementSystem {
 							docName = data.get("Name");
 						}
 					}
-
 
 					am.viewRating(docName);
 					break;
@@ -864,6 +936,20 @@ public class HospitalManagementSystem {
 
 	}
 
+	/**
+	 * Displays menu options for a logged-in pharmacist and handles their
+	 * interactions.
+	 * 
+	 * Allows pharmacists to:
+	 * - View appointment outcome records
+	 * - Manage medication inventory
+	 * - Update prescription statuses
+	 * - Submit replenishment requests
+	 * 
+	 * @param phid The ID of the logged-in pharmacist.
+	 * @param ph   The {@link Pharmacist} object representing the authenticated
+	 *             pharmacist.
+	 */
 	public static void PharmacistOption(String phid, Pharmacist ph) {
 
 		Scanner sc = new Scanner(System.in);
@@ -913,6 +999,19 @@ public class HospitalManagementSystem {
 
 	}
 
+	/**
+	 * Displays menu options for a logged-in administrator and handles their
+	 * interactions.
+	 * 
+	 * Allows administrators to:
+	 * - Manage staff details
+	 * - View and manage appointments
+	 * - Approve replenishment requests
+	 * 
+	 * @param aid The ID of the logged-in administrator.
+	 * @param ad  The {@link Administrator} object representing the authenticated
+	 *            administrator.
+	 */
 	public static void AdministratorOption(String aid, Administrator ad) {
 		StaffManagement sm = new StaffManagement();
 		Appointment ap = new Appointment();
