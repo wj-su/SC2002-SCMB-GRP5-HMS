@@ -1,10 +1,14 @@
 package doctor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import patient.Appointment;
+
+/*
+ * Manages medical records for patients, including viewing and updating records
+ * Integrates with appointmnets to ensure medical records are tied to valid appointments
+ */
 
 public class MedicalRecordManagement {
 
@@ -16,10 +20,18 @@ public class MedicalRecordManagement {
     private List<String> medications;
     private List<Appointment> appts = new ArrayList<>();
 
-    public MedicalRecordManagement() {
+    /*
+     * Default constructor 
+     */
+    public MedicalRecordManagement() {}
 
-    }
-
+    /*
+     * Constructor to initialize medical record details for a patient
+     * 
+     * @param patientId The unique ID of the patient
+     * @param name      The name of the patient
+     * @paran bloodType The blood type of the patient
+     */
     public MedicalRecordManagement(String patientId, String name, String bloodType) {
         this.patientId = patientId;
         this.name = name;
@@ -29,10 +41,15 @@ public class MedicalRecordManagement {
         this.medications = new ArrayList<>();
     }
 
+    /*
+     * Views the medical record for a specified patient
+     * 
+     * @param patientId     The unique ID of the patients
+     * @param patientList   A list of patient records containing details like ID, and medical history
+     */
     public void viewMedicalRecord(String patientId, List<Map<String, String>> patientList) {
 
         boolean patientFound = false;
-
         
         for (Map<String, String> patientData : patientList) {
             
@@ -72,6 +89,17 @@ public class MedicalRecordManagement {
         }
 
     }
+
+    /*
+     * Updates the medical record for a specified patient based on appointment details
+     * 
+     * @param patientId     The unique ID of the patient
+     * @param patientList   A list of patient records containing details like ID, name, and medical history 
+     * @param appointmentId The ID of the appointment associated with the update
+     * @param diagnosis     The diagnosis to add to the patient's record
+     * @param treatment     The treatment to add to the patient's record
+     * @param medication    The medication to add to the patient's record
+     */
 
     public void updateMedicalRecord(String patientId, List<Map<String, String>> patientList, int appointmentId,
             String diagnosis, String treatment, String medication) {
@@ -143,7 +171,5 @@ public class MedicalRecordManagement {
         else {
             System.out.println("Patient has not done such appointment!");
         }
-
     }
-    
 }

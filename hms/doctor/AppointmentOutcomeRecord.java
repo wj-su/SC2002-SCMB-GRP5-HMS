@@ -6,46 +6,98 @@ import java.util.List;
 import java.util.Map;
 import patient.Appointment;
 
+/*
+ * Manages appointment outcomes, including recording and viewing details
+ * like service types, prescribed medications, and consultation notes
+ */
+
 public class AppointmentOutcomeRecord {
     private String serviceType;
     private Map<String, String> prescribedMeds;
     private String consultNotes;
-
     private List<Appointment> apptRecords = new ArrayList<>();
-
     private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
-    public AppointmentOutcomeRecord() {
-    }
+    /*
+     * Default constructor
+     */
+    public AppointmentOutcomeRecord() {}
 
+    /*
+     * Sets the type of service provided during the appointment
+     * 
+     * @param st The service type
+     */
     public void setServiceType(String st) {
         this.serviceType = st;
     }
 
+    /*
+     * Retrieves the type of service provided during the appointment
+     * 
+     * @return The service type
+     */
     public String getServiceType() {
         return this.serviceType;
     }
 
+    /*
+     * Sets the prescribed medications for the appointment
+     * 
+     * @param pm A map of medication details (name, status, quantity).
+     */
     public void setPrescribedMeds(Map<String, String> pm) {
         this.prescribedMeds = pm;
     }
 
+    /*
+     * Retrieves the prescribed medications for the appointment.
+     * 
+     * @return A map of medication details (name, status, quantity).
+     */
     public Map<String, String> getPrescribedMeds() {
         return this.prescribedMeds;
     }
 
+    /*
+     * Sets the consultation notes for the appointment.
+     * 
+     * @param cn The consultation notes
+     */
     public void setConsultNotes(String cn) {
         this.consultNotes = cn;
     }
 
+    /*
+     * Retrieves the consultation notes for the appointment.
+     * 
+     * @return The consultation notes
+     */
     public String getConsultNotes() {
         return this.consultNotes;
     }
+
+    /*
+     * Retrieves all recorded appointment outcomes
+     * 
+     * @return A map containing all outcome records
+     */
 
     public static Map<String, Map<Integer, Map<String, Object>>> getAllOutcomeRecords() {
         return outcomeRecords;
     }
 
+    /*
+     * Adds an outcome record for a specific appointment
+     * 
+     * @param pid           The patient ID
+     * @param id            The appointment ID
+     * @param service       The type of service provided
+     * @param medName       The name of the prescribed medication
+     * @param medStatus     The status of the prescribed medication
+     * @param medQuantity   The quantity of the prescribed medication
+     * @param consultNotes  The consultation notes 
+     */
     public void addOutcomeRecord(String pid, int id, String service, String medName, String medStatus, String medQuantity,
             String consultNotes) {
         Map<String, Object> apptDetails = new HashMap<>();
@@ -92,6 +144,10 @@ public class AppointmentOutcomeRecord {
         }
     }
 
+    /*
+     * Views all recorded appointment outcomes for all patients
+     * Display details such as service type, medications, and consultation notes
+     */
     public void viewAllOutcomeRecords() {
         if (outcomeRecords.isEmpty()) {
             System.out.println("We have 0 outcome records.");
