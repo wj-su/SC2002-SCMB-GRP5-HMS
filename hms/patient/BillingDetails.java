@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class BillingDetails {
     private Map<String, Map<Integer, Map<String, Object>>> outrecs = new HashMap<>();
-    List<Map<String, Object>> billingList = new ArrayList<>();
+    public List<Map<String, Object>> billingList = new ArrayList<>();
 
     private static final double CONSULTATION_RATE = 30.0;
 

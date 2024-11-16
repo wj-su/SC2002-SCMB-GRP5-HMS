@@ -1,3 +1,5 @@
+package hms_main;
+
 import admin.Administrator;
 import admin.InventoryManagement;
 import admin.StaffManagement;
