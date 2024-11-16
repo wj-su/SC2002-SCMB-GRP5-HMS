@@ -1,24 +1,34 @@
 package patient;
 
+import doctor.AppointmentOutcomeRecord;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import doctor.AppointmentOutcomeRecord;
-
+/**
+ * Manages billing details for patients in the hospital system.
+ * Handles tasks such as initializing bills, viewing bills, and making payments.
+ */
 public class BillingDetails {
     private Map<String, Map<Integer, Map<String, Object>>> outrecs = new HashMap<>();
     List<Map<String, Object>> billingList = new ArrayList<>();
 
     private static final double CONSULTATION_RATE = 30.0;
 
+    /**
+     * Default constructor.
+     * Initializes the outcome records from AppointmentOutcomeRecord and prints the records.
+     */
     public BillingDetails() {
         this.outrecs = AppointmentOutcomeRecord.getAllOutcomeRecords();
         printOutcomeRecords();
     }
 
+    /**
+     * Prints all outcome records for debugging or administrative purposes.
+     */
     public void printOutcomeRecords() {
         
         if (this.outrecs != null && !this.outrecs.isEmpty()) {
@@ -50,6 +60,11 @@ public class BillingDetails {
         }
     }
 
+    /**
+     * Initializes bills based on patient outcome records and medication prices.
+     *
+     * @param medicineList A list of available medications with their details (e.g., name, price).
+     */
     public void initializeBills(List<Map<String, String>> medicineList) {
         
         for (Map.Entry<String, Map<Integer, Map<String, Object>>> patientEntry : outrecs.entrySet()) {
@@ -111,6 +126,11 @@ public class BillingDetails {
         }
     }
 
+    /**
+     * Displays all bills for a specific patient.
+     *
+     * @param loggedInPatientId The ID of the logged-in patient.
+     */
     public void viewAllBills(String loggedInPatientId) {
         if (billingList.isEmpty()) {
             System.out.println("No billing records available.");
@@ -157,6 +177,11 @@ public class BillingDetails {
         }
     }
 
+    /**
+     * Marks a bill as paid based on its billing ID.
+     *
+     * @param billingId The ID of the bill to mark as paid.
+     */
     public void makePayment(int billingId) {
         boolean billFound = false;
     

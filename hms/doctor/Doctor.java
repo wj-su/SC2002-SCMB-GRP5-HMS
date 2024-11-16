@@ -7,7 +7,7 @@ import patient.Appointment;
 import staff.Staff;
 import user.User;
 
-/*
+/**
  * Represents Doctors in the Hospital Management System (HMS).
  * Extends the Staff class and implements the User interface.
  * Provides functionalities for managing appointments, login, and viewing schedules.
@@ -18,14 +18,14 @@ public class Doctor extends Staff implements User {
     private String role;
     private String password;
 
-    /*
+    /**
      * Static map to store the login status of doctors.
      * Key: Staff ID, Value: Login Status (Only True if its User's First Login)
      */
 
     public static Map<String, Boolean> loginStatus = new HashMap<>();
 
-    /*
+    /**
      * Constructor to initialize a Doctor object.
      * 
      * @param doctorId The unique ID of the doctor.
@@ -41,7 +41,7 @@ public class Doctor extends Staff implements User {
         this.password = "password";
     }
 
-    /*
+    /**
      * Checks if the doctor if logging in for the first time.
      * 
      * @return true if it is the first login, otherwise, false.
@@ -52,7 +52,7 @@ public class Doctor extends Staff implements User {
         return loginStatus.getOrDefault(getStaffId(), true); 
     }
 
-    /*
+    /**
      * Sets the first login status for the doctor
      * 
      * @param firstLogin true if it's first time, otherwise, false.
@@ -64,7 +64,7 @@ public class Doctor extends Staff implements User {
         loginStatus.put(this.getStaffId(), firstLogin);
     }
 
-    /*
+    /**
      * Authenticates the doctor using the provided password.
      * 
      * @param pw The password entered by the user.
@@ -76,7 +76,7 @@ public class Doctor extends Staff implements User {
         return this.password.equals(pw);
     }
 
-    /*
+    /**
      * Changes the doctor's password and updates the selected list of doctor data.
      * 
      * @param pw            The new password.
@@ -100,7 +100,7 @@ public class Doctor extends Staff implements User {
         System.out.println("Password has been changed successfully.");
     }
 
-    /*
+    /**
      * Display the menu options for the doctor
      */
 
@@ -122,7 +122,7 @@ public class Doctor extends Staff implements User {
 
     }
 
-    /*
+    /**
      * Retrieves the role of the doctor.
      * 
      * @return The role as a string ("Doctor").
@@ -133,7 +133,7 @@ public class Doctor extends Staff implements User {
         return this.role;
     }
 
-    /*
+    /**
      * Display the personal schedule of the doctor for a specific date
      * 
      * @param date The date for which the schedule is displayed.

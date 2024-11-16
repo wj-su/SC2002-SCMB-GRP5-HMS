@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import patient.Appointment;
 
-/*
+/**
  * Manages medical records for patients, including viewing and updating records
  * Integrates with appointmnets to ensure medical records are tied to valid appointments
  */
@@ -20,12 +20,12 @@ public class MedicalRecordManagement {
     private List<String> medications;
     private List<Appointment> appts = new ArrayList<>();
 
-    /*
+    /**
      * Default constructor 
      */
     public MedicalRecordManagement() {}
 
-    /*
+    /**
      * Constructor to initialize medical record details for a patient
      * 
      * @param patientId The unique ID of the patient
@@ -41,7 +41,7 @@ public class MedicalRecordManagement {
         this.medications = new ArrayList<>();
     }
 
-    /*
+    /***
      * Views the medical record for a specified patient
      * 
      * @param patientId     The unique ID of the patients
@@ -90,7 +90,7 @@ public class MedicalRecordManagement {
 
     }
 
-    /*
+    /**
      * Updates the medical record for a specified patient based on appointment details
      * 
      * @param patientId     The unique ID of the patient
@@ -118,7 +118,6 @@ public class MedicalRecordManagement {
         boolean patientFound = false;
 
         if (appointmentExists == true) {
-            // Iterate over the patientList
             for (Map<String, String> patientData : patientList) {
                 String id = patientData.get("Patient ID");
 

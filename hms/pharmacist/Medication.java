@@ -4,16 +4,30 @@ import static java.lang.Integer.parseInt;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a medication in the pharmacy inventory system.
+ * Tracks medication details such as stock levels, low stock alert levels, and provides functionality
+ * to view and update the inventory.
+ */
 public class Medication {
     private String medId;
     private String name;
     private int stockLevel;
     private int lowStockAlertLevel;
 
-    public Medication() {
+    /**
+     * Default constructor.
+     */
+    public Medication() {}
 
-    }
-
+    /**
+     * Constructor to initialize a medication object.
+     *
+     * @param medId              The unique ID of the medication.
+     * @param name               The name of the medication.
+     * @param stockLevel         The initial stock level of the medication.
+     * @param lowStockAlertLevel The stock level at which a low stock alert should be triggered.
+     */
     public Medication(String medId, String name, int stockLevel, int lowStockAlertLevel) {
         this.medId = medId;
         this.name = name;
@@ -21,22 +35,47 @@ public class Medication {
         setLowStockAlertLevel(lowStockAlertLevel);
     }
 
+    /**
+     * Retrieves the unique ID of the medication.
+     *
+     * @return The medication ID.
+     */
     public String getmedId() {
         return medId;
     }
 
+    /**
+     * Retrieves the name of the medication.
+     *
+     * @return The medication name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Retrieves the current stock level of the medication.
+     *
+     * @return The stock level.
+     */
     public int getStockLevel() {
         return stockLevel;
     }
 
+    /**
+     * Retrieves the low stock alert level for the medication.
+     *
+     * @return The low stock alert level.
+     */
     public int getLowStockAlertLevel() {
         return lowStockAlertLevel;
     }
 
+    /**
+     * Updates the stock level of the medication and checks for low stock warnings.
+     *
+     * @param newStockLevel The new stock level to set. Must be non-negative.
+     */
     public void updateStockLevel(int newStockLevel) {
         if (newStockLevel >= 0) {
             this.stockLevel = newStockLevel;
@@ -46,6 +85,11 @@ public class Medication {
         }
     }
 
+    /**
+     * Sets the low stock alert level for the medication.
+     *
+     * @param alertLevel The low stock alert level to set. Must be non-negative.
+     */
     public void setLowStockAlertLevel(int alertLevel) {
         if (alertLevel >= 0) {
             this.lowStockAlertLevel = alertLevel;
@@ -54,12 +98,20 @@ public class Medication {
         }
     }
 
+    /**
+     * Checks if the stock level is below or equal to the low stock alert level and issues a warning if needed.
+     */
     private void checkLowStock() {
         if (this.stockLevel <= this.lowStockAlertLevel) {
             System.out.println("Warning: Stock for " + name + " is low (" + stockLevel + " remaining).");
         }
     }
 
+    /**
+     * Displays the inventory of all medications in the system.
+     *
+     * @param medicineList A list of maps containing medication details, such as name, stock levels, and price.
+     */
     public void viewMedicationInventory(List<Map<String, String>> medicineList) {
         if (medicineList.isEmpty()) {
             System.out.println("The medicine list is empty. Please load data first.");

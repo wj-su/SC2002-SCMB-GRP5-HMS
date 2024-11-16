@@ -4,12 +4,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages staff members in the hospital system.
+ * Provides functionalities for viewing, adding, updating, and removing staff members.
+ */
 public class StaffManagement {
 
-    public StaffManagement() {
+    /**
+     * Default constructor.
+     */
+    public StaffManagement() {}
 
-    }
-
+    /**
+     * Displays a filtered list of staff based on role, gender, and age range.
+     *
+     * @param staffList The list of staff records.
+     * @param role      The role to filter by (e.g., "Doctor"). Pass null or empty for no filtering.
+     * @param gender    The gender to filter by (e.g., "Male"). Pass null or empty for no filtering.
+     * @param minAge    The minimum age for filtering.
+     * @param maxAge    The maximum age for filtering.
+     */
     public void viewStaff(List<Map<String, String>> staffList, String role, String gender, int minAge, int maxAge) {
         System.out.println("=== Filtered Staff List ===");
         boolean staffFound = false;
@@ -38,6 +52,16 @@ public class StaffManagement {
         }
     }
 
+    /**
+     * Adds a new staff member to the list if the ID is unique.
+     *
+     * @param staffList The list of staff records.
+     * @param id        The unique ID of the new staff member.
+     * @param name      The name of the staff member.
+     * @param role      The role of the staff member (e.g., "Doctor").
+     * @param gender    The gender of the staff member.
+     * @param age       The age of the staff member.
+     */
     public void addStaff(List<Map<String, String>> staffList, String id, String name, String role, String gender, String age) {
         boolean existingStaff = false;
     
@@ -64,8 +88,18 @@ public class StaffManagement {
             System.out.println("Staff member added successfully: " + name);
         }
     }
-    
 
+    /**
+     * Updates the details of an existing staff member.
+     *
+     * @param staffList   The list of staff records.
+     * @param id          The unique ID of the staff member to update.
+     * @param name        The new name of the staff member.
+     * @param role        The new role of the staff member.
+     * @param gender      The new gender of the staff member.
+     * @param age         The new age of the staff member.
+     * @param choiceUpdate The field to update ("Name", "Role", "Gender", "Age", or "E" for all fields).
+     */
     public void updateStaff(List<Map<String, String>> staffList, String id, String name, String role, String gender,
             String age, String choiceUpdate) {
         boolean staffFound = false;
@@ -109,6 +143,12 @@ public class StaffManagement {
         }
     }
 
+    /**
+     * Removes a staff member from the list based on their ID.
+     *
+     * @param staffList The list of staff records.
+     * @param id        The unique ID of the staff member to remove.
+     */
     public void removeStaff(List<Map<String, String>> staffList, String id) {
         boolean staffFound = false;
 

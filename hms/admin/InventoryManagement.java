@@ -4,11 +4,23 @@ import static java.lang.Integer.parseInt;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages the inventory of medications in the hospital system.
+ * Provides functionalities to view, update, and approve replenishment requests for stock levels.
+ */
 public class InventoryManagement {
-    public InventoryManagement() {
 
-    }
+    /**
+     * Default constructor.
+     */
+    public InventoryManagement() {}
 
+    /**
+     * Displays all medications in the inventory along with their details.
+     * Alerts if stock is below the low stock level.
+     *
+     * @param medicineList A list of medicines with their details such as name, stock level, and price.
+     */
     public void viewAllMedicationInventory(List<Map<String, String>> medicineList) {
         if (medicineList.isEmpty()) {
             System.out.println("The medicine list is empty. Please load data first.");
@@ -34,6 +46,11 @@ public class InventoryManagement {
         }
     }
 
+    /**
+     * Displays all replenishment requests along with their details and status.
+     *
+     * @param replenishmentRequests A list of replenishment requests containing medicine name, quantity, and status.
+     */
     public void viewReplenishmentRequests(List<Map<String, String>> replenishmentRequests) {
         if (replenishmentRequests.isEmpty()) {
             System.out.println("No replenishment requests available.");
@@ -49,6 +66,13 @@ public class InventoryManagement {
         }
     }
 
+    /**
+     * Updates the stock level of a specific medicine in the inventory.
+     *
+     * @param medicineList  A list of medicines with their details.
+     * @param medicineName  The name of the medicine to update.
+     * @param newStockLevel The new stock level to set.
+     */
     public void updateStockLevel(List<Map<String, String>> medicineList, String medicineName, String newStockLevel) {
         boolean found = false;
 
@@ -66,6 +90,13 @@ public class InventoryManagement {
         }
     }
 
+    /**
+     * Updates the low stock alert level for a specific medicine.
+     *
+     * @param medicineList   A list of medicines with their details.
+     * @param medicineName   The name of the medicine to update.
+     * @param newAlertLevel  The new low stock alert level to set.
+     */
     public void updateLowStockAlert(List<Map<String, String>> medicineList, String medicineName, String newAlertLevel) {
         boolean found = false;
 
@@ -83,6 +114,13 @@ public class InventoryManagement {
         }
     }
 
+    /**
+     * Approves a replenishment request for a specific medicine and updates its stock level in the inventory.
+     *
+     * @param medicineList           A list of medicines with their details.
+     * @param replenishmentRequests  A list of replenishment requests.
+     * @param medicineName           The name of the medicine to approve.
+     */
     public void approveReplenishmentRequest(List<Map<String, String>> medicineList,
             List<Map<String, String>> replenishmentRequests, String medicineName) {
                 boolean found = false;

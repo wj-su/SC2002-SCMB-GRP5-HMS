@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import patient.Appointment;
 
-/*
+/**
  * Manages appointment outcomes, including recording and viewing details
  * like service types, prescribed medications, and consultation notes
  */
@@ -18,12 +18,12 @@ public class AppointmentOutcomeRecord {
     private List<Appointment> apptRecords = new ArrayList<>();
     private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
-    /*
+    /**
      * Default constructor
      */
     public AppointmentOutcomeRecord() {}
 
-    /*
+    /**
      * Sets the type of service provided during the appointment
      * 
      * @param st The service type
@@ -32,7 +32,7 @@ public class AppointmentOutcomeRecord {
         this.serviceType = st;
     }
 
-    /*
+    /**
      * Retrieves the type of service provided during the appointment
      * 
      * @return The service type
@@ -41,7 +41,7 @@ public class AppointmentOutcomeRecord {
         return this.serviceType;
     }
 
-    /*
+    /**
      * Sets the prescribed medications for the appointment
      * 
      * @param pm A map of medication details (name, status, quantity).
@@ -50,7 +50,7 @@ public class AppointmentOutcomeRecord {
         this.prescribedMeds = pm;
     }
 
-    /*
+    /**
      * Retrieves the prescribed medications for the appointment.
      * 
      * @return A map of medication details (name, status, quantity).
@@ -59,7 +59,7 @@ public class AppointmentOutcomeRecord {
         return this.prescribedMeds;
     }
 
-    /*
+    /**
      * Sets the consultation notes for the appointment.
      * 
      * @param cn The consultation notes
@@ -68,7 +68,7 @@ public class AppointmentOutcomeRecord {
         this.consultNotes = cn;
     }
 
-    /*
+    /**
      * Retrieves the consultation notes for the appointment.
      * 
      * @return The consultation notes
@@ -77,7 +77,7 @@ public class AppointmentOutcomeRecord {
         return this.consultNotes;
     }
 
-    /*
+    /**
      * Retrieves all recorded appointment outcomes
      * 
      * @return A map containing all outcome records
@@ -87,7 +87,7 @@ public class AppointmentOutcomeRecord {
         return outcomeRecords;
     }
 
-    /*
+    /**
      * Adds an outcome record for a specific appointment
      * 
      * @param pid           The patient ID
@@ -144,7 +144,7 @@ public class AppointmentOutcomeRecord {
         }
     }
 
-    /*
+    /**
      * Views all recorded appointment outcomes for all patients
      * Display details such as service type, medications, and consultation notes
      */

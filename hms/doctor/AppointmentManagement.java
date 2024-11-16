@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import patient.Appointment;
 
-/*
+/**
  * Manages appointments for doctors in the Hospital Management System (HMS).
  * Provides functionalities to view, accept, decline appointments, 
  * and manage doctor availability.
@@ -22,12 +22,12 @@ public class AppointmentManagement {
     private String status;
     private List<Appointment> docAppts = new ArrayList<>();
 
-    /*
+    /**
      * Default constructor
      */
     public AppointmentManagement() {}
 
-    /*
+    /**
      * Constructor to initialize an appointment.
      * 
      * @param appointmentId The unique ID of the appointment.
@@ -45,7 +45,7 @@ public class AppointmentManagement {
         this.status = "Pending"; 
     }
 
-    /*
+    /**
      * Views ratings for a specified doctor based on their appointments.
      * 
      * @param doc   The name of the doctor whose ratings are to be viewed.
@@ -75,7 +75,7 @@ public class AppointmentManagement {
         }
     }
 
-    /*
+    /**
      * Views all upcoming appointments for a specified doctor
      * 
      * @param doct The name of the doctor whose appointments are to be viewed.
@@ -96,7 +96,7 @@ public class AppointmentManagement {
         }
     }
 
-    /*
+    /**
      * Accepts an appointment by its ID
      * 
      * @param appointmentId The ID of the appointment to be accepted.
@@ -120,7 +120,7 @@ public class AppointmentManagement {
         }
     }
 
-    /*
+    /**
      * Declines an appointment by its ID
      * 
      * @param appointmentId The ID of the appointment to be declined
@@ -144,7 +144,7 @@ public class AppointmentManagement {
         }
     }
 
-    /*
+    /**
      * Sets availability for a doctor on a specific date and time 
      * 
      * @param doctor            The name of the doctor
@@ -180,7 +180,7 @@ public class AppointmentManagement {
         }
     }
 
-    /*
+    /**
      * Prints out appointment details as a string
      * 
      * @return A string representation of the appointment details

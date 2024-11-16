@@ -1,6 +1,6 @@
 package staff;
 
-/*
+/**
  * Represents a staff member in the hospital system.
  * Provides basic information such as staff ID, name, age, and gender.
  */
@@ -10,7 +10,7 @@ public class Staff {
     private String gender;
     private String age;
 
-    /*
+    /**
      * Constructor to initialize a staff member's details
      * 
      * @param staffId The unique ID of the staff member
@@ -25,7 +25,7 @@ public class Staff {
         this.gender = gender;
     }
 
-    /*
+    /**
      * Retrieves the staff ID
      * 
      * @return The staff ID
@@ -34,7 +34,7 @@ public class Staff {
         return staffId;
     }
 
-    /*
+    /**
      * Sets the staff ID
      * 
      * @param staffId The new staff ID
@@ -43,7 +43,7 @@ public class Staff {
         this.staffId = staffId;
     }
 
-    /*
+    /**
      * Retrieves the name of the staff member
      * 
      * @return The name of the staff member
@@ -52,7 +52,7 @@ public class Staff {
         return name;
     }
 
-    /*
+    /**
      * Sets the name of the staff member
      * 
      * @param name The new name of the staff member
@@ -61,7 +61,7 @@ public class Staff {
         this.name = name;
     }
 
-    /*
+    /**
      * Retrieves the age of the staff member
      * 
      * @return The age of the staff member
@@ -70,7 +70,7 @@ public class Staff {
         return age;
     }
 
-    /*
+    /**
      * Sets the age of the staff member
      * 
      * @param age The new age of the staff member
@@ -78,7 +78,8 @@ public class Staff {
     public void setAge(String age) {
         this.age = age;
     }
-    /*
+
+    /**
      * Retrieved the gender of the staff member
      * 
      * @return The gender of the staff member
@@ -87,7 +88,7 @@ public class Staff {
         return gender;
     }
 
-    /*
+    /**
      * Sets the gender of the staff member
      * 
      * @param gender The new gender of the staff member

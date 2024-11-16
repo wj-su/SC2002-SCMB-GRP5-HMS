@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages patient appointments in the hospital system.
+ * Provides functionalities for scheduling, rescheduling, canceling, viewing appointments, and recording outcomes.
+ */
 public class Appointment {
     private int id;
     private String patientId;
@@ -18,12 +22,21 @@ public class Appointment {
 
     private static List<Appointment> appointments = new ArrayList<>();
 
-    private Map<String, Map<Integer, Map<String, Object>>> aptOutcomeRecs = new HashMap<>();
+    /**
+     * Default constructor.
+     */
+    public Appointment() {}
 
-    public Appointment() {
-
-    }
-
+    /**
+     * Constructor to initialize an appointment.
+     *
+     * @param id      The unique ID of the appointment.
+     * @param pid     The ID of the patient.
+     * @param doc     The name of the doctor.
+     * @param date    The date of the appointment.
+     * @param time    The timeslot of the appointment.
+     * @param status  The status of the appointment (e.g., "Pending").
+     */
     public Appointment(int id, String pid, String doc, String date, String time, String status) {
         this.id = id;
         this.patientId = pid;
@@ -34,66 +47,147 @@ public class Appointment {
         this.rating = -1;
     }
 
+    /**
+     * Sets the ID of the appointment.
+     *
+     * @param id The unique ID to assign to the appointment.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Retrieves the ID of the appointment.
+     *
+     * @return The unique ID of the appointment.
+     */
     public int getId() {
         return this.id;
     }
 
+    /**
+     * Sets the patient ID associated with the appointment.
+     *
+     * @param pid The patient ID to assign.
+     */
     public void setPatientId(String pid) {
         this.patientId = pid;
     }
 
+    /**
+     * Retrieves the patient ID associated with the appointment.
+     *
+     * @return The patient ID.
+     */
     public String getPatientId() {
         return this.patientId;
     }
 
+    /**
+     * Sets the name of the doctor assigned to the appointment.
+     *
+     * @param doc The doctor's name.
+     */
     public void setDoctor(String doc) {
         this.doctor = doc;
     }
 
+    /**
+     * Retrieves the name of the doctor assigned to the appointment.
+     *
+     * @return The doctor's name.
+     */
     public String getDoctor() {
         return this.doctor;
     }
 
+    /**
+     * Sets the date of the appointment.
+     *
+     * @param date The date of the appointment (e.g., "YYYY-MM-DD").
+     */
     public void setDate(String date) {
         this.date = date;
     }
 
+    /**
+     * Retrieves the date of the appointment.
+     *
+     * @return The date of the appointment.
+     */
     public String getDate() {
         return this.date;
     }
 
+    /**
+     * Sets the timeslot for the appointment.
+     *
+     * @param time The timeslot for the appointment (e.g., "10:00 AM - 11:00 AM").
+     */
     public void setTimeslot(String time) {
         this.timeslot = time;
     }
 
+    /**
+     * Retrieves the timeslot of the appointment.
+     *
+     * @return The timeslot of the appointment.
+     */
     public String getTimeslot() {
         return this.timeslot;
     }
 
+    /**
+     * Sets the status of the appointment.
+     *
+     * @param status The status of the appointment (e.g., "Scheduled", "Completed").
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
+    /**
+     * Retrieves the status of the appointment.
+     *
+     * @return The status of the appointment.
+     */
     public String getStatus() {
         return this.status;
     }
 
+    /**
+     * Retrieves the list of all appointments.
+     *
+     * @return A list of all appointments.
+     */
     public static List<Appointment> getAllAppointments() {
         return appointments;
     }
 
+    /**
+     * Sets the rating for the appointment.
+     *
+     * @param rating The rating for the appointment (e.g., a value between 1 and 5).
+     */
     public void setRating(int rating) {
         this.rating = rating;
     }
 
+    /**
+     * Retrieves the rating for the appointment.
+     *
+     * @return The rating of the appointment.
+     */
     public int getRating() {
         return rating;
     }
 
+    /**
+     * Displays all available appointments for doctors.
+     *
+     * @param doctorList          A list of doctors and their details.
+     * @param doctorAvailability  A map of doctor availability with dates and timeslots.
+     */
     public void viewAvailableAppt(List<Map<String, String>> doctorList,
             Map<String, Map<String, List<String>>> doctorAvailability) {
         for (String doctor : doctorAvailability.keySet()) {
@@ -137,6 +231,15 @@ public class Appointment {
         }
     }
 
+    /**
+     * Displays available appointments for a specific doctor.
+     * The method also calculates and displays the average rating of the doctor.
+     *
+     * @param doc                The name of the doctor to check availability for.
+     * @param doctorList         A list of maps containing doctor details, such as their name and gender.
+     * @param doctorAvailability A map of doctors' availability, where the key is the doctor's name,
+     *                           and the value is a map with dates as keys and available timeslots as values.
+     */
     public void viewAvailableApptByDoc(String doc, List<Map<String, String>> doctorList, Map<String, Map<String, List<String>>> doctorAvailability) {
         String normalizedDocName = doc.trim().toLowerCase();
         
@@ -191,6 +294,15 @@ public class Appointment {
         }
     }
 
+    /**
+     * Schedules a new appointment and updates the doctor's availability.
+     *
+     * @param apt               The appointment to schedule.
+     * @param doc               The name of the doctor.
+     * @param date              The date of the appointment.
+     * @param ts                The timeslot of the appointment.
+     * @param doctorAvailability The map of doctor availability.
+     */
     public void scheduleAppointment(Appointment apt, String doc, String date, String ts,
             Map<String, Map<String, List<String>>> doctorAvailability) {
         appointments.add(apt);
@@ -228,6 +340,17 @@ public class Appointment {
 
     }
 
+    /**
+     * Reschedules an existing appointment, allowing changes to doctor, date, or timeslot.
+     *
+     * @param pid                The ID of the patient.
+     * @param aptId              The ID of the appointment to reschedule.
+     * @param newDoc             The new doctor's name.
+     * @param date               The new date for the appointment.
+     * @param time               The new timeslot for the appointment.
+     * @param dec                Decision to change the doctor ("yes" to change the doctor).
+     * @param doctorAvailability The map of doctor availability.
+     */
     public void rescheduleAppointment(String pid, int aptId, String newDoc, String date, String time, String dec,
             Map<String, Map<String, List<String>>> doctorAvailability) {
 
@@ -245,7 +368,6 @@ public class Appointment {
                     System.out.println("Selected Appointment Time Slot: " + freeTimeSlot);
 
                     if (dec.toLowerCase().equals("yes")) {
-                        // changing doctor
                         if (doctorAvailability.containsKey(freeDoc)) {
                             if (doctorAvailability.get(freeDoc).containsKey(freeDate)) {
                                 doctorAvailability.get(freeDoc).get(freeDate).add(freeTimeSlot);
@@ -267,7 +389,6 @@ public class Appointment {
                             System.out.println("The selected new timeslot is not available!");
                         }
                     } else {
-                        // just changing date and time slot for same doctor
                         if (appt.getDoctor().equals(freeDoc) && appt.getDate().equals(freeDate)
                                 && appt.getTimeslot().equals(freeTimeSlot)) {
 
@@ -297,6 +418,13 @@ public class Appointment {
         }
     }
 
+    /**
+     * Cancels an appointment and updates the doctor's availability.
+     *
+     * @param pid                The ID of the patient.
+     * @param aptId              The ID of the appointment to cancel.
+     * @param doctorAvailability The map of doctor availability.
+     */
     public void cancelAppointment(String pid, int aptId, Map<String, Map<String, List<String>>> doctorAvailability) {
         Appointment appointmentToRemove = null;
 
@@ -335,6 +463,11 @@ public class Appointment {
         }
     }
 
+    /**
+     * Displays all scheduled appointments for a specific patient.
+     *
+     * @param pid The ID of the patient.
+     */
     public void viewScheduledAppointments(String pid) {
 
         boolean hasAppointments = false;
@@ -358,6 +491,11 @@ public class Appointment {
 
     }
 
+    /**
+     * Displays the outcome records of past appointments for a specific patient.
+     *
+     * @param pid The ID of the patient.
+     */
     public void viewPastAppointmentOutcomeRecords(String pid) {
         this.aptOutcomeRecs = AppointmentOutcomeRecord.getAllOutcomeRecords();
 
@@ -392,6 +530,13 @@ public class Appointment {
         }
     }
 
+    /**
+     * Rates a doctor after a completed appointment.
+     *
+     * @param patientId    The ID of the patient.
+     * @param appointmentId The ID of the appointment.
+     * @param rating       The rating (1-5) for the doctor.
+     */
     public void rateDoctorAfterAppointment(String patientId, int appointmentId, int rating) {
         if (rating < 1 || rating > 5) {
             System.out.println("Invalid rating. Please rate between 1 and 5.");
