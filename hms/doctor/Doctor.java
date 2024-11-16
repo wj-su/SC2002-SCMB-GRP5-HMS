@@ -22,7 +22,7 @@ public class Doctor extends Staff implements User {
 
     @Override
     public boolean isFirstLogin() {
-        return loginStatus.getOrDefault(getStaffId(), true); // Default to true
+        return loginStatus.getOrDefault(getStaffId(), true); 
     }
 
     @Override
@@ -38,13 +38,13 @@ public class Doctor extends Staff implements User {
 
     @Override
     public void changePassword(String pw, List<Map<String, String>> selectedList) {
-        this.password = pw; // Update the local instance variable
+        this.password = pw; 
     
-        // Update the password and FirstLogin fields in the selected list
+        
         for (Map<String, String> doctorData : selectedList) {
             if (doctorData.get("Staff ID").equals(this.getStaffId())) {
-                doctorData.put("Password", pw); // Update the password in the list
-                doctorData.put("FirstLogin", "false"); // Update the first login status
+                doctorData.put("Password", pw); 
+                doctorData.put("FirstLogin", "false"); 
                 break;
             }
         }
@@ -82,8 +82,6 @@ public class Doctor extends Staff implements User {
         boolean foundAppointments = false;
 
         for (Appointment apt : appointments) {
-            // Check if the appointment is for this doctor, is on the specified date, and is
-            // confirmed
             if (apt.getDoctor().equals(getName()) && apt.getDate().equals(date)
                     && apt.getStatus().equals("Confirmed")) {
                 foundAppointments = true;
@@ -96,7 +94,7 @@ public class Doctor extends Staff implements User {
             }
         }
 
-        // If no appointments were found, display a message
+        
         if (!foundAppointments) {
             System.out.println("No appointments found for Dr. " + getName() + " on " + date);
         }

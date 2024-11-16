@@ -30,23 +30,20 @@ public class MedicalRecordManagement {
     }
 
     public void viewMedicalRecord(String patientId, List<Map<String, String>> patientList) {
-        // MedicalRecordManagement record = medicalRecords.get(patientId);
 
         boolean patientFound = false;
 
-        // Iterate over the patientList
+        
         for (Map<String, String> patientData : patientList) {
             
-
             String id = patientData.get("Patient ID");
 
-            // Check if the entered pid matches the id in the list
             if (id != null && id.equals(patientId)) {
                 patientFound = true;
                 System.out.println("\nPatient Found:");
                 System.out.println("\n=== Patient Details ===");
 
-                // Customize the output for each key
+                
                 String pid = patientData.getOrDefault("Patient ID", "N/A");
                 String name = patientData.getOrDefault("Name", "N/A");
                 String dob = patientData.getOrDefault("Date of Birth", "N/A");
@@ -56,7 +53,7 @@ public class MedicalRecordManagement {
                 String pastDiagnoses = patientData.getOrDefault("Past Diagnoses", "N/A");
                 String pastTreatments = patientData.getOrDefault("Past Treatment", "N/A");
 
-                // Display each detail with a label
+                
                 System.out.println("Patient ID     : " + pid);
                 System.out.println("Name           : " + name);
                 System.out.println("DOB            : " + dob);
@@ -66,7 +63,7 @@ public class MedicalRecordManagement {
                 System.out.println("Past Diagnoses : " + pastDiagnoses);
                 System.out.println("Past Treatment : " + pastTreatments);
                 System.out.println("========================\n");
-                break; // Exit loop after finding the patient
+                break; 
             }
         }
 
@@ -97,18 +94,18 @@ public class MedicalRecordManagement {
             for (Map<String, String> patientData : patientList) {
                 String id = patientData.get("Patient ID");
 
-                // Check if the entered pid matches the id in the list
+               
                 if (id != null && id.equalsIgnoreCase(patientId)) {
                     patientFound = true;
 
-                    // Retrieve existing past diagnoses and treatments, or initialize if not present
+                    
                     String pastDiagnoses = patientData.getOrDefault("Past Diagnoses", "");
                     String pastTreatments = patientData.getOrDefault("Past Treatment", "");
 
-                    // Append new diagnosis and treatment to the existing values
+                   
                     if (diagnosis != null && !diagnosis.isEmpty()) {
                         if (pastDiagnoses.equalsIgnoreCase("NIL")) {
-                            pastDiagnoses = diagnosis; // Replace "NIL" with the first valid diagnosis
+                            pastDiagnoses = diagnosis; 
                         } else {
                             pastDiagnoses = pastDiagnoses.isEmpty() ? diagnosis : pastDiagnoses + " | " + diagnosis;
                         }
@@ -117,18 +114,18 @@ public class MedicalRecordManagement {
 
                     if (treatment != null && !treatment.isEmpty()) {
                         if (pastTreatments.equalsIgnoreCase("NIL")) {
-                            pastTreatments = treatment; // Replace "NIL" with the first valid treatment
+                            pastTreatments = treatment; 
                         } else {
                             pastTreatments = pastTreatments.isEmpty() ? treatment : pastTreatments + " | " + treatment;
                         }
                         patientData.put("Past Treatment", pastTreatments);
                     }
 
-                    // Display updated details
+                    
                     System.out.println("Updated Diagnoses: " + patientData.get("Past Diagnoses"));
                     System.out.println("Updated Treatment: " + patientData.get("Past Treatment"));
                     System.out.println("========================\n");
-                    break; // Exit loop after finding and updating the patient
+                    break; 
                 }
             }
 

@@ -38,7 +38,7 @@ public class Prescription {
         return status;
     }
 
-    // update prescription status 
+    
     public void updateStatus(String status) {
         if (status.equals("Pending") || status.equals("Dispensed")) {
             this.status = status;
@@ -47,9 +47,5 @@ public class Prescription {
         }
     }
 
-    @Override 
-    public String toString() {
-        return "Prescription ID: " + prescriptionId + ", Appointment ID: " + appointmentId +
-               ", Medication: " + medicationName + ", Dosage: " + dosage + ", Status: " + status;
-    }
+    
 }

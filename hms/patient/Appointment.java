@@ -30,7 +30,7 @@ public class Appointment {
         this.doctor = doc;
         this.date = date;
         this.timeslot = time;
-        this.status = status; // Pending -> Confirmed/Accepted -> Declined/Canceled -> Completed
+        this.status = status; 
         this.rating = -1;
     }
 
@@ -139,11 +139,11 @@ public class Appointment {
 
     public void viewAvailableApptByDoc(String doc, List<Map<String, String>> doctorList, Map<String, Map<String, List<String>>> doctorAvailability) {
         String normalizedDocName = doc.trim().toLowerCase();
-        System.out.printf("nd", normalizedDocName);
+        
 
         boolean doctorFound = false;
         for (String doctorName : doctorAvailability.keySet()) {
-            System.out.printf("d", doctorName);
+            
             if (doctorName.toLowerCase().equals(normalizedDocName)) {
                 doctorFound = true;
                 Map<String, List<String>> dates = doctorAvailability.get(doctorName);
@@ -151,13 +151,13 @@ public class Appointment {
                 String gender = "Unknown";
 
                 for (Map<String, String> dc : doctorList) {
-                    if (dc.get("Name").equals(doctor)) {
+                    if (dc.get("Name").trim().toLowerCase().equals(normalizedDocName)) {
                         gender = dc.get("Gender");
                         break;
                     }
                 }
 
-                System.out.println("Doctor: " + doctor + " (" + gender + ")");
+                System.out.println("Doctor: " + doc + " (" + gender + ")");
                 double totalRating = 0;
                 int ratingCount = 0;
 
@@ -194,7 +194,7 @@ public class Appointment {
     public void scheduleAppointment(Appointment apt, String doc, String date, String ts,
             Map<String, Map<String, List<String>>> doctorAvailability) {
         appointments.add(apt);
-        doctorAvailability.get(doc).get(date).remove(ts); // remove selected time
+        doctorAvailability.get(doc).get(date).remove(ts); 
 
         System.out.println("Your appointment has been scheduled successfully! :D");
         System.out.println("Appointment Details for " + apt.getPatientId());

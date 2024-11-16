@@ -41,19 +41,18 @@ public class StaffManagement {
     public void addStaff(List<Map<String, String>> staffList, String id, String name, String role, String gender, String age) {
         boolean existingStaff = false;
     
-        // Check if the ID already exists in the staff list
         for (Map<String, String> data : staffList) {
             String sId = data.get("Staff ID");
             if (sId.equals(id)) {
                 existingStaff = true;
-                break; // Exit loop if a match is found
+                break; 
             }
         }
     
         if (existingStaff) {
             System.out.println("Error: A staff member with ID " + id + " already exists.");
-        } else {
-            // Add new staff member
+        } 
+        else {
             Map<String, String> newStaff = new HashMap<>();
             newStaff.put("Staff ID", id);
             newStaff.put("Name", name);

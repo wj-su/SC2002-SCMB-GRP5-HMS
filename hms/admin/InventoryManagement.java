@@ -87,10 +87,8 @@ public class InventoryManagement {
             List<Map<String, String>> replenishmentRequests, String medicineName) {
                 boolean found = false;
 
-        // Check if a replenishment request already exists for this medicine
         for (Map<String, String> request : replenishmentRequests) {
             if (request.get("Medicine Name").equalsIgnoreCase(medicineName)) {
-                // Update the status of the existing request
                 request.put("Status", "Approved");
                 System.out.println("Updated replenishment request for: " + medicineName);
                 found = true;

@@ -30,7 +30,7 @@ public class Administrator extends Staff implements User {
 
     @Override
     public boolean isFirstLogin() {
-        return loginStatus.getOrDefault(getStaffId(), true); // Default to true
+        return loginStatus.getOrDefault(getStaffId(), true); 
     }
 
     @Override
@@ -46,13 +46,13 @@ public class Administrator extends Staff implements User {
 
     @Override
     public void changePassword(String pw, List<Map<String, String>> selectedList) {
-        this.password = pw; // Update the local instance variable
+        this.password = pw; 
     
-        // Update the password and FirstLogin fields in the selected list
+        
         for (Map<String, String> adminData : selectedList) {
             if (adminData.get("Staff ID").equals(this.getStaffId())) {
-                adminData.put("Password", pw); // Update the password in the list
-                adminData.put("FirstLogin", "false"); // Update the first login status
+                adminData.put("Password", pw); 
+                adminData.put("FirstLogin", "false"); 
                 break;
             }
         }
@@ -79,7 +79,6 @@ public class Administrator extends Staff implements User {
 
 
     public void viewAppointmentsAdmin() {
-        // Fetch all appointments and outcome records
         this.allAppts = Appointment.getAllAppointments();
         this.orc = AppointmentOutcomeRecord.getAllOutcomeRecords();
     

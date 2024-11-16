@@ -8,11 +8,11 @@ public class ExportData {
 
     public void exportCSV(String fileName, List<String[]> rows, String[] headers) {
         try (FileWriter writer = new FileWriter(fileName)) {
-            // Write headers
+            
             writer.append(String.join(",", headers));
             writer.append("\n");
 
-            // Write rows
+            
             for (String[] row : rows) {
                 writer.append(String.join(",", row));
                 writer.append("\n");

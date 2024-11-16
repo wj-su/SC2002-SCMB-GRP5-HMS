@@ -29,7 +29,7 @@ public class Pharmacist extends Staff implements User {
 
     @Override
     public boolean isFirstLogin() {
-        return loginStatus.getOrDefault(getStaffId(), true); // Default to true
+        return loginStatus.getOrDefault(getStaffId(), true);
     }
 
     @Override
@@ -45,13 +45,13 @@ public class Pharmacist extends Staff implements User {
 
     @Override
     public void changePassword(String pw, List<Map<String, String>> selectedList) {
-        this.password = pw; // Update the local instance variable
+        this.password = pw; 
     
-        // Update the password and FirstLogin fields in the selected list
+        
         for (Map<String, String> pharmacistData : selectedList) {
             if (pharmacistData.get("Staff ID").equals(this.getStaffId())) {
-                pharmacistData.put("Password", pw); // Update the password in the list
-                pharmacistData.put("FirstLogin", "false"); // Update the first login status
+                pharmacistData.put("Password", pw); 
+                pharmacistData.put("FirstLogin", "false"); 
                 break;
             }
         }
@@ -95,22 +95,22 @@ public class Pharmacist extends Staff implements User {
     public void updatePrescriptionStatus(String patientId, String appointmentId, String prescriptionName, String newStatus, Map<String, Map<Integer, Map<String, Object>>> outcomeRecords) {
         boolean prescriptionUpdatedInRecord = false;
     
-        // Check if outcome records contain the given patient ID
+        
         if (outcomeRecords.containsKey(patientId)) {
             Map<Integer, Map<String, Object>> patientRecords = outcomeRecords.get(patientId);
     
-            // Parse the appointment ID into an integer
+            
             int apptId = Integer.parseInt(appointmentId);
     
             if (patientRecords.containsKey(apptId)) {
                 Map<String, Object> details = patientRecords.get(apptId);
     
-                // Extract the list of prescribed medications
+                
                 List<Map<String, String>> medications = (List<Map<String, String>>) details.get("pmeds");
     
                 for (Map<String, String> med : medications) {
                     if (med.get("name").equalsIgnoreCase(prescriptionName)) {
-                        med.put("status", newStatus); // Update the status of the prescription
+                        med.put("status", newStatus); 
                         prescriptionUpdatedInRecord = true;
                         System.out.println("Updated Prescription Status in Patient's Outcome Record for " + prescriptionName + " to " + newStatus);
                         break;
@@ -141,7 +141,7 @@ public class Pharmacist extends Staff implements User {
             if (initialStock <= lowStockAlert) {
                 Map<String, String> request = new HashMap<>();
                 request.put("Medicine Name", medicine.get("Medicine Name"));
-                request.put("Requested Quantity", String.valueOf(lowStockAlert * 2)); // Example: Request double the low stock level
+                request.put("Requested Quantity", String.valueOf(lowStockAlert * 2)); 
                 request.put("Status", "Pending Approval");
                 replenishmentRequests.add(request);
     

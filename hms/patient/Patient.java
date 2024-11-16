@@ -19,7 +19,7 @@ public class Patient implements User {
     private String role;
 
     public Patient() {
-        // just to initialise empty constructor
+        
     }
 
     public Patient(String id, String name, String dob, List<String> ci, String gender, String blood, List<String> pd,
@@ -40,7 +40,7 @@ public class Patient implements User {
 
     @Override
     public boolean isFirstLogin() {
-        return loginStatus.getOrDefault(this.getId(), true); // Default to true
+        return loginStatus.getOrDefault(this.getId(), true); 
     }
 
     @Override
@@ -60,13 +60,13 @@ public class Patient implements User {
 
     @Override
     public void changePassword(String pw, List<Map<String, String>> selectedList) {
-        this.password = pw; // Update the local instance variable
+        this.password = pw; 
     
-        // Update the password and FirstLogin fields in the selected list
+        
         for (Map<String, String> patientData : selectedList) {
             if (patientData.get("Patient ID").equals(this.getId())) {
-                patientData.put("Password", pw); // Update the password in the list
-                patientData.put("FirstLogin", "false"); // Update the first login status
+                patientData.put("Password", pw); 
+                patientData.put("FirstLogin", "false"); 
                 break;
             }
         }
