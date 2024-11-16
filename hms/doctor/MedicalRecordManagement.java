@@ -1,6 +1,7 @@
 package doctor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import patient.Appointment;
@@ -148,10 +149,4 @@ public class MedicalRecordManagement {
 
     }
     
-
-    @Override
-    public String toString() {
-        return "Patient ID: " + patientId + ", Name: " + name + ", Blood Type: " + bloodType + "\nDiagnoses: "
-                + diagnoses + "\nTreatments: " + treatments + "\nMedications: " + medications;
-    }
 }

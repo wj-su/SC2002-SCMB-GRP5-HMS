@@ -64,7 +64,8 @@ public class Doctor extends Staff implements User {
         System.out.println("|  - Accept/Decline Appointment Requests (5) | ");
         System.out.println("|  - View Upcoming Appointments          (6) | ");
         System.out.println("|  - Record Appointment Outcome          (7) | ");
-        System.out.println("|  - Logout                              (8) | ");
+        System.out.println("|  - View Own Ratings                    (8) | ");
+        System.out.println("|  - Logout                              (9) | ");
         System.out.println("----------------------------------------------");
 
     }

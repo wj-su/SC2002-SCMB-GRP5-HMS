@@ -35,6 +35,8 @@ public class HospitalManagementSystem {
 	static List<Map<String, String>> replenishmentRequests = new ArrayList<>();
 	static Map<String, String> loginCredentials = new HashMap<>();
 
+	 
+
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
@@ -621,6 +623,20 @@ public class HospitalManagementSystem {
 		BillingDetails bill = new BillingDetails();
 		bill.initializeBills(medicineList);
 
+		// Create a sample appointment list and add an appointment
+		Appointment sampleAppointment = new Appointment(101, "P1001", "D002", "2024-11-16", "10:00", "Completed");
+		Appointment.getAllAppointments().add(sampleAppointment); // Adding to the static list
+	
+		// Set a rating for the completed appointment
+		sampleAppointment.rateDoctorAfterAppointment("P1001", 101, 5);
+	
+		// Verify the rating
+		System.out.println("Expected Rating: 5, Actual Rating: " + sampleAppointment.getRating());
+	
+		// Now check if it shows up in viewRating
+		AppointmentManagement manager = new AppointmentManagement();
+		manager.viewRating("D002");
+
 		do {
 			p.displayMenu();
 
@@ -631,7 +647,8 @@ public class HospitalManagementSystem {
 			switch (choice) {
 				case 1:
 					p.viewMedicalRecord();
-					break;
+					break;		
+
 				case 2:
 					String email, hp = "";
 					String phoneRegex = "^\\d{8}$";
@@ -804,6 +821,17 @@ public class HospitalManagementSystem {
 					break;
 
 				case 12:
+					System.out.println("Rate your doctor...");
+					System.out.println("Enter Appointment ID:");
+					int aptIdR = sc.nextInt();
+					sc.nextLine();
+					System.out.println("Enter Rating:");
+					int rating = sc.nextInt();
+					sc.nextLine();
+					defaultApts.rateDoctorAfterAppointment(pid, aptIdR, rating);
+					break;
+
+				case 13:
 					System.out.println("You have logged out!");
 					return;
 
@@ -891,9 +919,6 @@ public class HospitalManagementSystem {
 					System.out.println("View Upcoming Appointments");
 					String doc = "";
 					for (Map<String, String> data : doctorList) {
-
-						// add pre-defined data to list
-
 						String dId = data.get("Staff ID");
 
 						if (dId.equals(did)) {
@@ -933,7 +958,22 @@ public class HospitalManagementSystem {
 
 					System.out.println("\n");
 					break;
-				case 8:
+
+					case 8:
+					System.out.println("Viewing own ratings...");
+					String docName = "";
+					for (Map<String, String> data : doctorList) {
+						String dId = data.get("Staff ID");
+
+						if (dId.equals(did)) {
+							docName = data.get("Name");
+						}
+					}
+
+
+					am.viewRating(docName);
+					break;
+				case 9:
 					System.out.println("You have logged out!");
 					return;
 

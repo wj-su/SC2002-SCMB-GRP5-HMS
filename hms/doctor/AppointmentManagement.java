@@ -29,6 +29,54 @@ public class AppointmentManagement {
         this.status = "Pending"; // By Default
     }
 
+    public void viewRating(String doc) {
+        this.docAppts = Appointment.getAllAppointments();
+        System.out.println("Total appointments in list: " + docAppts.size());
+        boolean docFound = false;
+        
+        for (Appointment apt : docAppts) {
+            if (apt.getDoctor().equals(doc) && apt.getRating() > -1) {
+                System.out.println("Checking appointment ID: " + apt.getId() + " with rating: " + apt.getRating());
+                System.out.println("Patient Id: " + apt.getPatientId());
+                System.out.println("Appointment Id: " + apt.getId());
+                System.out.println("Appointment Date: " + apt.getDate());
+                System.out.println("Appointment Time: " + apt.getTimeslot());
+                System.out.println("Appointment Status: " + apt.getStatus());
+                System.out.println("Appointment Rating: " + apt.getRating());
+                System.out.println("\n");
+                docFound = true;
+            }
+        }
+    
+        if (!docFound) {
+            System.out.println("No ratings found!");
+        }
+    }
+    
+
+    // public void viewRating(String doc) {
+    //     this.docAppts = Appointment.getAllAppointments();
+    //     boolean docFound = false;
+        
+    //     for (Appointment apt : docAppts) {
+
+    //         if (apt.getDoctor().equals(doc) && apt.getRating() > -1) {
+    //             System.out.println("Patient Id: " + apt.getPatientId());
+    //             System.out.println("Appointment Id: " + apt.getId());
+    //             System.out.println("Appointment Date: " + apt.getDate());
+    //             System.out.println("Appointment Time: " + apt.getTimeslot());
+    //             System.out.println("Appointment Status: " + apt.getStatus());
+    //             System.out.println("Appointment Rating: " + apt.getRating());
+    //             System.out.println("\n");
+    //             docFound = true;
+    //         }
+    //     }
+
+    //     if (!docFound) {
+    //         System.out.println("No ratings found!");
+    //     }
+    // }
+
     public void viewUpcomingAppointments(String doc) {
         this.docAppts = Appointment.getAllAppointments();
         System.out.println("Upcoming Appointments for Dr. " + doc);

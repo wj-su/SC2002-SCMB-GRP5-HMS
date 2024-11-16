@@ -354,15 +354,12 @@ public class Appointment {
             return;
         }
     
-        // Fetch the list of appointments for the patient
         for (Appointment appt : appointments) {
             if (appt.getPatientId().equals(patientId) && appt.getId() == appointmentId) {
-                // Check if the appointment has been completed
                 if (appt.getStatus().equals("Completed")) {
-                    // If the appointment is completed, we can rate
     
-                    // set the rating for this appointment
                     appt.setRating(rating);
+                   
                     System.out.println("Thank you for your feedback!");
                     return;
                 } else {
@@ -372,7 +369,6 @@ public class Appointment {
             }
         }
     
-        // If no appointment was found for the patient with the given ID and appointment ID
         System.out.println("No appointment found for patient with the given appointment ID.");
     }
     
