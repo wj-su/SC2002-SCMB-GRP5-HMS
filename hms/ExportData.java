@@ -60,7 +60,7 @@ public class ExportData {
     private String extractMedications(List<Map<String, String>> medications) {
         StringBuilder meds = new StringBuilder();
         for (Map<String, String> med : medications) {
-            meds.append(med.get("name")).append(" (").append(med.get("status")).append("), ");
+            meds.append(med.get("name")).append(" (").append(med.get("status")).append(")");
         }
         return meds.toString().isEmpty() ? "None" : meds.toString();
     }
