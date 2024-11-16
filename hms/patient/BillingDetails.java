@@ -189,13 +189,20 @@ public class BillingDetails {
             
             int currentBillingId = (int) bill.get("billingId");
     
-            
-            if (currentBillingId == billingId) {
-                bill.put("isPaid", true);
-    
-                System.out.println("Payment made successfully for Billing ID: " + billingId);
+            if ((boolean) bill.get("isPaid") == true) {
                 billFound = true;
-                break;  
+                System.out.println("You have paid this bill already!!");
+                break;
+            }
+
+            else {
+                if (currentBillingId == billingId) {
+                    bill.put("isPaid", true);
+        
+                    System.out.println("Payment made successfully for Billing ID: " + billingId);
+                    billFound = true;
+                    break;  
+                }
             }
         }
     
