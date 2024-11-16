@@ -623,19 +623,6 @@ public class HospitalManagementSystem {
 		BillingDetails bill = new BillingDetails();
 		bill.initializeBills(medicineList);
 
-		// Create a sample appointment list and add an appointment
-		Appointment sampleAppointment = new Appointment(101, "P1001", "D002", "2024-11-16", "10:00", "Completed");
-		Appointment.getAllAppointments().add(sampleAppointment); // Adding to the static list
-	
-		// Set a rating for the completed appointment
-		sampleAppointment.rateDoctorAfterAppointment("P1001", 101, 5);
-	
-		// Verify the rating
-		System.out.println("Expected Rating: 5, Actual Rating: " + sampleAppointment.getRating());
-	
-		// Now check if it shows up in viewRating
-		AppointmentManagement manager = new AppointmentManagement();
-		manager.viewRating("D002");
 
 		do {
 			p.displayMenu();
@@ -695,12 +682,12 @@ public class HospitalManagementSystem {
 					System.out.println("Type `doc` to view appointments with a specific doctor");
 					String type = sc.nextLine();
 					if (type.toLowerCase().equals("all")) {
-						defaultApts.viewAvailableAppt(doctorAvailability);
+						defaultApts.viewAvailableAppt(doctorList, doctorAvailability);
 					} else if (type.toLowerCase().equals("doc")) {
 						System.out.println("Enter the doctor's name: ");
 						String dn = sc.nextLine();
 						// dn = Character.toUpperCase(dn.charAt(0)) + dn.substring(1).toLowerCase();
-						defaultApts.viewAvailableApptByDoc(dn, doctorAvailability);
+						defaultApts.viewAvailableApptByDoc(dn, doctorList, doctorAvailability);
 					} else {
 						System.out.println("Please choose either `all` or `doc`!");
 					}
@@ -760,7 +747,7 @@ public class HospitalManagementSystem {
 					int aptid = sc.nextInt();
 					sc.nextLine(); // consume the newline after nextInt
 
-					if (defaultApts.appointmentExists(pid, aptid, "reschedule", doctorAvailability)) {
+					if (defaultApts.appointmentExists(pid, aptid, "reschedule", doctorAvailability, doctorList)) {
 						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
 						System.out.println("Yes or No?");
 						String decision = sc.nextLine();
@@ -768,7 +755,7 @@ public class HospitalManagementSystem {
 						if (decision.toLowerCase().equals("yes")) {
 							System.out.println("Enter the new doctor's name: ");
 							newDoc = sc.nextLine();
-							defaultApts.viewAvailableApptByDoc(newDoc, doctorAvailability);
+							defaultApts.viewAvailableApptByDoc(newDoc, doctorList, doctorAvailability);
 
 						}
 						System.out.println("Enter the new date : ");
@@ -788,7 +775,7 @@ public class HospitalManagementSystem {
 					System.out.println("Enter the appointment ID: ");
 					int aptId = sc.nextInt();
 					sc.nextLine();
-					if (!defaultApts.appointmentExists(pid, aptId, "cancel", doctorAvailability)) {
+					if (!defaultApts.appointmentExists(pid, aptId, "cancel", doctorAvailability, doctorList)) {
 						System.out.println("Appointment doesn't exist!");
 					}
 					defaultApts.cancelAppointment(pid, aptId, doctorAvailability);

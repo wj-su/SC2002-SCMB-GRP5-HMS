@@ -15,7 +15,6 @@ public class Appointment {
     private String timeslot;
     private String status;
     private int rating;
-    
 
     private static List<Appointment> appointments = new ArrayList<>();
 
@@ -95,15 +94,38 @@ public class Appointment {
         return rating;
     }
 
-    public void viewAvailableAppt(Map<String, Map<String, List<String>>> doctorAvailability) {
+    public void viewAvailableAppt(List<Map<String, String>> doctorList,
+            Map<String, Map<String, List<String>>> doctorAvailability) {
         for (String doctor : doctorAvailability.keySet()) {
-            System.out.println("Doctor: " + doctor);
+
+            String gender = "Unknown";
+
+            for (Map<String, String> dc : doctorList) {
+                if (dc.get("Name").equals(doctor)) {
+                    gender = dc.get("Gender");
+                    break;
+                }
+            }
+
+            System.out.println("Doctor: " + doctor + " (" + gender + ")");
+
+            double totalRating = 0;
+            int ratingCount = 0;
+
+            for (Appointment appt : Appointment.getAllAppointments()) {
+                if (appt.getDoctor().equals(doctor) && appt.getRating() > -1) {
+                    totalRating += appt.getRating();
+                    ratingCount++;
+                }
+            }
+
+            double averageRating = (ratingCount > 0) ? totalRating / ratingCount : 0;
+            System.out.printf("  Average Rating: %.2f\n", averageRating);
 
             Map<String, List<String>> dates = doctorAvailability.get(doctor);
             List<String> sortedDates = new ArrayList<>(dates.keySet());
-            Collections.sort(sortedDates); 
+            Collections.sort(sortedDates);
 
-            
             for (String date : sortedDates) {
                 List<String> times = dates.get(date);
                 String timesStr = String.join(", ", times);
@@ -115,21 +137,43 @@ public class Appointment {
         }
     }
 
-    public void viewAvailableApptByDoc(String doc, Map<String, Map<String, List<String>>> doctorAvailability) {
+    public void viewAvailableApptByDoc(String doc, List<Map<String, String>> doctorList, Map<String, Map<String, List<String>>> doctorAvailability) {
         String normalizedDocName = doc.trim().toLowerCase();
+        System.out.printf("nd", normalizedDocName);
 
         boolean doctorFound = false;
         for (String doctorName : doctorAvailability.keySet()) {
+            System.out.printf("d", doctorName);
             if (doctorName.toLowerCase().equals(normalizedDocName)) {
                 doctorFound = true;
                 Map<String, List<String>> dates = doctorAvailability.get(doctorName);
 
-                System.out.println("Doctor: " + doctorName);
+                String gender = "Unknown";
+
+                for (Map<String, String> dc : doctorList) {
+                    if (dc.get("Name").equals(doctor)) {
+                        gender = dc.get("Gender");
+                        break;
+                    }
+                }
+
+                System.out.println("Doctor: " + doctor + " (" + gender + ")");
+                double totalRating = 0;
+                int ratingCount = 0;
+
+                for (Appointment appt : Appointment.getAllAppointments()) {
+                    if (appt.getDoctor().equals(doctorName) && appt.getRating() > -1) {
+                        totalRating += appt.getRating();
+                        ratingCount++;
+                    }
+                }
+
+                double averageRating = (ratingCount > 0) ? totalRating / ratingCount : 0;
+                System.out.printf("  Average Rating: %.2f\n", averageRating);
 
                 List<String> sortedDates = new ArrayList<>(dates.keySet());
-                Collections.sort(sortedDates); 
+                Collections.sort(sortedDates);
 
-                
                 for (String date : sortedDates) {
                     List<String> times = dates.get(date);
                     String timesStr = String.join(", ", times);
@@ -161,7 +205,7 @@ public class Appointment {
     }
 
     public boolean appointmentExists(String pid, int aptId, String type,
-            Map<String, Map<String, List<String>>> doctorAvailability) {
+            Map<String, Map<String, List<String>>> doctorAvailability, List<Map<String, String>> doctorList) {
         if (appointments.isEmpty()) {
             System.out.println("No appointments has been scheduled!");
         } else {
@@ -173,7 +217,7 @@ public class Appointment {
                                 + appt.getDate() + " at " + appt.getTimeslot());
                         if (type.toLowerCase().equals("reschedule")) {
                             System.out.println("\nThese are our currently available appointments: ");
-                            viewAvailableApptByDoc(appt.getDoctor(), doctorAvailability);
+                            viewAvailableApptByDoc(appt.getDoctor(), doctorList, doctorAvailability);
                         }
                         return true;
                     }
@@ -353,13 +397,13 @@ public class Appointment {
             System.out.println("Invalid rating. Please rate between 1 and 5.");
             return;
         }
-    
+
         for (Appointment appt : appointments) {
             if (appt.getPatientId().equals(patientId) && appt.getId() == appointmentId) {
                 if (appt.getStatus().equals("Completed")) {
-    
+
                     appt.setRating(rating);
-                   
+
                     System.out.println("Thank you for your feedback!");
                     return;
                 } else {
@@ -368,8 +412,8 @@ public class Appointment {
                 }
             }
         }
-    
+
         System.out.println("No appointment found for patient with the given appointment ID.");
     }
-    
+
 }
