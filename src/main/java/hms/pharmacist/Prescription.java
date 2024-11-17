@@ -5,11 +5,30 @@ package hms.pharmacist;
  * Includes details such as prescription ID, appointment ID, medication name, dosage, and status.
  */
 public class Prescription {
+    /**
+     * The unique identifier for the prescription.
+     */
     private String prescriptionId;
+
+    /**
+     * The identifier of the appointment associated with the prescription.
+     */
     private String appointmentId;
+
+    /**
+     * The name of the prescribed medication.
+     */
     private String medicationName;
+
+    /**
+     * The dosage information for the prescribed medication.
+     */
     private String dosage;
-    private String status; 
+
+    /**
+     * The status of the prescription (e.g., "Pending", "Dispensed").
+     */
+    private String status;
 
     /**
      * Default constructor.

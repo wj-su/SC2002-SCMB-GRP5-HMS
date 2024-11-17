@@ -12,10 +12,32 @@ import hms.patient.Appointment;
  */
 
 public class AppointmentOutcomeRecord {
+    /**
+     * The type of service provided during the appointment.
+     */
     private String serviceType;
+
+    /**
+     * A map of prescribed medications with details like name, status, and quantity.
+     */
     private Map<String, String> prescribedMeds;
+
+    /**
+     * Notes recorded during the consultation.
+     */
     private String consultNotes;
+
+    /**
+     * A list of all appointment records.
+     */
     private List<Appointment> apptRecords = new ArrayList<>();
+
+    /**
+     * A static map containing all outcome records.
+     * Key: Patient ID, Value: A nested map where:
+     * - Key: Appointment ID
+     * - Value: A map containing appointment details (e.g., date, service type, prescribed medications, notes).
+     */
     private static Map<String, Map<Integer, Map<String, Object>>> outcomeRecords = new HashMap<>();
 
     /**

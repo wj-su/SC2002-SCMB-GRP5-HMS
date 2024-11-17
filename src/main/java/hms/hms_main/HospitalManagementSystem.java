@@ -43,13 +43,54 @@ import hms.user.User;
  */
 public class HospitalManagementSystem {
 
+	/**
+	 * List of patient information.
+	 * Each map contains patient details such as name, ID, age, etc.
+	 */
 	static List<Map<String, String>> patientList = new ArrayList<>();
+
+	/**
+	 * List of staff information.
+	 * Each map contains staff details such as name, ID, role, etc.
+	 */
 	static List<Map<String, String>> staffList = new ArrayList<>();
+
+	/**
+	 * List of doctor information.
+	 * Each map contains doctor details such as name, ID, specialization, etc.
+	 */
 	static List<Map<String, String>> doctorList = new ArrayList<>();
+
+	/**
+	 * List of pharmacist information.
+	 * Each map contains pharmacist details such as name, ID, role, etc.
+	 */
 	static List<Map<String, String>> pharmacistList = new ArrayList<>();
+
+	/**
+	 * List of available medications.
+	 * Each map contains medication details such as name, price, quantity, etc.
+	 */
 	static List<Map<String, String>> medicineList = new ArrayList<>();
+
+	/**
+	 * Availability schedule of doctors.
+	 * Key: Doctor's name, Value: Map where:
+	 * - Key: Date
+	 * - Value: List of available timeslots.
+	 */
 	static Map<String, Map<String, List<String>>> doctorAvailability = new HashMap<>();
+
+	/**
+	 * List of replenishment requests for medication.
+	 * Each map contains replenishment request details such as medicine name, requested quantity, etc.
+	 */
 	static List<Map<String, String>> replenishmentRequests = new ArrayList<>();
+
+	/**
+	 * Map of user login credentials.
+	 * Key: User ID, Value: User password.
+	 */
 	static Map<String, String> loginCredentials = new HashMap<>();
 
 	/**

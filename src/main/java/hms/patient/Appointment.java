@@ -12,16 +12,54 @@ import java.util.Map;
  * Provides functionalities for scheduling, rescheduling, canceling, viewing appointments, and recording outcomes.
  */
 public class Appointment {
+    /**
+     * The ID of the appointment.
+     */
     private int id;
+
+    /**
+     * The ID of the patient associated with the appointment.
+     */
     private String patientId;
+
+    /**
+     * The name of the doctor for the appointment.
+     */
     private String doctor;
+
+    /**
+     * The date of the appointment in DD-Mmm-YYY.
+     */
     private String date;
+
+    /**
+     * The timeslot for the appointment in 24 hours e.g., 10:00.
+     */
     private String timeslot;
+
+    /**
+     * The status of the appointment (e.g., "Pending", "Scheduled", "Completed").
+     */
     private String status;
+
+    /**
+     * The rating of the appointment given by the patient (e.g., a value between 1 and 5).
+     */
     private int rating;
 
+    /**
+     * Static list to store all appointments.
+     */
     private static List<Appointment> appointments = new ArrayList<>();
+
+    /**
+     * Map to store appointment outcome records.
+     * Key: Patient ID, Value: A nested map of appointment details where:
+     * - Key: Appointment ID
+     * - Value: A map containing the appointment details (e.g., date, service type, prescribed medications, notes).
+     */
     private Map<String, Map<Integer, Map<String, Object>>> aptOutcomeRecs = new HashMap<>();
+
     /**
      * Default constructor.
      */
@@ -315,6 +353,18 @@ public class Appointment {
         System.out.println("Timeslot Chosen: " + apt.getTimeslot());
 
     }
+    /**
+     * Checks if an appointment exists for a specific patient based on the given appointment ID.
+     * If the appointment exists, it displays the details of the appointment and, if the type is "reschedule",
+     * also displays the available appointments for the same doctor.
+     *
+     * @param pid                The ID of the patient.
+     * @param aptId              The ID of the appointment to check.
+     * @param type               The type of action to perform ("reschedule" to view available appointments for rescheduling).
+     * @param doctorAvailability A map of doctor availability with dates and timeslots.
+     * @param doctorList         A list of maps containing doctor details, such as their name and gender.
+     * @return true if the appointment exists, false otherwise.
+     */
 
     public boolean appointmentExists(String pid, int aptId, String type,
             Map<String, Map<String, List<String>>> doctorAvailability, List<Map<String, String>> doctorList) {

@@ -3,6 +3,15 @@ package hms.user;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a user in the Hospital Management System (HMS).
+ * Defines common functionalities such as authentication, password management,
+ * role retrieval, and user-specific menu interactions.
+ *
+ * Classes implementing this interface can represent various roles in the system,
+ * such as doctors, administrators, or patients.
+ */
+
 public interface User {
 
     /**
@@ -35,6 +44,8 @@ public interface User {
 
     /**
      * Checks if the user is logging in for the first time
+     *
+     * @return If its first login
      */
     boolean isFirstLogin();
 

@@ -39,20 +39,20 @@ The HMS project is intended to apply Object-Oriented (OO) concepts learned durin
 ## Code Structure
 
 The HMS project is organized into several Java classes in `src/main/java/hms`:
-- `user\User.java`: Represents a generic user in the system, such as a patient, doctor, or administrator.
-- `admin\Administrator.java`: Handles actions performed by administrators, such as staff and inventory management.
-- `doctor\Doctor.java`: Represents a doctor and defines doctor-specific operations like managing appointments and medical records.
-- `pharmacist\Pharmacist.java`: Manages medication inventory and prescription fulfillment.
-- `patient\Patient.java`: Represents a patient, allowing access to appointment scheduling and medical records.
-- `patient\Appointment.java`: Represents an appointment between a patient and a doctor.
-- `doctor\AppointmentManagement.java`: Manages all aspects of appointment scheduling, rescheduling, and cancellation.
-- `admin\InventoryManagement.java`: Manages medication stock and pharmacy inventory.
-- `doctor\MedicalRecordManagement.java`: Manages patient medical records, including diagnosis and treatment updates.
-- `hms_main\mainHospitalManagementSystem.java`: Acts as the main interface to manage the different services provided by the hospital.
+- `user/User.java`: Represents a generic user in the system, such as a patient, doctor, or administrator.
+- `admin/Administrator.java`: Handles actions performed by administrators, such as staff and inventory management.
+- `doctor/Doctor.java`: Represents a doctor and defines doctor-specific operations like managing appointments and medical records.
+- `pharmacist/Pharmacist.java`: Manages medication inventory and prescription fulfillment.
+- `patient/Patient.java`: Represents a patient, allowing access to appointment scheduling and medical records.
+- `patient/Appointment.java`: Represents an appointment between a patient and a doctor.
+- `doctor/AppointmentManagement.java`: Manages all aspects of appointment scheduling, rescheduling, and cancellation.
+- `admin/InventoryManagement.java`: Manages medication stock and pharmacy inventory.
+- `doctor/MedicalRecordManagement.java`: Manages patient medical records, including diagnosis and treatment updates.
+- `hms_main/mainHospitalManagementSystem.java`: Acts as the main interface to manage the different services provided by the hospital.
 
 ## Testing
 
-JUnit test classes have been implemented to ensure the correctness of the system:
+JUnit test classes located in `src/test/java/unit_tests` have been implemented to ensure the correctness of the system:
 - **AdministratorActionsTest.java**: Tests the functionalities available to administrators.
 - **DoctorActionsTest.java**: Verifies operations performed by doctors.
 - **PharmacistActionsTest.java**: Tests the features used by pharmacists.

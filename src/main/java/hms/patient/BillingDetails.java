@@ -12,10 +12,24 @@ import java.util.Random;
  * Handles tasks such as initializing bills, viewing bills, and making payments.
  */
 public class BillingDetails {
+    /**
+     * Map of all outcome records for appointments.
+     * Key: Patient ID, Value: A nested map where:
+     * - Key: Appointment ID
+     * - Value: A map containing appointment details (e.g., date, service type, prescribed medications, notes).
+     */
     private Map<String, Map<Integer, Map<String, Object>>> outrecs = new HashMap<>();
+
+    /**
+     * List of billing records for all patients.
+     */
     public List<Map<String, Object>> billingList = new ArrayList<>();
 
+    /**
+     * The fixed consultation rate for appointments.
+     */
     private static final double CONSULTATION_RATE = 30.0;
+
 
     /**
      * Default constructor.

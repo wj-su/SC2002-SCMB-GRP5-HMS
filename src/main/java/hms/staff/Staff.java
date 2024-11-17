@@ -5,11 +5,25 @@ package hms.staff;
  * Provides basic information such as staff ID, name, age, and gender.
  */
 public class Staff {
+    /**
+     * The unique identifier for the staff member.
+     */
     private String staffId;
-    private String name;
-    private String gender;
-    private String age;
 
+    /**
+     * The name of the staff member.
+     */
+    private String name;
+
+    /**
+     * The gender of the staff member.
+     */
+    private String gender;
+
+    /**
+     * The age of the staff member.
+     */
+    private String age;
     /**
      * Constructor to initialize a staff member's details
      * 

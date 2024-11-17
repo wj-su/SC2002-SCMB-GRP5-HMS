@@ -12,12 +12,42 @@ import hms.patient.Appointment;
 
 public class MedicalRecordManagement {
 
+    /**
+     * The unique ID of the patient.
+     */
     private String patientId;
+
+    /**
+     * The name of the patient.
+     */
     private String name;
+
+    /**
+     * The blood type of the patient.
+     */
     private String bloodType;
+
+    /**
+     * A list of diagnoses for the patient.
+     * Contains details of all diagnoses made for the patient.
+     */
     private List<String> diagnoses;
+
+    /**
+     * A list of treatments provided to the patient.
+     * Contains the details of treatments that the patient has received.
+     */
     private List<String> treatments;
+
+    /**
+     * A list of medications prescribed to the patient.
+     * Contains names of medications that have been prescribed.
+     */
     private List<String> medications;
+
+    /**
+     * A list of appointments scheduled for the patient.
+     */
     private List<Appointment> appts = new ArrayList<>();
 
     /**
@@ -30,7 +60,7 @@ public class MedicalRecordManagement {
      * 
      * @param patientId The unique ID of the patient
      * @param name      The name of the patient
-     * @paran bloodType The blood type of the patient
+     * @param bloodType The blood type of the patient
      */
     public MedicalRecordManagement(String patientId, String name, String bloodType) {
         this.patientId = patientId;

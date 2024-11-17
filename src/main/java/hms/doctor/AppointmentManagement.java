@@ -14,12 +14,39 @@ import hms.patient.Appointment;
  */
 
 public class AppointmentManagement {
+    /**
+     * The unique ID of the appointment.
+     */
     private int appointmentId;
+
+    /**
+     * The ID of the patient associated with the appointment.
+     */
     private String patientId;
+
+    /**
+     * The ID of the doctor handling the appointment.
+     */
     private String doctorId;
+
+    /**
+     * The date of the appointment.
+     */
     private String date;
+
+    /**
+     * The time of the appointment.
+     */
     private String time;
+
+    /**
+     * The status of the appointment (e.g., "Pending", "Confirmed", "Declined").
+     */
     private String status;
+
+    /**
+     * A list of appointments for the doctor.
+     */
     private List<Appointment> docAppts = new ArrayList<>();
 
     /**

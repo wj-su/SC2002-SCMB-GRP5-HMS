@@ -15,9 +15,24 @@ import hms.user.User;
  * Provides functionalities for managing hospital staff, appointments, and inventory 
  */
 public class Administrator extends Staff implements User {
+    /**
+     * List of all appointments in the hospital system.
+     */
     private List<Appointment> allAppts = new ArrayList<>();
+    /**
+     * Map of appointment outcome records.
+     * Key: Patient ID, Value: A nested map of appointment details where:
+     * - Key: Appointment ID
+     * - Value: A map containing the appointment details (e.g., date, service type, prescribed medications, notes).
+     */
     private Map<String, Map<Integer, Map<String, Object>>> orc = new HashMap<>();
+    /**
+     * The role of the staff member, initialized as "Administrator".
+     */
     private String role;
+    /**
+     * The password for administrator login, initialized as "password".
+     */
     private String password;
 
     /**

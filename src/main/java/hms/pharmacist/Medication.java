@@ -10,9 +10,24 @@ import java.util.Map;
  * to view and update the inventory.
  */
 public class Medication {
+    /**
+     * The unique ID of the medication.
+     */
     private String medId;
+
+    /**
+     * The name of the medication.
+     */
     private String name;
+
+    /**
+     * The current stock level of the medication.
+     */
     private int stockLevel;
+
+    /**
+     * The stock level at which an alert should be triggered for low stock.
+     */
     private int lowStockAlertLevel;
 
     /**

@@ -11,15 +11,56 @@ import hms.user.User;
  * Implements the User interface to provide functionalities such as login, updating personal information, and viewing medical records.
  */
 public class Patient implements User {
+    /**
+     * The unique identifier for the person.
+     */
     private String id;
+
+    /**
+     * The name of the person.
+     */
     private String name;
+
+    /**
+     * The date of birth of the person (e.g., "YYYY-MM-DD").
+     */
     private String dob;
+
+    /**
+     * The gender of the person.
+     */
     private String gender;
+
+    /**
+     * A list of contact information for the person (e.g., phone numbers, emails).
+     */
     private List<String> contactInformation;
+
+    /**
+     * The blood type of the person.
+     */
     private String blood;
+
+    /**
+     * A list of past diagnoses for the person.
+     * Contains the details of all past medical conditions.
+     */
     private List<String> pastDiagnoses;
+
+    /**
+     * A list of past treatments provided to the person.
+     * Contains the details of all treatments the person has received.
+     */
     private List<String> pastTreatments;
+
+    /**
+     * The password for the person's account.
+     */
     private String password;
+
+    /**
+     * The role of the person (e.g., "Doctor", "Patient").
+     */
     private String role;
 
     /**

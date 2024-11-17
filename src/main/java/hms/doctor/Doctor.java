@@ -14,8 +14,19 @@ import hms.user.User;
  */
 
 public class Doctor extends Staff implements User {
+    /**
+     * List of appointments assigned to the doctor.
+     */
     private List<Appointment> appointments;
+
+    /**
+     * The role of the staff member, initialized as "Doctor".
+     */
     private String role;
+
+    /**
+     * The password for doctor login, initialized as "password".
+     */
     private String password;
 
     /**

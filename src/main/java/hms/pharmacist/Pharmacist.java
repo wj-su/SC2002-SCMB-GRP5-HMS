@@ -13,8 +13,19 @@ import hms.user.User;
  * Provides functionalities to manage prescriptions, view and update medication inventory, and submit replenishment requests.
  */
 public class Pharmacist extends Staff implements User {
+    /**
+     * A list of prescriptions managed by the Pharmacist.
+     */
     private List<Prescription> managedPrescriptions;
+
+    /**
+     * The role of the user (e.g., "Pharmacist").
+     */
     private String role;
+
+    /**
+     * The password for the user's account.
+     */
     private String password;
 
     /**
