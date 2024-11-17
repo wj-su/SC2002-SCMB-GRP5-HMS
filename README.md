@@ -38,17 +38,17 @@ The HMS project is intended to apply Object-Oriented (OO) concepts learned durin
 
 ## Code Structure
 
-The HMS project is organized into several Java classes:
-- **User.java**: Represents a generic user in the system, such as a patient, doctor, or administrator.
-- **Administrator.java**: Handles actions performed by administrators, such as staff and inventory management.
-- **Doctor.java**: Represents a doctor and defines doctor-specific operations like managing appointments and medical records.
-- **Pharmacist.java**: Manages medication inventory and prescription fulfillment.
-- **Patient.java**: Represents a patient, allowing access to appointment scheduling and medical records.
-- **Appointment.java**: Represents an appointment between a patient and a doctor.
-- **AppointmentManagement.java**: Manages all aspects of appointment scheduling, rescheduling, and cancellation.
-- **InventoryManagement.java**: Manages medication stock and pharmacy inventory.
-- **MedicalRecordManagement.java**: Manages patient medical records, including diagnosis and treatment updates.
-- **HospitalManagementSystem.java**: Acts as the main interface to manage the different services provided by the hospital.
+The HMS project is organized into several Java classes in `src/main/java/hms`:
+- `user\User.java`: Represents a generic user in the system, such as a patient, doctor, or administrator.
+- `admin\Administrator.java`: Handles actions performed by administrators, such as staff and inventory management.
+- `doctor\Doctor.java`: Represents a doctor and defines doctor-specific operations like managing appointments and medical records.
+- `pharmacist\Pharmacist.java`: Manages medication inventory and prescription fulfillment.
+- `patient\Patient.java`: Represents a patient, allowing access to appointment scheduling and medical records.
+- `patient\Appointment.java`: Represents an appointment between a patient and a doctor.
+- `doctor\AppointmentManagement.java`: Manages all aspects of appointment scheduling, rescheduling, and cancellation.
+- `admin\InventoryManagement.java`: Manages medication stock and pharmacy inventory.
+- `doctor\MedicalRecordManagement.java`: Manages patient medical records, including diagnosis and treatment updates.
+- `hms_main\mainHospitalManagementSystem.java`: Acts as the main interface to manage the different services provided by the hospital.
 
 ## Testing
 
@@ -69,17 +69,36 @@ The system uses CSV files for system initialization only:
 
 Information is not persisted once the application is closed, as the CSV files are used for system initialization purposes only.
 
+
+
+## Prerequisites: 
+- Java Development Kit (JDK) version 17 or higher : [Download](https://www.oracle.com/sg/java/technologies/downloads/)
+- Apache Maven (Needed only if you're building from source): [Download](https://maven.apache.org/download.cgi)
+
 ## Installation and Setup
 
-1. **Prerequisites**: Java Development Kit (JDK) version 8 or higher.
-2. **Clone the Repository**: Clone the project repository.
-3. **Compile the Code**: Use a Java IDE or command line to compile the classes.
-   ```bash
-   javac *.java
+1. **Clone the Repository**: Clone the project repository and cd into it 
+   ```
+   git clone https://github.com/wj-su/SC2002-SCMB-GRP5-HMS.git
+   cd SC2002-SCMB-GRP5-HMS
+   ```
+2. **Build the Code**: Clean if there is any previous build in the directory and then just run package to package the project into a JAR file using maven. Build files output will be in the `target` directory.
+   ```
+   mvn clean
+   mvn package
    ```
 4. **Run the Application**: Execute the main file to start the hospital management system.
-   ```bash
-   java HospitalManagementSystem
+   ```
+   java -jar ./target/hms-1.0-SNAPSHOT.jar
+   ```
+
+## Running Pre-Built JAR
+Ensure Java Development Kit (JDK) version 17 or higher is installed.
+
+1. **Download**: Download from release
+2. **Run the Application**: Execute the main file to start the hospital management system.
+   ```
+   java -jar ./target/hms-1.0-SNAPSHOT.jar
    ```
 
 ## Usage
