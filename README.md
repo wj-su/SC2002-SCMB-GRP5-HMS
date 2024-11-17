@@ -101,7 +101,7 @@ Ensure Java Development Kit (JDK) version 17 or higher is installed.
    java -jar ./target/hms-1.0-SNAPSHOT.jar
    ```
 ## Running in IDE
-Git Clone and Import the project in your preferred IDE then just run the java program in `src/main/java/hms/hms_main/HospitalManagementSystem.java`
+Git Clone and Import the project in your preferred IDE then just run the java program: `src/main/java/hms/hms_main/HospitalManagementSystem.java`
 
 ## Usage
 
