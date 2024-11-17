@@ -93,12 +93,12 @@ public class BillingDetails {
                 double totalCost = CONSULTATION_RATE; // Start with consultation fee
 
                 
-                System.out.println("Consultation Fee for Patient " + patientId + ", Appointment ID: " + appointmentId
-                        + ": $" + CONSULTATION_RATE);
+                // System.out.println("Consultation Fee for Patient " + patientId + ", Appointment ID: " + appointmentId
+                //         + ": $" + CONSULTATION_RATE);
 
                 
                 List<Map<String, String>> medications = (List<Map<String, String>>) appointmentDetails.get("pmeds");
-                System.out.println("Prescribed Medications for Appointment ID " + appointmentId + ":");
+                //System.out.println("Prescribed Medications for Appointment ID " + appointmentId + ":");
 
                 
                 for (Map<String, String> med : medications) {
@@ -117,15 +117,15 @@ public class BillingDetails {
                     double medCost = pricePerUnit * quantity;
 
                    
-                    System.out.println(
-                            " - " + medName + " (Quantity: " + quantity + ", Unit Price: $" + pricePerUnit + ")");
-                    System.out.println("   Medication Cost: $" + medCost);
+                    // System.out.println(
+                    //         " - " + medName + " (Quantity: " + quantity + ", Unit Price: $" + pricePerUnit + ")");
+                    // System.out.println("   Medication Cost: $" + medCost);
 
                     totalCost += medCost; 
                 }
 
                 
-                System.out.println("Total Cost for Appointment ID " + appointmentId + ": $" + totalCost);
+                //System.out.println("Total Cost for Appointment ID " + appointmentId + ": $" + totalCost);
 
                 
                 Random rid = new Random();

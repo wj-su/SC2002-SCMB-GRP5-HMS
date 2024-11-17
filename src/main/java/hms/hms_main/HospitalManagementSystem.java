@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -552,33 +553,41 @@ public class HospitalManagementSystem {
 		String line;
 		String csvSplitBy = ",";
 
-		try (InputStream inputStream = HospitalManagementSystem.class.getClassLoader().getResourceAsStream(csvFile); BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+		try (InputStream inputStream = HospitalManagementSystem.class.getClassLoader().getResourceAsStream(csvFile);
+				BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
+			
 			if (inputStream == null) {
 				System.out.println("File not found in resources folder");
 				return;
 			}
 
+			
 			String headerLine = br.readLine();
 			if (headerLine == null) {
 				System.out.println("CSV file is empty");
 				return;
 			}
 
-			headerLine = headerLine.replace("\uFEFF", "");
-			String[] headers = headerLine.split(csvSplitBy);
+			
+			if (headerLine.startsWith("\uFEFF")) {
+				headerLine = headerLine.substring(1);
+			}
 
+			
+			String[] headers = headerLine.split(csvSplitBy);
 			for (int i = 0; i < headers.length; i++) {
 				headers[i] = headers[i].trim();
 			}
 
+			
 			while ((line = br.readLine()) != null) {
 				String[] columns = line.split(csvSplitBy);
 
+				
 				Map<String, String> dataMap = new HashMap<>();
-
 				for (int i = 0; i < headers.length; i++) {
-
+					
 					if (i < columns.length) {
 						dataMap.put(headers[i], columns[i].trim());
 					} else {
@@ -586,6 +595,7 @@ public class HospitalManagementSystem {
 					}
 				}
 
+				
 				medicineList.add(dataMap);
 			}
 		} catch (IOException e) {
