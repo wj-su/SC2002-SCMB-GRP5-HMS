@@ -48,7 +48,7 @@ The HMS project is organized into several Java classes in `src/main/java/hms`:
 - `doctor/AppointmentManagement.java`: Manages all aspects of appointment scheduling, rescheduling, and cancellation.
 - `admin/InventoryManagement.java`: Manages medication stock and pharmacy inventory.
 - `doctor/MedicalRecordManagement.java`: Manages patient medical records, including diagnosis and treatment updates.
-- `hms_main/mainHospitalManagementSystem.java`: Acts as the main interface to manage the different services provided by the hospital.
+- `hms_main/HospitalManagementSystem.java`: Acts as the main interface to manage the different services provided by the hospital.
 
 ## Testing
 
