@@ -95,7 +95,7 @@ Information is not persisted once the application is closed, as the CSV files ar
 ## Running Pre-Built JAR
 Ensure Java Development Kit (JDK) version 17 or higher is installed.
 
-1. **Download**: Download from release
+1. **Download**: Download from release : [Download](https://github.com/wj-su/SC2002-SCMB-GRP5-HMS/releases)
 2. **Run the Application**: Execute the main file to start the hospital management system.
    ```
    java -jar ./target/hms-1.0-SNAPSHOT.jar
