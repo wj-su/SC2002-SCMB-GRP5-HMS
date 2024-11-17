@@ -1,11 +1,12 @@
 package hms.patient;
 
-import hms.doctor.AppointmentOutcomeRecord;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import hms.doctor.AppointmentOutcomeRecord;
 
 /**
  * Manages patient appointments in the hospital system.
@@ -413,11 +414,11 @@ public class Appointment {
                     String freeDate = appt.getDate();
                     String freeTimeSlot = appt.getTimeslot();
                     String freeDoc = appt.getDoctor();
-                    System.out.println("Selected Appointment Doctor: " + freeDoc);
-                    System.out.println("Selected Appointment Date: " + freeDate);
-                    System.out.println("Selected Appointment Time Slot: " + freeTimeSlot);
+                    // System.out.println("Selected Appointment Doctor: " + freeDoc);
+                    // System.out.println("Selected Appointment Date: " + freeDate);
+                    // System.out.println("Selected Appointment Time Slot: " + freeTimeSlot);
 
-                    if (dec.toLowerCase().equals("yes")) {
+                    if (dec.toLowerCase().equals("doctor")) {
                         if (doctorAvailability.containsKey(freeDoc)) {
                             if (doctorAvailability.get(freeDoc).containsKey(freeDate)) {
                                 doctorAvailability.get(freeDoc).get(freeDate).add(freeTimeSlot);

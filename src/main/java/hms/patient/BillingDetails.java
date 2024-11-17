@@ -1,11 +1,12 @@
 package hms.patient;
 
-import hms.doctor.AppointmentOutcomeRecord;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import hms.doctor.AppointmentOutcomeRecord;
 
 /**
  * Manages billing details for patients in the hospital system.
@@ -37,7 +38,7 @@ public class BillingDetails {
      */
     public BillingDetails() {
         this.outrecs = AppointmentOutcomeRecord.getAllOutcomeRecords();
-        printOutcomeRecords();
+        //printOutcomeRecords(); //for debugging only
     }
 
     /**

@@ -1,14 +1,9 @@
 package hms.hms_main;
 
-import hms.admin.Administrator;
-import hms.admin.InventoryManagement;
-import hms.admin.StaffManagement;
-import hms.doctor.AppointmentManagement;
-import hms.doctor.AppointmentOutcomeRecord;
-import hms.doctor.Doctor;
-import hms.doctor.MedicalRecordManagement;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +12,14 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import hms.admin.Administrator;
+import hms.admin.InventoryManagement;
+import hms.admin.StaffManagement;
+import hms.doctor.AppointmentManagement;
+import hms.doctor.AppointmentOutcomeRecord;
+import hms.doctor.Doctor;
+import hms.doctor.MedicalRecordManagement;
 import hms.patient.Appointment;
 import hms.patient.BillingDetails;
 import hms.patient.Patient;
@@ -127,6 +130,7 @@ public class HospitalManagementSystem {
 					System.out.println("Login successful as " + user.getRole());
 					if (user instanceof Patient) {
 						Patient p = (Patient) user;
+						System.out.println("Patient authenticated: " + p.getName());
 						if (user.isFirstLogin()) {
 							System.out.println("Please change your password since this is your first time logging in:");
 							String newPw = sc.next();
@@ -145,9 +149,9 @@ public class HospitalManagementSystem {
 							}
 						}
 						PatientOption(hospitalId, p);
-						System.out.println("Patient authenticated: " + p.getName());
 					} else if (user instanceof Doctor) {
 						Doctor d = (Doctor) user;
+						System.out.println("Doctor authenticated: " + d.getName());
 						if (user.isFirstLogin()) {
 							System.out.println("Please change your password since this is your first time logging in:");
 							String newPw = sc.next();
@@ -163,12 +167,13 @@ public class HospitalManagementSystem {
 								String newPw = sc.next();
 								user.changePassword(newPw, staffList);
 								loginCredentials.put(hospitalId, newPw);
+								System.out.println("Doctor authenticated: " + d.getName());
 							}
 						}
 						DoctorOption(hospitalId, d);
-						System.out.println("Doctor authenticated: " + d.getName());
 					} else if (user instanceof Pharmacist) {
 						Pharmacist pm = (Pharmacist) user;
+						System.out.println("Pharmacist authenticated: " + pm.getName());
 						if (user.isFirstLogin()) {
 							System.out.println("Please change your password since this is your first time logging in:");
 							String newPw = sc.next();
@@ -187,9 +192,9 @@ public class HospitalManagementSystem {
 							}
 						}
 						PharmacistOption(hospitalId, pm);
-						System.out.println("Pharmacist authenticated: " + pm.getName());
 					} else if (user instanceof Administrator) {
 						Administrator ad = (Administrator) user;
+						System.out.println("Administrator authenticated: " + ad.getName());
 						if (user.isFirstLogin()) {
 							System.out.println("Please change your password since this is your first time logging in:");
 							String newPw = sc.next();
@@ -208,7 +213,6 @@ public class HospitalManagementSystem {
 							}
 						}
 						AdministratorOption(hospitalId, ad);
-						System.out.println("Administrator authenticated: " + ad.getName());
 					}
 				} else {
 					System.out.println("Login failed. Invalid credentials.");
@@ -782,10 +786,10 @@ public class HospitalManagementSystem {
 
 					if (defaultApts.appointmentExists(pid, aptid, "reschedule", doctorAvailability, doctorList)) {
 						System.out.println("Do you want to reschedule to a new doctor, or only change timeslot?");
-						System.out.println("Yes or No?");
+						System.out.println("Doctor or Timeslot?");
 						String decision = sc.nextLine();
 						String newDoc = "";
-						if (decision.toLowerCase().equals("yes")) {
+						if (decision.toLowerCase().equals("doctor")) {
 							System.out.println("Enter the new doctor's name: ");
 							newDoc = sc.nextLine();
 							defaultApts.viewAvailableApptByDoc(newDoc, doctorList, doctorAvailability);

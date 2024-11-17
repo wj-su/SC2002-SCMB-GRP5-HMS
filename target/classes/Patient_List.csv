@@ -1,0 +1,4 @@
+Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Past Diagnoses,Past Treatment,Password
+P1001,Alice Brown,1980-05-14,Female,A+,alice.brown@example.com|12345678,NIL,NIL,password
+P1002,Bob Stone,1975-11-22,Male,B+,bob.stone@example.com|98765432,Diabetes,Insulin Therapy,password
+P1003,Charlie White,1990-07-08,Male,O-,charlie.white@example.com|82347112,High Blood Pressure|Asthma|Migraine,Blood Pressure Medication|Inhaler|Pain Management,password
